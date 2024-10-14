@@ -28,6 +28,7 @@ public class Admin {
 
             System.out.println("Pour obtenir les informations des refrendum, tapez info");
             System.out.println("Pour creer un referundum, tapez new");
+            System.out.println("Pour quitter, tapez exit");
 
             Scanner clavier = new Scanner(System.in);
             String s;

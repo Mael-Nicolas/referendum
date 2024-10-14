@@ -28,13 +28,31 @@ public class ServerThread extends Thread {
                 else if ("NEW_REFERENDUM".equals(text)) {
                     String nom = reader.readLine();
                     int nbChoix = Integer.parseInt(reader.readLine());
-                    List<String> choix = new ArrayList<>();
+                    ArrayList<String> choix = new ArrayList<>();
                     for (int i = 1; i < nbChoix+1; i++) {
                         String choixi = reader.readLine();
                         choix.add(choixi);
                     }
                     serveur.addReferendum(new Referendum(nom, choix));
                     writer.println("Referendum créé");
+                }
+                else if ("VOTER_REFERENDUM".equals(text)) {
+                    int idReferendum = Integer.parseInt(reader.readLine());
+                    Referendum referendum = serveur.getReferendum(idReferendum);
+
+                    String choixVote = reader.readLine();
+
+                    while (!referendum.getChoix().contains(choixVote)) {
+                        writer.println("Erreur");
+                        idReferendum = Integer.parseInt(reader.readLine());
+                        referendum = serveur.getReferendum(idReferendum);
+                        choixVote = reader.readLine();
+                    }
+                    writer.println("Ok"); // Doit renvoyer "Ok" pour continuer sinon il renvoie "Erreur"
+                    int idClient = Integer.parseInt(reader.readLine());
+                    serveur.clientAVote(idReferendum, idClient, choixVote);
+                    writer.println("Vote enregistré");
+                    System.out.println(referendum.getIdClientvote());
                 }
                 else {
                     writer.println();
