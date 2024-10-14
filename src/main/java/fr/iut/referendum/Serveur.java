@@ -1,6 +1,9 @@
 package fr.iut.referendum;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.io.*;
+import java.net.*;
 
 public class Serveur {
     List<Referendum> referendums;
@@ -25,10 +28,6 @@ public class Serveur {
         this.referendums.remove(referendum);
     }
 
-    public void creerReferendum(Referendum referendum) {
-        this.referendums.add(referendum);
-    }
-
     @Override
     public String toString() {
         String result = "";
@@ -39,10 +38,19 @@ public class Serveur {
     }
 
     public static void main(String[] args) {
-        Referendum r1 = new Referendum("Killian président ?", List.of("Oui", "Non"));
-        Referendum r2 = new Referendum("Vincent revienne a Montpellier ?", List.of("Oui", "Non", "Blanc"));
-        Referendum r3 = new Referendum("Ouverture BL3 ?", List.of("Oui", "Non", "Blanc", "Nul"));
-        Serveur serveur = new Serveur(List.of(r1, r2, r3));
-        System.out.println(serveur);
+        try (ServerSocket serverSocket = new ServerSocket(6666)) {
+            System.out.println("Server open on port 6666");
+            Referendum r1 = new Referendum("Killian président ?", List.of("Oui", "Non"));
+            Referendum r2 = new Referendum("Vincent revienne a Montpellier ?", List.of("Oui", "Non", "Blanc"));
+            Referendum r3 = new Referendum("Ouverture BL3 ?", List.of("Oui", "Non", "Blanc", "Nul"));
+            Serveur serveur = new Serveur(new ArrayList<>(List.of(r1, r2, r3)));
+            while (true) {
+                Socket socket = serverSocket.accept();
+                new ServerThread(socket, serveur).start(); // écoute les messages du client, admin, scrutateur
+            }
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }
