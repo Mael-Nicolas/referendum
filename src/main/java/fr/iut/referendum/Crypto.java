@@ -1,17 +1,15 @@
 package fr.iut.referendum;
 
-import com.sun.source.tree.BreakTree;
-
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
 public abstract class Crypto {
     private static final SecureRandom random = new SecureRandom();
 
-    public static BigInteger[] encrypt(BigInteger m, BigInteger g, BigInteger p, BigInteger publicKey) {
+    public static BigInteger[] encrypt(BigInteger m, BigInteger g, BigInteger p, BigInteger h) {
         BigInteger k = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE)); // k < p-1
         BigInteger c1 = g.modPow(k, p); // c1 = g^k mod p
-        BigInteger c2 = g.modPow(m, p).multiply(publicKey.modPow(k, p)).mod(p); // c2 = g^m * publickey^k mod p
+        BigInteger c2 = g.modPow(m, p).multiply(h.modPow(k, p)).mod(p); // c2 = g^m * publickey^k mod p
         return new BigInteger[]{c1, c2};
     }
 

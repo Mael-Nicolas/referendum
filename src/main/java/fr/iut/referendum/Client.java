@@ -1,6 +1,8 @@
 package fr.iut.referendum;
 
 
-public class Client {
+import java.math.BigInteger;
 
+public class Client {
 }
+
