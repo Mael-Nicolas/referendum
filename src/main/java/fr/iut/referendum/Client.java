@@ -26,10 +26,7 @@ public class Client {
         }
     }
 
-    public static void main(String[] args) {
-        String hostname = "localhost"; // Remplacez par l'adresse IP du serveur
-        int port = 6666;
-
+    public void run(String hostname, int port) {
         try (Socket socket = new Socket(hostname, port);
              // pour envoyer des messages au serveur
              OutputStream output = socket.getOutputStream();
@@ -57,9 +54,18 @@ public class Client {
                     info(writer, reader);
                     writer.println("VOTER_REFERENDUM");
 
+                    int nbReferendum = Integer.parseInt(reader.readLine());
+
                     System.out.println("Choisir ID du referendum : ");
                     String idReferendum = clavier.nextLine();
-                    writer.println(idReferendum);
+                    while (!idReferendum.matches("[0-9]+") || Integer.parseInt(idReferendum) > nbReferendum || Integer.parseInt(idReferendum) < 1) {
+                        System.out.println("Choix invalide");
+                        idReferendum = clavier.nextLine();
+                    }
+                    int idReferendumInt = Integer.parseInt(idReferendum);
+
+                    writer.println(idReferendumInt);
+
 
                     System.out.println("Saisir vote : ");
                     String choix = clavier.nextLine();
@@ -67,19 +73,14 @@ public class Client {
 
                     String response = reader.readLine();
                     while (response.equals("Erreur")) {
-                        System.out.println("Id referendum ou vote incorrect");
-                        System.out.println("Choisir ID du referendum : ");
-                        idReferendum = clavier.nextLine();
-                        writer.println(idReferendum);
-
+                        System.out.println("Id vote incorrect");
                         System.out.println("Saisir vote : ");
                         choix = clavier.nextLine();
                         writer.println(choix);
-
                         response = reader.readLine();
                     }
 
-                    writer.println("1");// à modifier pour prendre en compte l'id du client
+                    writer.println(this.id);
 
                     System.out.println("Server response: " + reader.readLine());
                 }

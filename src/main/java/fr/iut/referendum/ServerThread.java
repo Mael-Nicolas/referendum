@@ -37,6 +37,7 @@ public class ServerThread extends Thread {
                     writer.println("Referendum créé");
                 }
                 else if ("VOTER_REFERENDUM".equals(text)) {
+                    writer.println(serveur.getReferendums().size());
                     int idReferendum = Integer.parseInt(reader.readLine());
                     Referendum referendum = serveur.getReferendum(idReferendum);
 
@@ -44,8 +45,6 @@ public class ServerThread extends Thread {
 
                     while (!referendum.getChoix().contains(choixVote)) {
                         writer.println("Erreur");
-                        idReferendum = Integer.parseInt(reader.readLine());
-                        referendum = serveur.getReferendum(idReferendum);
                         choixVote = reader.readLine();
                     }
                     writer.println("Ok"); // Doit renvoyer "Ok" pour continuer sinon il renvoie "Erreur"
