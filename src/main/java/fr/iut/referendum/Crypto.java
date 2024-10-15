@@ -41,4 +41,20 @@ public abstract class Crypto {
         BigInteger v = c1[1].multiply(c2[1]).mod(pk);
         return new BigInteger[]{u, v};
     }
+
+    public static BigInteger decrypt(BigInteger[] c, BigInteger g, BigInteger p, BigInteger pk) {
+        BigInteger c1 = c[0];
+        BigInteger c2 = c[1];
+
+        BigInteger M = c2.multiply(c1.modPow(pk, p).modInverse(p)).mod(p);   // M = v × (u^x)^−1 mod p
+        BigInteger B = BigInteger.TWO.pow(3000); // si le message peut être codé sur 3000 bits
+        for (BigInteger m = BigInteger.ZERO; m.compareTo(B) < 0; m = m.add(BigInteger.ONE)) {
+            if ((g.modPow(m, p)).equals(M)) {
+                return m;
+            }
+        }
+
+        return null;
+    }
+
 }
