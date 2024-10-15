@@ -14,10 +14,7 @@ public class Admin {
         this.password = password;
     }
 
-    public static void main(String[] args) {
-        String hostname = "localhost"; // Remplacez par l'adresse IP du serveur
-        int port = 6666;
-
+    public void run(String hostname, int port) {
         try (Socket socket = new Socket(hostname, port);
              // pour envoyer des messages au serveur
              OutputStream output = socket.getOutputStream();
@@ -53,10 +50,14 @@ public class Admin {
                     writer.println(nom);
 
                     System.out.println("Nombre de choix : ");
-                    int nbChoix = clavier.nextInt();
+                    String nbChoixString = clavier.nextLine();
+                    while (!nbChoixString.matches("[0-9]+")) {
+                        System.out.println("Nombre de choix invalide");
+                        nbChoixString = clavier.nextLine();
+                    }
+                    int nbChoix = Integer.parseInt(nbChoixString); ;
                     writer.println(nbChoix);
 
-                    clavier.nextLine();
                     for (int i = 1; i < nbChoix+1; i++) {
                         System.out.println("Choix " + i + " : ");
                         String choix = clavier.nextLine();

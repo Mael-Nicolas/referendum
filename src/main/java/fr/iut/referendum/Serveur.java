@@ -52,8 +52,8 @@ public class Serveur {
     }
 
     public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(6666)) {
-            System.out.println("Server open on port 6666");
+        try (ServerSocket serverSocket = new ServerSocket(3390)) {
+            System.out.println("Server open on port " + serverSocket.getLocalPort());
 
             InetAddress adrLocale = InetAddress.getLocalHost();
             System.out.println("Adresse locale = "+adrLocale.getHostAddress());
@@ -66,8 +66,8 @@ public class Serveur {
             Serveur serveur = new Serveur(new ArrayList<>(List.of(r1, r2, r3)));
             while (true) {
                 Socket socket = serverSocket.accept();
-                System.out.println("Connexion avec : " + serverSocket.getInetAddress());
-                new ServerThread(socket, serveur).start(); // écoute les messages du client, admin, scrutateur
+                System.out.println("Connexion établie avec " + socket.getInetAddress());
+                new ServerThread(socket, serveur).start();
             }
 
         } catch (IOException ex) {
