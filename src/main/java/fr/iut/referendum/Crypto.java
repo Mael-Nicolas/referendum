@@ -14,19 +14,22 @@ public abstract class Crypto {
     }
 
     public static BigInteger[] genkey(int nbBits) {
-        int tauxPremier = 40;
+        int tauxPremier = 40; // Taux de certitude de primalité
         BigInteger p;
         BigInteger q;
         do {
-            q = new BigInteger(nbBits, tauxPremier, random);
-            p = q.multiply(BigInteger.valueOf(2)).add(BigInteger.ONE);
-        } while (!p.isProbablePrime(tauxPremier));
+            q = new BigInteger(nbBits, tauxPremier, random); // q premier
+            p = q.multiply(BigInteger.valueOf(2)).add(BigInteger.ONE); // p = 2q + 1
+        } while (!p.isProbablePrime(tauxPremier)); // p premier
         BigInteger g;
         do {
-            g = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE));
-        } while (g.modPow(BigInteger.TWO, p).compareTo(BigInteger.ONE) == 0);
-        if (g.modPow(q, p).compareTo(BigInteger.ONE) != 0) {
-            g = g.modPow(BigInteger.TWO, p);
+            g = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE)); // g < p-1
+        } while (g.modPow(BigInteger.TWO, p).compareTo(BigInteger.ONE) == 0); // g^2 mod p == 0
+        if (g.modPow(q, p).compareTo(BigInteger.ONE) != 0) { // g^q mod p != 0
+            g = g.modPow(BigInteger.TWO, p); // g = g^2 mod p
+        }
+        if (nbBits < 512) {
+            throw new IllegalArgumentException("La taille de la clé doit être supérieure à 512 bits");
         }
         BigInteger x = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE));
         BigInteger h = g.modPow(x, p);
