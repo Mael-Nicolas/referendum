@@ -80,7 +80,7 @@ public class Client {
                         response = reader.readLine();
                     }
 
-                    writer.println(this.id);
+                    writer.println(this.login);
 
                     System.out.println("Server response: " + reader.readLine());
                 }

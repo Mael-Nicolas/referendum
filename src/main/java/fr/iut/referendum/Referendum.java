@@ -9,7 +9,7 @@ public class Referendum {
     int id;
     String nom;
     ArrayList<String> choix;
-    Map<Integer,String> idClientvote = new HashMap<Integer,String>();
+    Map<String,String> loginClientvote = new HashMap<String,String>();
     String resultat = "";
 
     static int idCounter = 1;
@@ -28,8 +28,8 @@ public class Referendum {
         return choix;
     }
 
-    public Map<Integer, String> getIdClientvote() {
-        return idClientvote;
+    public Map<String, String> getIdClientvote() {
+        return loginClientvote;
     }
 
     public int getId() {

@@ -37,9 +37,9 @@ public class Serveur {
         return null;
     }
 
-    public void clientAVote(int idReferendum, int idClient, String choix) {
+    public void clientAVote(int idReferendum, String loginClient, String choix) {
         Referendum referendum = getReferendum(idReferendum);
-        referendum.idClientvote.put(idClient, choix);
+        referendum.getIdClientvote().put(loginClient, choix);
     }
 
     @Override

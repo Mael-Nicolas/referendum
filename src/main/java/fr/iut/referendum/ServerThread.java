@@ -48,8 +48,8 @@ public class ServerThread extends Thread {
                         choixVote = reader.readLine();
                     }
                     writer.println("Ok"); // Doit renvoyer "Ok" pour continuer sinon il renvoie "Erreur"
-                    int idClient = Integer.parseInt(reader.readLine());
-                    serveur.clientAVote(idReferendum, idClient, choixVote);
+                    String loginClient = reader.readLine();
+                    serveur.clientAVote(idReferendum, loginClient, choixVote);
                     writer.println("Vote enregistré");
                     System.out.println(referendum.getIdClientvote());
                 }
