@@ -6,10 +6,10 @@ import java.security.SecureRandom;
 public abstract class Crypto {
     private static final SecureRandom random = new SecureRandom();
 
-    public static BigInteger[] encrypt(BigInteger m, BigInteger g, BigInteger p, BigInteger h) {
+    public static BigInteger[] encrypt(BigInteger m, BigInteger g, BigInteger p, BigInteger pk) {
         BigInteger k = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE)); // k < p-1
         BigInteger c1 = g.modPow(k, p); // c1 = g^k mod p
-        BigInteger c2 = g.modPow(m, p).multiply(h.modPow(k, p)).mod(p); // c2 = g^m * publickey^k mod p
+        BigInteger c2 = g.modPow(m, p).multiply(pk.modPow(k, p)).mod(p); // c2 = g^m * publickey^k mod p
         return new BigInteger[]{c1, c2};
     }
 
@@ -31,8 +31,14 @@ public abstract class Crypto {
         if (nbBits < 512) {
             throw new IllegalArgumentException("La taille de la clé doit être supérieure à 512 bits");
         }
-        BigInteger x = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE));
-        BigInteger h = g.modPow(x, p);
-        return new BigInteger[]{p, q, g, h, x};
+        BigInteger sk = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE));
+        BigInteger pk = g.modPow(sk, p);
+        return new BigInteger[]{p, q, g, pk, sk};
+    }
+
+    public static BigInteger[] agrege(BigInteger[] c1, BigInteger[] c2, BigInteger pk) {
+        BigInteger u = c1[0].multiply(c2[0]).mod(pk);
+        BigInteger v = c1[1].multiply(c2[1]).mod(pk);
+        return new BigInteger[]{u, v};
     }
 }
