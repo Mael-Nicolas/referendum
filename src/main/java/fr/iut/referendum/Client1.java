@@ -5,14 +5,14 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-public class Client {
+public class Client1 {
     int id;
     String login;
     String password;
 
     static int idCounter = 1;
 
-    public Client(String login, String password) {
+    public Client1(String login, String password) {
         this.id = idCounter++;
         this.login = login;
         this.password = password;
