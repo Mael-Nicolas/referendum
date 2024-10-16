@@ -61,8 +61,8 @@ public class Serveur {
 
 
             Referendum r1 = new Referendum("Killian président ?", new ArrayList<>(List.of("Oui", "Non")));
-            Referendum r2 = new Referendum("Vincent revienne a Montpellier ?", new ArrayList<>(List.of("Oui", "Non", "Blanc")));
-            Referendum r3 = new Referendum("Ouverture BL3 ?", new ArrayList<>(List.of("Oui", "Non", "Blanc", "Nul")));
+            Referendum r2 = new Referendum("Vincent revienne a Montpellier ?", new ArrayList<>(List.of("Oui", "Non")));
+            Referendum r3 = new Referendum("Ouverture BL3 ?", new ArrayList<>(List.of("Oui", "Non")));
             Serveur serveur = new Serveur(new ArrayList<>(List.of(r1, r2, r3)));
             while (true) {
                 Socket socket = serverSocket.accept();
