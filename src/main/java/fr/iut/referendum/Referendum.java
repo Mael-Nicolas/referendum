@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 public class Referendum {
-    int id;
-    String nom;
-    ArrayList<String> choix;
-    Map<String,String> loginClientvote = new HashMap<String,String>();
-    String resultat = "";
+    private int id;
+    private String nom;
+    private ArrayList<String> choix;
+    private Map<String,String> loginClientvote = new HashMap<String,String>();
+    private String resultat = "";
 
-    static int idCounter = 1;
+    private static int idCounter = 1;
 
     public Referendum(String nom, ArrayList<String> choix) {
         this.id = idCounter++;
