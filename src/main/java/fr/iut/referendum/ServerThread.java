@@ -27,13 +27,20 @@ public class ServerThread extends Thread {
                 }
                 else if ("NEW_REFERENDUM".equals(text)) {
                     String nom = reader.readLine();
+                    /*
                     int nbChoix = Integer.parseInt(reader.readLine());
                     ArrayList<String> choix = new ArrayList<>();
                     for (int i = 1; i < nbChoix+1; i++) {
                         String choixi = reader.readLine();
                         choix.add(choixi);
                     }
-                    serveur.addReferendum(new Referendum(nom, choix));
+                     */
+                    ArrayList<String> choix = new ArrayList<>();
+                    choix.add("Oui");
+                    choix.add("Non");
+                    Referendum referendum = new Referendum(nom, choix);
+                    serveur.addReferendum(referendum);
+                    System.out.println("Referendum créé : " + referendum);
                     writer.println("Referendum créé");
                 }
                 else if ("VOTER_REFERENDUM".equals(text)) {
@@ -51,7 +58,7 @@ public class ServerThread extends Thread {
                     String loginClient = reader.readLine();
                     serveur.clientAVote(idReferendum, loginClient, choixVote);
                     writer.println("Vote enregistré");
-                    System.out.println(referendum.getIdClientvote());
+                    System.out.println(referendum.toString());
                 }
                 else {
                     writer.println();

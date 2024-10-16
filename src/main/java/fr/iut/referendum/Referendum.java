@@ -35,4 +35,9 @@ public class Referendum {
     public int getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "Referendum [" + id + "] " + nom + " : " + choix;
+    }
 }

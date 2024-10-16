@@ -48,7 +48,7 @@ public class Admin {
                     System.out.println("Nom du referendum : ");
                     String nom = clavier.nextLine();
                     writer.println(nom);
-
+                    /*
                     System.out.println("Nombre de choix : ");
                     String nbChoixString = clavier.nextLine();
                     while (!nbChoixString.matches("[0-9]+")) {
@@ -63,6 +63,7 @@ public class Admin {
                         String choix = clavier.nextLine();
                         writer.println(choix);
                     }
+                    */
                     System.out.println("Server response: " + reader.readLine());
                 }
             }
