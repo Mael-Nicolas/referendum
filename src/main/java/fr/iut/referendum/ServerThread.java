@@ -58,7 +58,7 @@ public class ServerThread extends Thread {
                     String loginClient = reader.readLine();
                     serveur.clientAVote(idReferendum, loginClient, choixVote);
                     writer.println("Vote enregistré");
-                    System.out.println(referendum.toString());
+                    System.out.println(referendum.getIdClientvote());
                 }
                 else {
                     writer.println();
