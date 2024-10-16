@@ -6,11 +6,11 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Client {
-    int id;
-    String login;
-    String password;
+    private int id;
+    private String login;
+    private String password;
 
-    static int idCounter = 1;
+    private static int idCounter = 1;
 
     public Client(String login, String password) {
         this.id = idCounter++;

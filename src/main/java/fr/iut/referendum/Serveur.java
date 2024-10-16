@@ -6,7 +6,7 @@ import java.io.*;
 import java.net.*;
 
 public class Serveur {
-    List<Referendum> referendums;
+    private List<Referendum> referendums;
 
     public Serveur(List<Referendum> referendums) {
         this.referendums = referendums;

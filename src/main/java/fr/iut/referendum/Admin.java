@@ -6,8 +6,8 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Admin {
-    String login;
-    String password;
+    private String login;
+    private String password;
 
     public Admin(String login, String password) {
         this.login = login;
