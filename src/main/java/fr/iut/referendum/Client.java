@@ -18,14 +18,6 @@ public class Client {
         this.password = password;
     }
 
-    public static void info(PrintWriter writer, BufferedReader reader) throws IOException {
-        writer.println("GET_SERVER_INFO");
-        String response;
-        while (!(response = reader.readLine()).isEmpty()) {
-            System.out.println("Server response: " + response);
-        }
-    }
-
     public void run(String hostname, int port) {
         try (Socket socket = new Socket(hostname, port);
              // pour envoyer des messages au serveur
@@ -48,41 +40,10 @@ public class Client {
                     running = false;
                 }
                 else if (s.equals("info")) {
-                    info(writer, reader);
+                    infoReferendum(writer, reader);
                 }
                 else if (s.equals("voter")) {
-                    info(writer, reader);
-                    writer.println("VOTER_REFERENDUM");
-
-                    int nbReferendum = Integer.parseInt(reader.readLine());
-
-                    System.out.println("Choisir ID du referendum : ");
-                    String idReferendum = clavier.nextLine();
-                    while (!idReferendum.matches("[0-9]+") || Integer.parseInt(idReferendum) > nbReferendum || Integer.parseInt(idReferendum) < 1) {
-                        System.out.println("Choix invalide");
-                        idReferendum = clavier.nextLine();
-                    }
-                    int idReferendumInt = Integer.parseInt(idReferendum);
-
-                    writer.println(idReferendumInt);
-
-
-                    System.out.println("Saisir vote : ");
-                    String choix = clavier.nextLine();
-                    writer.println(choix);
-
-                    String response = reader.readLine();
-                    while (response.equals("Erreur")) {
-                        System.out.println("Id vote incorrect");
-                        System.out.println("Saisir vote : ");
-                        choix = clavier.nextLine();
-                        writer.println(choix);
-                        response = reader.readLine();
-                    }
-
-                    writer.println(this.login);
-
-                    System.out.println("Server response: " + reader.readLine());
+                    voterReferendum(writer, reader, clavier);
                 }
             }
         } catch (UnknownHostException ex) {
@@ -91,4 +52,39 @@ public class Client {
             System.out.println("I/O error: " + ex.getMessage());
         }
     }
+
+    public void infoReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
+        writer.println("GET_SERVER_INFO");
+        String response;
+        while (!(response = reader.readLine()).isEmpty()) {
+            System.out.println("Server response: " + response);
+        }
+    }
+
+    private void voterReferendum(PrintWriter writer, BufferedReader reader, Scanner clavier) throws IOException {
+        infoReferendum(writer, reader);
+
+        writer.println("VOTER_REFERENDUM");
+
+        System.out.println("Choisir ID du referendum : ");
+        String idReferendum = clavier.nextLine();
+        writer.println(Integer.parseInt(idReferendum));
+        while (!idReferendum.matches("[0-9]+") || Integer.parseInt(idReferendum) <= 0 || reader.readLine().equals("Erreur")) {
+            System.out.println("Choix invalide");
+            idReferendum = clavier.nextLine();
+            writer.println(Integer.parseInt(idReferendum));
+        }
+
+        System.out.println("Saisir vote (Oui ou Non) : ");
+        String choix = clavier.nextLine();
+        while (!choix.equals("Oui") && !choix.equals("Non")) {
+            System.out.println("Choix invalide");
+            choix = clavier.nextLine();
+        }
+        writer.println(choix);
+        writer.println(this.login);
+
+        System.out.println("Server response: " + reader.readLine());
+    }
 }
+
