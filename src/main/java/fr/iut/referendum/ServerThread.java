@@ -35,9 +35,8 @@ public class ServerThread extends Thread {
                     writer.println();
                 }
             }
-
         } catch (IOException ex) {
-            ex.printStackTrace();
+            ex.getMessage();
         }
     }
 
@@ -60,7 +59,7 @@ public class ServerThread extends Thread {
         int mois = Integer.parseInt(reader.readLine());
         int jour = Integer.parseInt(reader.readLine());
         int heure = Integer.parseInt(reader.readLine());
-        Date date = new Date(annee - 1900, mois, jour, heure, 0);
+        Date date = new Date(annee - 1900, mois-1, jour, heure, 0);
         return date;
     }
 
