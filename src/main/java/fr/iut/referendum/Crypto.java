@@ -6,22 +6,22 @@ import java.security.SecureRandom;
 public abstract class Crypto {
     private static final SecureRandom random = new SecureRandom();
 
-    public static BigInteger[] encrypt(BigInteger m, BigInteger[] key) {
-        BigInteger g = key[2];
-        BigInteger p = key[0];
-        BigInteger pk = key[3];
+    public static BigInteger[] encrypt(BigInteger m, BigInteger[] pk) {
+        BigInteger p = pk[0];
+        BigInteger g = pk[1];
+        BigInteger h = pk[2];
         BigInteger k = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE)); // k < p-1
         BigInteger c1 = g.modPow(k, p); // c1 = g^k mod p
-        BigInteger c2 = g.modPow(m, p).multiply(pk.modPow(k, p)).mod(p); // c2 = g^m * publickey^k mod p
+        BigInteger c2 = g.modPow(m, p).multiply(h.modPow(k, p)).mod(p); // c2 = g^m * publickey^k mod p
         return new BigInteger[]{c1, c2};
     }
 
-    public static BigInteger[] genkey(int nbBits) {
+    public static BigInteger[] genkey() {
         int tauxPremier = 40; // Taux de certitude de primalité
         BigInteger p;
         BigInteger q;
         do {
-            q = new BigInteger(nbBits, tauxPremier, random); // q premier
+            q = new BigInteger(3072, tauxPremier, random); // q premier
             p = q.multiply(BigInteger.valueOf(2)).add(BigInteger.ONE); // p = 2q + 1
         } while (!p.isProbablePrime(tauxPremier)); // p premier
         BigInteger g;
@@ -31,12 +31,9 @@ public abstract class Crypto {
         if (g.modPow(q, p).compareTo(BigInteger.ONE) != 0) { // g^q mod p != 0
             g = g.modPow(BigInteger.TWO, p); // g = g^2 mod p
         }
-        if (nbBits < 512) {
-            throw new IllegalArgumentException("La taille de la clé doit être supérieure à 512 bits");
-        }
         BigInteger sk = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE));
-        BigInteger pk = g.modPow(sk, p);
-        return new BigInteger[]{p, q, g, pk, sk};
+        BigInteger h = g.modPow(sk, p);
+        return new BigInteger[]{p,g,h,sk};
     }
 
     public static BigInteger[] agrege(BigInteger[] c1, BigInteger[] c2, BigInteger[] pk) {
@@ -46,12 +43,14 @@ public abstract class Crypto {
         return new BigInteger[]{u, v};
     }
 
-    public static BigInteger decrypt(BigInteger[] c, BigInteger g, BigInteger p, BigInteger pk) {
+    public static BigInteger decrypt(BigInteger[] c, BigInteger[] pk, BigInteger sk, int nbVotants) {
         BigInteger c1 = c[0];
         BigInteger c2 = c[1];
+        BigInteger p = pk[0];
+        BigInteger g = pk[1];
 
-        BigInteger M = c2.multiply(c1.modPow(pk, p).modInverse(p)).mod(p);   // M = v × (u^x)^−1 mod p
-        BigInteger B = BigInteger.TWO.pow(3000); // si le message peut être codé sur 3000 bits
+        BigInteger M = c2.multiply(c1.modPow(sk, p).modInverse(p)).mod(p);   // M = v × (u^x)^−1 mod p
+        BigInteger B = BigInteger.valueOf(nbVotants);
         for (BigInteger m = BigInteger.ZERO; m.compareTo(B) < 0; m = m.add(BigInteger.ONE)) {
             if ((g.modPow(m, p)).equals(M)) {
                 return m;
