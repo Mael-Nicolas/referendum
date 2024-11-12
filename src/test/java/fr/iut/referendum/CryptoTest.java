@@ -16,7 +16,6 @@ public class CryptoTest {
         BigInteger p = key[0];
         BigInteger q = key[1];
         BigInteger g = key[2];
-        BigInteger h = key[3];
         BigInteger x = key[4];
 
         // Vérification que p est un nombre premier probable avec une grande certitude
@@ -37,8 +36,6 @@ public class CryptoTest {
         // Génération de clés
         BigInteger[] key = Crypto.genkey();
         BigInteger p = key[0];
-        BigInteger g = key[2];
-        BigInteger h = key[3];
 
         // Message à encrypter (par exemple un entier m)
         BigInteger m = BigInteger.valueOf(12345);
@@ -58,9 +55,6 @@ public class CryptoTest {
     public void testEncryptConsistency() throws ExecutionException, InterruptedException {
         // Génération de clés
         BigInteger[] key = Crypto.genkey();
-        BigInteger p = key[0];
-        BigInteger g = key[2];
-        BigInteger h = key[3];
 
         // Message à encrypter
         BigInteger m = BigInteger.valueOf(12345);
@@ -143,8 +137,6 @@ public class CryptoTest {
         // Génération de clés
         BigInteger[] key = Crypto.genkey();
         BigInteger p = key[0];
-        BigInteger g = key[2];
-        BigInteger h = key[3];
 
         // Message à encrypter
         BigInteger m = BigInteger.valueOf(42);
@@ -165,8 +157,6 @@ public class CryptoTest {
         // Génération de clés
         BigInteger[] key = Crypto.genkey();
         BigInteger p = key[0];
-        BigInteger g = key[2];
-        BigInteger h = key[3];
 
         // Message à encrypter plus grand (mais toujours dans Zp)
         BigInteger m = BigInteger.valueOf(Long.MAX_VALUE);
@@ -187,8 +177,6 @@ public class CryptoTest {
         // Génération de clés
         BigInteger[] key = Crypto.genkey();
         BigInteger p = key[0];
-        BigInteger g = key[2];
-        BigInteger h = key[3];
 
         // Message à encrypter (m = 0)
         BigInteger m = BigInteger.ZERO;
@@ -202,21 +190,5 @@ public class CryptoTest {
         // Vérification que c1 et c2 sont dans Zp
         assertTrue(c1.compareTo(BigInteger.ZERO) > 0 && c1.compareTo(p) < 0, "c1 doit être dans Zp");
         assertTrue(c2.compareTo(BigInteger.ZERO) > 0 && c2.compareTo(p) < 0, "c2 doit être dans Zp");
-    }
-
-    @Test
-    void encrypt() {
-    }
-
-    @Test
-    void genkey() {
-    }
-
-    @Test
-    void agrege() {
-    }
-
-    @Test
-    void decrypt() {
     }
 }
