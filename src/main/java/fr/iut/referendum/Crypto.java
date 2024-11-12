@@ -36,7 +36,7 @@ public abstract class Crypto {
         }
         BigInteger sk = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE));
         BigInteger pk = g.modPow(sk, p);
-        return new BigInteger[]{p, q, g, pk};
+        return new BigInteger[]{p, q, g, pk, sk};
     }
 
     public static BigInteger[] agrege(BigInteger[] c1, BigInteger[] c2, BigInteger pk) {
