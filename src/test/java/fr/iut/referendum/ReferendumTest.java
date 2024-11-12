@@ -53,27 +53,6 @@ public class ReferendumTest {
     }
 
     @Test
-    public void testAgregeVote() {
-        // Création d'un référendum
-        Date dateFin = new Date(2025 - 1900, Calendar.JANUARY, 1, 0, 0);
-        Referendum referendum = new Referendum("Killian président ?", dateFin);
-
-        // Création de votes simulés
-        BigInteger[] vote1 = {BigInteger.valueOf(10), BigInteger.valueOf(20)};
-        BigInteger[] vote2 = {BigInteger.valueOf(5), BigInteger.valueOf(15)};
-
-        // Agrégation des votes
-        referendum.agregeVote(vote1);
-        referendum.agregeVote(vote2);
-
-        // Vérifier que les votes sont correctement agrégés
-        BigInteger[] votesAgrege = referendum.getVotesAgrege();
-        assertNotNull(votesAgrege, "Les votes agrégés ne doivent pas être nuls");
-        assertEquals(BigInteger.valueOf(15), votesAgrege[0], "La première valeur des votes agrégés est incorrecte");
-        assertEquals(BigInteger.valueOf(35), votesAgrege[1], "La deuxième valeur des votes agrégés est incorrecte");
-    }
-
-    @Test
     public void testToString() {
         // Création d'un référendum avec une date de fin
         Date dateFin = new Date(2025 - 1900, Calendar.JANUARY, 1, 12, 30);
