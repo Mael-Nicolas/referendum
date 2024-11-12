@@ -9,13 +9,17 @@ import java.util.Scanner;
 
 public class Scrutateur {
 
-    final BigInteger[] pk;
+    private final BigInteger[] pk;
     private final BigInteger sk;
 
     public Scrutateur() {
         BigInteger[] tab = Crypto.genkey();
         pk = new BigInteger[]{tab[0],tab[1],tab[2]};
         sk = tab[3];
+    }
+
+    public BigInteger[] getPk() {
+        return pk;
     }
 
     public String dechiffrer(BigInteger[] agrege, int nbVotants) {

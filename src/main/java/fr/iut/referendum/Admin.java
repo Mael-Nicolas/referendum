@@ -18,6 +18,22 @@ public class Admin {
         this.password = password;
     }
 
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public void run(String hostname, int port) {
         try (Socket socket = new Socket(hostname, port);
              // pour envoyer des messages au serveur

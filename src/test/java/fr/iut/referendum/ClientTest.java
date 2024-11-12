@@ -16,8 +16,8 @@ public class ClientTest {
         Client client = new Client("user1", "password1");
 
         // Vérification des informations du client
-        assertEquals("user1", client.login, "Le login du client doit être correct");
-        assertEquals("password1", client.password, "Le mot de passe du client doit être correct");
+        assertEquals("user1", client.getLogin(), "Le login du client doit être correct");
+        assertEquals("password1", client.getPassword(), "Le mot de passe du client doit être correct");
         assertTrue(client.id > 0, "L'ID du client doit être positif");
     }
 
