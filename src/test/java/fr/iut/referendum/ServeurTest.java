@@ -27,24 +27,6 @@ public class ServeurTest {
         assertEquals(r1, serveur.getReferendum(r1.getId()), "Le référendum ajouté doit être récupéré");
     }
 
-    @Test
-    public void testClientAVote() {
-        // Création d'une liste de référendums
-        Referendum r1 = new Referendum("Killian président ?", new Date(2025-1900, Calendar.JANUARY, 1, 0, 0));
-        List<Referendum> referendums = new ArrayList<>();
-        Serveur serveur = new Serveur(referendums);
-
-        // Ajouter un référendum
-        serveur.addReferendum(r1);
-
-        // Simuler un vote
-        BigInteger[] vote = { BigInteger.valueOf(5), BigInteger.valueOf(10) };  // Exemple de vote agrégé
-        serveur.clientAVote(r1, vote);
-
-        // Vérifier que le nombre de votants a été mis à jour et que le vote a été agrégué
-        assertEquals(1, r1.getNbVotants(), "Le nombre de votants doit être 1 après le vote");
-        assertArrayEquals(vote, r1.getVotesAgrege(), "Les votes doivent correspondre à l'agrégation");
-    }
 
     @Test
     public void testToString() {

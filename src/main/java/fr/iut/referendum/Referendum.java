@@ -16,44 +16,13 @@ public class Referendum {
     private static int idCounter = 1;
     private Object[] votes;
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public void setNbVotants(int nbVotants) {
-        this.nbVotants = nbVotants;
-    }
-
-    public void setDateFin(Date dateFin) {
-        this.dateFin = dateFin;
-    }
-
-    public void setVotesAgrege(BigInteger[] votesAgrege) {
-        this.votesAgrege = votesAgrege;
-    }
-
-    public BigInteger[] getPk() {
-        return pk;
-    }
-
-    public static int getIdCounter() {
-        return idCounter;
-    }
-
-    public static void setIdCounter(int idCounter) {
-        Referendum.idCounter = idCounter;
-    }
-
     public Referendum(String nom, Date dateFin) {
         this.id = idCounter++;
         this.nom = nom;
         this.dateFin = dateFin;
         this.nbVotants = 0;
-        this.votesAgrege = null;
+        this.votesAgrege = new BigInteger[]{BigInteger.ZERO, BigInteger.ZERO};
+        //this.pk = scrutateur.getPublicKey(); TODO
     }
 
     public String getNom() {
@@ -169,10 +138,8 @@ public class Referendum {
     }
 
     public void agregeVote(BigInteger[] c) {
-        if (votesAgrege == null) {
-            votesAgrege = c;
-        }
-        votesAgrege = Crypto.agrege(votesAgrege, c, pk);
+        votesAgrege[0] = votesAgrege[0].add(c[0]);
+        votesAgrege[1] = votesAgrege[1].add(c[1]);
     }
 
     public BigInteger[] getVotesAgrege() {
