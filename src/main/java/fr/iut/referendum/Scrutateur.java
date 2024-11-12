@@ -10,7 +10,9 @@ public class Scrutateur {
     private BigInteger resChiffre;
 
     public Scrutateur() {
-        pk, sk = Crypto.genkey();
+        BigInteger[] tab = Crypto.genkey();
+        pk = new BigInteger[]{tab[0],tab[1],tab[2]};
+        sk = tab[3];
     }
 
     public BigInteger[] getPk() {
@@ -21,8 +23,8 @@ public class Scrutateur {
         this.resChiffre = resChiffre;
     }
 
-    public BigInteger dechiffrer() {
-        Crypto.decrypt();
+    public BigInteger dechiffrer(BigInteger[] agrege, int nbVotants) {
+        BigInteger resultat = Crypto.decrypt(agrege, pk, sk, nbVotants);
         return resultat;
     }
 }

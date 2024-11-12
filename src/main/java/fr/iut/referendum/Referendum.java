@@ -1,5 +1,6 @@
 package fr.iut.referendum;
 
+import java.math.BigInteger;
 import java.util.*;
 
 public class Referendum {
@@ -7,8 +8,9 @@ public class Referendum {
     private String nom;
     private ArrayList<String> choix;
     private Map<String,String> loginClientvote = new HashMap<String,String>();
-    private String resultat = "";
     private Date dateFin;
+    private int resultatAgrege;
+    private BigInteger[] pk;
 
     private static int idCounter = 1;
 
@@ -42,9 +44,9 @@ public class Referendum {
     }
 
     public String dateFinAffichage() {
-        int anne = dateFin.getYear() + 1900;
+        int annee = dateFin.getYear() + 1900;
         int mois = dateFin.getMonth() + 1;
-        return dateFin.getDate() + "/" + mois + "/" + anne + " " + dateFin.getHours() + ":" + dateFin.getMinutes();
+        return dateFin.getDate() + "/" + mois + "/" + annee + " " + dateFin.getHours() + ":" + dateFin.getMinutes();
     }
 
     public boolean fini() {
@@ -58,7 +60,7 @@ public class Referendum {
             return "Terminé";
         }
         String result = "";
-        int anne = dateFin.getYear() - dateNow.getYear();
+        int annee = dateFin.getYear() - dateNow.getYear();
         int mois = dateFin.getMonth() - dateNow.getMonth();
         int jour = dateFin.getDate() - dateNow.getDate();
         int heure = dateFin.getHours() - dateNow.getHours();
@@ -72,16 +74,16 @@ public class Referendum {
             jour--;
         }
         if (jour < 0) {
-            int nbJour = getMaxDaysInMonth(anne, mois-1);
+            int nbJour = getMaxDaysInMonth(annee, mois-1);
             jour += nbJour;
             mois--;
         }
         if (mois < 0) {
             mois += 12;
-            anne--;
+            annee--;
         }
-        if (anne != 0) {
-            result += anne + " an(s) ";
+        if (annee != 0) {
+            result += annee + " an(s) ";
         }
         if (mois != 0) {
             result += mois + " mois ";
@@ -114,5 +116,20 @@ public class Referendum {
             default:
                 return 31;
         }
+    }
+
+    /*
+    * Renvoie le resultat du referendum s'il est terminé
+    * retourne 0 pour le choix 0
+    * retourne 1 pour le choix 1
+    * Sinon renvoie -1 (referendum non terminé)
+    */
+
+    public int getNbVotes() {
+        return loginClientvote.size();
+    }
+
+    public BigInteger[] getClePublique() {
+        return pk;
     }
 }

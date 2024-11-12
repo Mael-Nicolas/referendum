@@ -1,6 +1,7 @@
 package fr.iut.referendum;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -66,6 +67,7 @@ public class Client {
 
         writer.println("VOTER_REFERENDUM");
 
+        // choix referendum
         System.out.println("Choisir ID du referendum : ");
         String idReferendum = clavier.nextLine();
         writer.println(Integer.parseInt(idReferendum));
@@ -75,13 +77,30 @@ public class Client {
             writer.println(Integer.parseInt(idReferendum));
         }
 
+        // réception clé publique
+        BigInteger p = new BigInteger(reader.readLine());
+        BigInteger g = new BigInteger(reader.readLine());
+        BigInteger h = new BigInteger(reader.readLine());
+        BigInteger[] pk = new BigInteger[]{p,g,h};
+
+        // choix vote
         System.out.println("Saisir vote (Oui ou Non) : ");
         String choix = clavier.nextLine();
         while (!choix.equals("Oui") && !choix.equals("Non")) {
             System.out.println("Choix invalide");
             choix = clavier.nextLine();
         }
-        writer.println(choix);
+        BigInteger choixint;
+        if (choix.equals("Oui")) {
+            choixint = BigInteger.ONE;
+        } else {
+            choixint = BigInteger.ZERO;
+        }
+        // cryptage
+        BigInteger[] choixCrypter = Crypto.encrypt(choixint, pk);
+
+        writer.println(choixCrypter[0]);
+        writer.println(choixCrypter[1]);
         writer.println(this.login);
 
         System.out.println("Server response: " + reader.readLine());
