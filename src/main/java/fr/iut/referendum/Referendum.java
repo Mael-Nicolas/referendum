@@ -20,8 +20,7 @@ public class Referendum {
         this.nom = nom;
         this.dateFin = dateFin;
         this.nbVotants = 0;
-        this.votesAgrege = new BigInteger[]{BigInteger.ZERO, BigInteger.ZERO};
-        //this.pk = scrutateur.getPublicKey(); TODO
+        this.votesAgrege = null;
     }
 
     public String getNom() {
@@ -137,6 +136,9 @@ public class Referendum {
     }
 
     public void agregeVote(BigInteger[] c) {
+        if (votesAgrege == null) {
+            votesAgrege = c;
+        }
         votesAgrege = Crypto.agrege(votesAgrege, c, pk);
     }
 
