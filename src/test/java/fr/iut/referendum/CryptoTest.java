@@ -81,7 +81,7 @@ public class CryptoTest {
         BigInteger sk = keys[3]; // clé secrète
 
         // Message à crypter
-        BigInteger message = BigInteger.valueOf(42);
+        BigInteger message = BigInteger.valueOf(8);
 
         // Cryptage du message
         BigInteger[] encrypted = Crypto.encrypt(message, pk);
@@ -92,6 +92,31 @@ public class CryptoTest {
         // Vérification que le message décrypté est correct
         assertNotNull(decryptedMessage, "Le message décrypté ne doit pas être nul");
         assertEquals(message, decryptedMessage, "Le message décrypté doit être égal au message original");
+    }
+
+    @Test
+    public void testAgregeDecrypt() {
+        // Génération d'une clé publique et d'une clé secrète
+        BigInteger[] keys = Crypto.genkey();
+        BigInteger[] pk = {keys[0], keys[1], keys[2]}; // p, g, h
+        BigInteger sk = keys[3]; // clé secrète
+
+        // Message à crypter
+        BigInteger message = BigInteger.valueOf(8);
+        BigInteger message2 = BigInteger.valueOf(1);
+
+        // Cryptage du message
+        BigInteger[] encrypted = Crypto.encrypt(message, pk);
+        BigInteger[] encrypted2 = Crypto.encrypt(message2, pk);
+
+        BigInteger[] agrege = Crypto.agrege(encrypted, encrypted2, pk);
+
+        // Décryptage du message
+        BigInteger decryptedMessage = Crypto.decrypt(agrege, pk, sk, 9);
+
+        // Vérification que le message décrypté est correct
+        assertNotNull(decryptedMessage, "Le message décrypté ne doit pas être nul");
+        assertEquals(9, decryptedMessage, "Le message décrypté doit être égal au message original");
     }
 
     // Test de décryptage avec un nombre incorrect de votants

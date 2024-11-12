@@ -14,6 +14,7 @@ public class Referendum {
     private boolean open = false;
 
     private static int idCounter = 1;
+    private Object[] votes;
 
     public Referendum(String nom, Date dateFin) {
         this.id = idCounter++;
@@ -115,7 +116,7 @@ public class Referendum {
                 return 30;
             case 2:
                 if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
-                    return 29; // Leap year
+                    return 29; // Année bisextile
                 } else {
                     return 28;
                 }
@@ -137,7 +138,8 @@ public class Referendum {
     }
 
     public void agregeVote(BigInteger[] c) {
-        votesAgrege = Crypto.agrege(votesAgrege, c, pk);
+        votesAgrege[0] = votesAgrege[0].add(c[0]);
+        votesAgrege[1] = votesAgrege[1].add(c[1]);
     }
 
     public BigInteger[] getVotesAgrege() {
@@ -157,4 +159,11 @@ public class Referendum {
     }
 
 
+    public Object[] getVotes() {
+        return votes;
+    }
+
+    public void setVotes(Object[] votes) {
+        this.votes = votes;
+    }
 }
