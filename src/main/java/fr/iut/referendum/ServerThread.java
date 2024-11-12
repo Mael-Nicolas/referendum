@@ -3,7 +3,7 @@ package fr.iut.referendum;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 public class ServerThread extends Thread {
     private Socket socket;
@@ -23,50 +23,61 @@ public class ServerThread extends Thread {
             String text;
             while ((text = reader.readLine()) != null) {
                 if ("GET_SERVER_INFO".equals(text)) {
-                    writer.println(serveur.toString());
+                    Get_Server_Info(writer);
                 }
                 else if ("NEW_REFERENDUM".equals(text)) {
-                    String nom = reader.readLine();
-                    /*
-                    int nbChoix = Integer.parseInt(reader.readLine());
-                    ArrayList<String> choix = new ArrayList<>();
-                    for (int i = 1; i < nbChoix+1; i++) {
-                        String choixi = reader.readLine();
-                        choix.add(choixi);
-                    }
-                     */
-                    ArrayList<String> choix = new ArrayList<>();
-                    choix.add("Oui");
-                    choix.add("Non");
-                    Referendum referendum = new Referendum(nom, choix);
-                    serveur.addReferendum(referendum);
-                    System.out.println("Referendum créé : " + referendum);
-                    writer.println("Referendum créé");
+                    New_Referendum(reader, writer);
                 }
                 else if ("VOTER_REFERENDUM".equals(text)) {
-                    writer.println(serveur.getReferendums().size());
-                    int idReferendum = Integer.parseInt(reader.readLine());
-                    Referendum referendum = serveur.getReferendum(idReferendum);
-
-                    String choixVote = reader.readLine();
-
-                    while (!referendum.getChoix().contains(choixVote)) {
-                        writer.println("Erreur");
-                        choixVote = reader.readLine();
-                    }
-                    writer.println("Ok"); // Doit renvoyer "Ok" pour continuer sinon il renvoie "Erreur"
-                    String loginClient = reader.readLine();
-                    serveur.clientAVote(idReferendum, loginClient, choixVote);
-                    writer.println("Vote enregistré");
-                    System.out.println(referendum.getIdClientvote());
+                    Voter_Referendum(writer, reader);
                 }
                 else {
                     writer.println();
                 }
             }
-
         } catch (IOException ex) {
-            ex.printStackTrace();
+            ex.getMessage();
         }
+    }
+
+    private void Get_Server_Info(PrintWriter writer) {
+        writer.println(serveur.toString());
+    }
+
+    private void New_Referendum(BufferedReader reader, PrintWriter writer) throws IOException {
+        String nom = reader.readLine();
+        Date date = creeDate(reader);
+
+        Referendum referendum = new Referendum(nom, date);
+        serveur.addReferendum(referendum);
+        System.out.println("Referendum créé : " + referendum);
+        writer.println("Referendum créé");
+    }
+
+    private Date creeDate(BufferedReader reader) throws IOException {
+        int annee = Integer.parseInt(reader.readLine());
+        int mois = Integer.parseInt(reader.readLine());
+        int jour = Integer.parseInt(reader.readLine());
+        int heure = Integer.parseInt(reader.readLine());
+        Date date = new Date(annee - 1900, mois-1, jour, heure, 0);
+        return date;
+    }
+
+    private void Voter_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {
+        int idReferendum = Integer.parseInt(reader.readLine());
+        Referendum referendum = serveur.getReferendum(idReferendum);
+
+        while (referendum == null || referendum.fini()) {
+            writer.println("Erreur");
+            idReferendum = Integer.parseInt(reader.readLine());
+            referendum = serveur.getReferendum(idReferendum);
+        }
+        writer.println("Ok");
+
+        String choixVote = reader.readLine();
+        String loginClient = reader.readLine();
+        serveur.clientAVote(idReferendum, loginClient, choixVote);
+        writer.println("Vote enregistré");
+        System.out.println(referendum.getIdClientvote());
     }
 }

@@ -1,6 +1,8 @@
 package fr.iut.referendum;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.io.*;
 import java.net.*;
@@ -44,9 +46,9 @@ public class Serveur {
 
     @Override
     public String toString() {
-        String result = "";
+        String result = "---------------------------------------------------------------------------------------------\n";
         for (Referendum referendum : referendums) {
-            result += "[" + referendum.getId() +"] " + referendum.getNom() + " : " + referendum.getChoix() + "\n";
+            result += referendum.toString() + "\n" + "---------------------------------------------------------------------------------------------\n";
         }
         return result;
     }
@@ -56,13 +58,12 @@ public class Serveur {
             System.out.println("Server open on port " + serverSocket.getLocalPort());
 
             InetAddress adrLocale = InetAddress.getLocalHost();
-            System.out.println("Adresse locale = "+adrLocale.getHostAddress());
-            System.out.println("Nom de la machine locale = "+adrLocale.getHostName());
+            System.out.println("Adresse locale = "+ adrLocale.getHostAddress());
+            System.out.println("Nom de la machine locale = "+ adrLocale.getHostName());
 
-
-            Referendum r1 = new Referendum("Killian président ?", new ArrayList<>(List.of("Oui", "Non")));
-            Referendum r2 = new Referendum("Vincent revienne a Montpellier ?", new ArrayList<>(List.of("Oui", "Non")));
-            Referendum r3 = new Referendum("Ouverture BL3 ?", new ArrayList<>(List.of("Oui", "Non")));
+            Referendum r1 = new Referendum("Killian président ?", new Date(2025-1900, Calendar.JANUARY, 1, 0, 0));
+            Referendum r2 = new Referendum("Vincent revienne a Montpellier ?", new Date(2028-1900, Calendar.FEBRUARY, 29, 20, 0));
+            Referendum r3 = new Referendum("Ouverture BL3 ?", new Date(2021-1900, Calendar.NOVEMBER, 10, 20, 0));
             Serveur serveur = new Serveur(new ArrayList<>(List.of(r1, r2, r3)));
             while (true) {
                 Socket socket = serverSocket.accept();
