@@ -21,8 +21,7 @@ public class Referendum {
         this.nom = nom;
         this.dateFin = dateFin;
         this.nbVotants = 0;
-        this.votesAgrege = new BigInteger[]{BigInteger.ZERO, BigInteger.ZERO};
-        //this.pk = scrutateur.getPublicKey(); TODO
+        this.votesAgrege = null;
     }
 
     public String getNom() {
