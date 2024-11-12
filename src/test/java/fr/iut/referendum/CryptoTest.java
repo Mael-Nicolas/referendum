@@ -44,7 +44,7 @@ public class CryptoTest {
         BigInteger m = BigInteger.valueOf(12345);
 
         // Encryption du message
-        BigInteger[] encrypted = Crypto.encrypt(m, g, p, h);
+        BigInteger[] encrypted = Crypto.encrypt(m, key);
 
         BigInteger c1 = encrypted[0];
         BigInteger c2 = encrypted[1];
@@ -66,15 +66,14 @@ public class CryptoTest {
         BigInteger m = BigInteger.valueOf(12345);
 
         // Encryptage du message
-        BigInteger[] encrypted1 = Crypto.encrypt(m, g, p, h);
-        BigInteger[] encrypted2 = Crypto.encrypt(m, g, p, h);
+        BigInteger[] encrypted1 = Crypto.encrypt(m, key);
+        BigInteger[] encrypted2 = Crypto.encrypt(m, key);
 
         // Vérification que deux encryptions du même message produisent des résultats différents (propriété des schémas probabilistes)
         assertNotEquals(encrypted1[0], encrypted2[0], "c1 devrait être différent pour chaque encryption");
         assertNotEquals(encrypted1[1], encrypted2[1], "c2 devrait être différent pour chaque encryption");
     }
 
-    @Disabled
     @Test
     public void testKeyGenerationTime() throws ExecutionException, InterruptedException {
         // Mesurer le temps de génération pour différentes tailles de clés
@@ -158,7 +157,6 @@ public class CryptoTest {
         assertTrue(q.isProbablePrime(40), "q devrait être un nombre premier pour 512 bits");
     }
 
-    @Disabled
     @Test
     public void testKeyGenerationMaxBits() {
         BigInteger[] key = Crypto.genkey(3072);
@@ -208,7 +206,7 @@ public class CryptoTest {
         BigInteger m = BigInteger.valueOf(42);
 
         // Chiffrement
-        BigInteger[] encrypted = Crypto.encrypt(m, g, p, h);
+        BigInteger[] encrypted = Crypto.encrypt(m, key);
 
         BigInteger c1 = encrypted[0];
         BigInteger c2 = encrypted[1];
@@ -230,7 +228,7 @@ public class CryptoTest {
         BigInteger m = BigInteger.valueOf(Long.MAX_VALUE);
 
         // Chiffrement
-        BigInteger[] encrypted = Crypto.encrypt(m, g, p, h);
+        BigInteger[] encrypted = Crypto.encrypt(m, key);
 
         BigInteger c1 = encrypted[0];
         BigInteger c2 = encrypted[1];
@@ -252,7 +250,7 @@ public class CryptoTest {
         BigInteger m = BigInteger.ZERO;
 
         // Chiffrement
-        BigInteger[] encrypted = Crypto.encrypt(m, g, p, h);
+        BigInteger[] encrypted = Crypto.encrypt(m, key);
 
         BigInteger c1 = encrypted[0];
         BigInteger c2 = encrypted[1];
