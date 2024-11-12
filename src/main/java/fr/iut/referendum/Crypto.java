@@ -42,14 +42,14 @@ public abstract class Crypto {
         return new BigInteger[]{u, v};
     }
 
-    public static BigInteger decrypt(BigInteger[] c, BigInteger[] pk, BigInteger sk) {
+    public static BigInteger decrypt(BigInteger[] c, BigInteger[] pk, BigInteger sk, int nbVotants) {
         BigInteger c1 = c[0];
         BigInteger c2 = c[1];
         BigInteger p = pk[0];
         BigInteger g = pk[1];
 
         BigInteger M = c2.multiply(c1.modPow(sk, p).modInverse(p)).mod(p);   // M = v × (u^x)^−1 mod p
-        BigInteger B = BigInteger.TWO; // si le message en clair est soit oui soit non (1 ou 0)
+        BigInteger B = BigInteger.valueOf(nbVotants);
         for (BigInteger m = BigInteger.ZERO; m.compareTo(B) < 0; m = m.add(BigInteger.ONE)) {
             if ((g.modPow(m, p)).equals(M)) {
                 return m;
