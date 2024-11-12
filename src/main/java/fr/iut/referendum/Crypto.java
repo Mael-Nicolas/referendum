@@ -49,13 +49,27 @@ public abstract class Crypto {
         BigInteger p = pk[0];
         BigInteger g = pk[1];
 
+        // Ajouter un log pour vérifier les entrées
+        System.out.println("c1: " + c1);
+        System.out.println("c2: " + c2);
+        System.out.println("sk: " + sk);
+        System.out.println("p: " + p);
+        System.out.println("g: " + g);
+
         BigInteger M = c2.multiply(c1.modPow(sk, p).modInverse(p)).mod(p);   // M = v × (u^x)^−1 mod p
+
+        // Ajouter un log pour M avant la boucle
+        System.out.println("M: " + M);
+
         BigInteger B = BigInteger.valueOf(nbVotants);
         for (BigInteger m = BigInteger.ZERO; m.compareTo(B) < 0; m = m.add(BigInteger.ONE)) {
             if ((g.modPow(m, p)).equals(M)) {
+                System.out.println("Message décrypté: " + m);
                 return m;
             }
         }
+        System.out.println("Déchiffrement échoué");
         return null;
     }
+
 }

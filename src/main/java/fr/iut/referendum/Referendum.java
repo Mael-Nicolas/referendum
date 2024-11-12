@@ -14,6 +14,8 @@ public class Referendum {
     private boolean open = false;
 
     private static int idCounter = 1;
+    private Collection<Object> choix;
+    private Object[] votes;
 
     public Referendum(String nom, Date dateFin) {
         this.id = idCounter++;
@@ -157,4 +159,19 @@ public class Referendum {
     }
 
 
+    public Collection<Object> getChoix() {
+        return choix;
+    }
+
+    public void setChoix(Collection<Object> choix) {
+        this.choix = choix;
+    }
+
+    public Object[] getVotes() {
+        return votes;
+    }
+
+    public void setVotes(Object[] votes) {
+        this.votes = votes;
+    }
 }

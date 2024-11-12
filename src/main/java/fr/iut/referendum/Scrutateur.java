@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class Scrutateur {
 
-    private final BigInteger[] pk;
+    final BigInteger[] pk;
     private final BigInteger sk;
 
     public Scrutateur() {
@@ -85,7 +85,7 @@ public class Scrutateur {
         System.out.println("Serveur réponse" + reader.readLine());
     }
 
-    private void envoyeClePubliqueReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
+    void envoyeClePubliqueReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
         writer.println("CLE_PUBLIQUE_REFERENDUM");
         writer.println(pk[0]);  // p
         writer.println(pk[1]);  // g

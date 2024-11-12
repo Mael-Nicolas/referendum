@@ -8,8 +8,8 @@ import java.util.Scanner;
 
 public class Client {
     public int id;
-    private String login;
-    private String password;
+    String login;
+    String password;
 
     private static int idCounter = 1;
 

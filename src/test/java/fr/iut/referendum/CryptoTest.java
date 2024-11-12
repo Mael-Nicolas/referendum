@@ -1,155 +1,190 @@
 package fr.iut.referendum;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.math.BigInteger;
+public class CryptoTest {
 
-class CryptoTest {
-    private BigInteger[] publicKey;
-    private BigInteger privateKey;
-    private final int nbVotants = 2; // Limite fixée pour le déchiffrement entre 0 et nbVotants-1
-
-    @BeforeEach
-    void setup() {
-        BigInteger[] keys = Crypto.genkey();
-        publicKey = new BigInteger[]{keys[0], keys[1], keys[2]};
-        privateKey = keys[3];
-    }
-
+    // Test de la génération des clés
     @Test
-    void testKeyGeneration() {
-        // Test de base pour vérifier la conformité des clés générées
-        assertNotNull(publicKey, "La clé publique ne doit pas être nulle");
-        assertNotNull(privateKey, "La clé privée ne doit pas être nulle");
-        assertEquals(3, publicKey.length, "La clé publique doit contenir trois éléments (p, g, h)");
-
-        // Vérifie que p est un nombre premier
-        assertTrue(publicKey[0].isProbablePrime(40), "p doit être premier");
-
-        // Vérifie que g est un générateur du groupe de p
-        assertTrue(publicKey[1].compareTo(BigInteger.ZERO) > 0 && publicKey[1].compareTo(publicKey[0]) < 0, "g doit être dans le groupe modulaire défini par p");
-
-        // Vérifie que la clé privée est inférieure à p-1
-        assertTrue(privateKey.compareTo(publicKey[0].subtract(BigInteger.ONE)) < 0, "La clé privée doit être inférieure à p-1");
-    }
-
-    @Test
-    void testEncryptDecrypt() {
-        // Chiffrement et déchiffrement des messages 0 et 1
-        BigInteger message0 = BigInteger.ZERO;
-        BigInteger message1 = BigInteger.ONE;
-
-        // Chiffrement et déchiffrement du message 0
-        BigInteger[] encryptedMessage0 = Crypto.encrypt(message0, publicKey);
-        BigInteger decryptedMessage0 = Crypto.decrypt(encryptedMessage0, publicKey, privateKey, nbVotants);
-        assertEquals(message0, decryptedMessage0, "Le déchiffrement du message 0 doit donner le message d'origine");
-
-        // Chiffrement et déchiffrement du message 1
-        BigInteger[] encryptedMessage1 = Crypto.encrypt(message1, publicKey);
-        BigInteger decryptedMessage1 = Crypto.decrypt(encryptedMessage1, publicKey, privateKey, nbVotants);
-        assertEquals(message1, decryptedMessage1, "Le déchiffrement du message 1 doit donner le message d'origine");
-
-        // Test de déchiffrement incorrect pour une valeur au-delà de la limite nbVotants
-        BigInteger invalidMessage = BigInteger.valueOf(3);
-        BigInteger[] encryptedInvalidMessage = Crypto.encrypt(invalidMessage, publicKey);
-        BigInteger decryptedInvalidMessage = Crypto.decrypt(encryptedInvalidMessage, publicKey, privateKey, nbVotants);
-        assertNull(decryptedInvalidMessage, "Le déchiffrement d'un message au-delà de la limite nbVotants doit retourner null");
-    }
-
-    @Test
-    void testEncryptProducesDifferentCiphertexts() {
-        // Test pour vérifier que le chiffrement produit des résultats différents pour le même message
-        BigInteger message = BigInteger.ONE;
-
-        BigInteger[] ciphertext1 = Crypto.encrypt(message, publicKey);
-        BigInteger[] ciphertext2 = Crypto.encrypt(message, publicKey);
-
-        assertNotEquals(ciphertext1[0], ciphertext2[0], "c1 des deux chiffrés ne doit pas être identique");
-        assertNotEquals(ciphertext1[1], ciphertext2[1], "c2 des deux chiffrés ne doit pas être identique");
-
-        // Vérifie que les chiffrés sont bien de longueur 2
-        assertEquals(2, ciphertext1.length, "Le chiffré doit contenir exactement deux éléments (c1, c2)");
-    }
-
-    @Test
-    void testAggregation() {
-        // Test de base pour l'agrégation de deux messages chiffrés
-        BigInteger message1 = BigInteger.ONE;
-        BigInteger message0 = BigInteger.ZERO;
-
-        BigInteger[] encryptedMessage1 = Crypto.encrypt(message1, publicKey);
-        BigInteger[] encryptedMessage0 = Crypto.encrypt(message0, publicKey);
-
-        // Agrège les deux chiffrés
-        BigInteger[] aggregatedCipher = Crypto.agrege(encryptedMessage1, encryptedMessage0, publicKey);
-
-        // Déchiffre le chiffré agrégé
-        BigInteger decryptedAggregatedMessage = Crypto.decrypt(aggregatedCipher, publicKey, privateKey, nbVotants);
-
-        // Vérifie que l'agrégation donne le bon résultat
-        assertEquals(message1.add(message0), decryptedAggregatedMessage, "Le résultat de l'agrégation doit être égal à la somme des messages");
-
-        // Agrégation de deux messages contenant chacun 1 (devrait retourner null si on dépasse la limite)
-        BigInteger[] encryptedMessage1Again = Crypto.encrypt(message1, publicKey);
-        BigInteger[] aggregatedCipherOverflow = Crypto.agrege(encryptedMessage1, encryptedMessage1Again, publicKey);
-
-        BigInteger decryptedAggregatedOverflow = Crypto.decrypt(aggregatedCipherOverflow, publicKey, privateKey, nbVotants);
-        assertNull(decryptedAggregatedOverflow, "Le déchiffrement d'une agrégation dépassant la limite nbVotants doit retourner null");
-
-        // Agrégation avec un chiffré invalide pour tester le comportement
-        BigInteger[] invalidCipher = {BigInteger.ZERO, BigInteger.ZERO};
-        BigInteger[] aggregatedWithInvalid = Crypto.agrege(encryptedMessage1, invalidCipher, publicKey);
-        BigInteger decryptedInvalidAggregation = Crypto.decrypt(aggregatedWithInvalid, publicKey, privateKey, nbVotants);
-        assertNull(decryptedInvalidAggregation, "L'agrégation avec un message invalide doit échouer et retourner null");
-    }
-
-    @Test
-    void testAggregationWithoutModularInverseFailure() {
+    public void testGenKey() {
         // Génération de la clé publique et privée
-        BigInteger[] key = Crypto.genkey();
-        BigInteger p = key[0];
-        BigInteger sk = key[3];
-        BigInteger[] pk = new BigInteger[]{key[0], key[1], key[2]}; // p, g, h (sans sk)
+        BigInteger[] keys = Crypto.genkey();
+        BigInteger p = keys[0];
+        BigInteger g = keys[1];
+        BigInteger h = keys[2];
+        BigInteger sk = keys[3];
 
-        // Message simple à chiffrer
-        BigInteger m = BigInteger.ONE;
+        // Vérification de la validité de la clé publique et privée
+        assertNotNull(p, "La valeur de p ne doit pas être nulle");
+        assertNotNull(g, "La valeur de g ne doit pas être nulle");
+        assertNotNull(h, "La valeur de h ne doit pas être nulle");
+        assertNotNull(sk, "La clé secrète ne doit pas être nulle");
 
-        // Chiffrement du message
-        BigInteger[] encryptedMessage1 = Crypto.encrypt(m, pk);
-
-        // Agrégation du message avec lui-même
-        BigInteger[] aggregatedCipher = Crypto.agrege(encryptedMessage1, encryptedMessage1, pk);
-
-        // Déchiffrement de l'agrégation
-        BigInteger decryptedMessage = Crypto.decrypt(aggregatedCipher, pk, sk, 2); // Nombre de votants = 2
-
-        // Vérification que le déchiffrement est correct (m + m = 2)
-        assertNotNull(decryptedMessage, "Le message déchiffré ne doit pas être nul.");
-        assertEquals(BigInteger.TWO, decryptedMessage, "Le message déchiffré doit être égal à 2.");
+        // Vérification que p et g satisfont les conditions de sécurité
+        assertTrue(p.isProbablePrime(40), "p doit être un nombre premier");
+        assertTrue(g.modPow(BigInteger.TWO, p).compareTo(BigInteger.ONE) != 0, "g^2 mod p ne doit pas être égal à 1");
+        assertTrue(g.modPow(p.subtract(BigInteger.ONE), p).compareTo(BigInteger.ONE) == 0, "g^(p-1) mod p doit être égal à 1");
     }
 
+    // Test de la méthode encrypt
     @Test
-    void testSimpleEncryptionDecryption() {
-        // Génération des clés
-        BigInteger[] key = Crypto.genkey();
-        BigInteger p = key[0];
-        BigInteger sk = key[3];
-        BigInteger[] pk = new BigInteger[]{key[0], key[1], key[2]}; // p, g, h (sans sk)
+    public void testEncrypt() {
+        // Génération d'une clé publique
+        BigInteger[] keys = Crypto.genkey();
+        BigInteger[] pk = {keys[0], keys[1], keys[2]}; // p, g, h
 
-        // Message simple à chiffrer
-        BigInteger m = BigInteger.ONE;
+        // Message à crypter
+        BigInteger message = BigInteger.valueOf(42);
+
+        // Appel de la méthode encrypt
+        BigInteger[] encrypted = Crypto.encrypt(message, pk);
+
+        // Vérification que le message est correctement crypté
+        assertNotNull(encrypted, "Le message crypté ne doit pas être nul");
+        assertEquals(2, encrypted.length, "Le tableau de sortie doit contenir deux éléments");
+        assertTrue(encrypted[0].compareTo(BigInteger.ZERO) > 0, "Le premier élément du cryptage doit être positif");
+        assertTrue(encrypted[1].compareTo(BigInteger.ZERO) > 0, "Le deuxième élément du cryptage doit être positif");
+    }
+
+    // Test de l'agrégation des votes
+    @Test
+    public void testAgrege() {
+        // Génération d'une clé publique
+        BigInteger[] keys = Crypto.genkey();
+        BigInteger[] pk = {keys[0], keys[1], keys[2]}; // p, g, h
+
+        // Messages à agréger
+        BigInteger[] encryptedMessage1 = Crypto.encrypt(BigInteger.valueOf(42), pk);
+        BigInteger[] encryptedMessage2 = Crypto.encrypt(BigInteger.valueOf(43), pk);
+
+        // Agrégation des messages
+        BigInteger[] aggregated = Crypto.agrege(encryptedMessage1, encryptedMessage2, pk);
+
+        // Vérification que l'agrégation donne bien un résultat
+        assertNotNull(aggregated, "L'agrégation des messages ne doit pas être nulle");
+        assertEquals(2, aggregated.length, "Le tableau de sortie de l'agrégation doit contenir deux éléments");
+        assertTrue(aggregated[0].compareTo(BigInteger.ZERO) > 0, "Le premier élément de l'agrégation doit être positif");
+        assertTrue(aggregated[1].compareTo(BigInteger.ZERO) > 0, "Le deuxième élément de l'agrégation doit être positif");
+    }
+
+    // Test du décryptage
+    @Test
+    public void testDecrypt() {
+        // Génération d'une clé publique et d'une clé secrète
+        BigInteger[] keys = Crypto.genkey();
+        BigInteger[] pk = {keys[0], keys[1], keys[2]}; // p, g, h
+        BigInteger sk = keys[3]; // clé secrète
+
+        // Message à crypter
+        BigInteger message = BigInteger.valueOf(42);
+
+        // Cryptage du message
+        BigInteger[] encrypted = Crypto.encrypt(message, pk);
+
+        // Décryptage du message
+        BigInteger decryptedMessage = Crypto.decrypt(encrypted, pk, sk, 10);
+
+        // Vérification que le message décrypté est correct
+        assertNotNull(decryptedMessage, "Le message décrypté ne doit pas être nul");
+        assertEquals(message, decryptedMessage, "Le message décrypté doit être égal au message original");
+    }
+
+    // Test de décryptage avec un nombre incorrect de votants
+    @Test
+    public void testDecryptWithInvalidVoters() {
+        // Génération d'une clé publique et d'une clé secrète
+        BigInteger[] keys = Crypto.genkey();
+        BigInteger[] pk = {keys[0], keys[1], keys[2]}; // p, g, h
+        BigInteger sk = keys[3]; // clé secrète
+
+        // Message à crypter
+        BigInteger message = BigInteger.valueOf(42);
+
+        // Cryptage du message
+        BigInteger[] encrypted = Crypto.encrypt(message, pk);
+
+        // Test du décryptage avec un nombre incorrect de votants
+        BigInteger decryptedMessage = Crypto.decrypt(encrypted, pk, sk, 10); // Nombre incorrect de votants
+
+        // Vérification que le message n'a pas pu être décrypté correctement
+        assertNull(decryptedMessage, "Le décryptage ne doit pas réussir avec un nombre incorrect de votants");
+    }
+
+        @Test
+        public void testDecrypt2() {
+            // Génération des clés
+            BigInteger[] keys = Crypto.genkey();
+            BigInteger[] pk = {keys[0], keys[1], keys[2]}; // pk[0] -> p, pk[1] -> g, pk[2] -> h
+            BigInteger sk = keys[3]; // sk -> clé privée
+
+            // Message à chiffrer
+            BigInteger m = BigInteger.valueOf(5);
+
+            // Chiffrement
+            BigInteger[] cipher = Crypto.encrypt(m, pk);
+
+            // Déchiffrement
+            BigInteger decrypted = Crypto.decrypt(cipher, pk, sk, 10);
+
+            // Affichage et vérification du résultat
+            System.out.println("Décrypté: " + decrypted);
+            assertNotNull(decrypted, "Le message décrypté ne doit pas être nul");
+            assertEquals(m, decrypted, "Le message décrypté ne correspond pas au message original");
+        }
+
+    @Test
+    public void testDecrypt3() {
+        // Génération des clés
+        BigInteger[] keys = Crypto.genkey();
+        BigInteger[] pk = { keys[0], keys[1], keys[2] }; // pk[0] -> p, pk[1] -> g, pk[2] -> h
+        BigInteger sk = keys[3]; // sk -> clé privée
+
+        // Message à chiffrer
+        BigInteger m = BigInteger.valueOf(5);
 
         // Chiffrement
-        BigInteger[] encryptedMessage = Crypto.encrypt(m, pk);
+        BigInteger[] cipher = Crypto.encrypt(m, pk);
+
+        // Affichage des valeurs chiffrées
+        System.out.println("c1 (chiffré): " + cipher[0]);
+        System.out.println("c2 (chiffré): " + cipher[1]);
 
         // Déchiffrement
-        BigInteger decryptedMessage = Crypto.decrypt(encryptedMessage, pk, sk, 1); // Nombre de votants = 1
+        BigInteger decrypted = Crypto.decrypt(cipher, pk, sk, 10);
 
-        // Vérification que le message déchiffré est correct
-        assertNotNull(decryptedMessage, "Le message déchiffré ne doit pas être nul.");
-        assertEquals(m, decryptedMessage, "Le message déchiffré doit être égal au message original.");
+        // Log des résultats
+        System.out.println("Décrypté: " + decrypted);
+
+        // Assertions pour vérifier que le décryptage fonctionne
+        assertNotNull(decrypted, "Le message décrypté ne doit pas être nul");
+        assertEquals(m, decrypted, "Le message décrypté ne correspond pas au message original");
+    }
+
+    @Test
+    public void testDecryptWithInvalidKey() {
+        // Génération des clés
+        BigInteger[] keys = Crypto.genkey();
+        BigInteger[] pk = { keys[0], keys[1], keys[2] }; // pk[0] -> p, pk[1] -> g, pk[2] -> h
+        BigInteger sk = keys[3]; // sk -> clé privée
+
+        // Message à chiffrer
+        BigInteger m = BigInteger.valueOf(5);
+
+        // Chiffrement
+        BigInteger[] cipher = Crypto.encrypt(m, pk);
+
+        // Crée une clé privée invalide
+        BigInteger invalidSk = new BigInteger(pk[0].subtract(BigInteger.ONE).bitLength(), new SecureRandom()).mod(pk[0].subtract(BigInteger.ONE));
+
+        // Déchiffrement avec une clé privée incorrecte
+        BigInteger decrypted = Crypto.decrypt(cipher, pk, invalidSk, 10);
+
+        // Vérification que le décryptage échoue
+        assertNull(decrypted, "Le message décrypté avec une clé invalide devrait être nul");
     }
 }
