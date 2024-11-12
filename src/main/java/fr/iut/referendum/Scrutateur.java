@@ -18,6 +18,9 @@ public class Scrutateur {
         sk = tab[3];
     }
 
+    public BigInteger[] getPk() {
+        return pk;
+    }
 
     public String dechiffrer(BigInteger[] agrege, int nbVotants) {
         BigInteger resultat = Crypto.decrypt(agrege, pk, sk, nbVotants);
@@ -105,7 +108,4 @@ public class Scrutateur {
         }
     }
 
-    public BigInteger[] getPk() {
-        return pk;
-    }
 }
