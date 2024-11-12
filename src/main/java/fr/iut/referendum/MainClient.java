@@ -2,7 +2,7 @@ package fr.iut.referendum;
 
 public class MainClient {
     public static void main(String[] args) {
-        String hostname = "Localhost"; // Localhost ou 109.176.197.88 serv killian
+        String hostname = "localhost";
         int port = 3390;
 
         Client c1 = new Client("bonsc", "12345678"); // Modif pour voter (Login)

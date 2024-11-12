@@ -55,7 +55,6 @@ public abstract class Crypto {
         System.out.println("sk: " + sk);
         System.out.println("p: " + p);
         System.out.println("g: " + g);
-        //System.out.println("nbVotants: " + nbVotants);
 
         BigInteger M = c2.multiply(c1.modPow(sk, p).modInverse(p)).mod(p);   // M = v × (u^x)^−1 mod p
 
@@ -63,9 +62,7 @@ public abstract class Crypto {
         System.out.println("M: " + M);
 
         BigInteger B = BigInteger.valueOf(nbVotants);
-        for (BigInteger m = BigInteger.ZERO; m.compareTo(B) < 0; m = m.add(BigInteger.ONE)) {
-            //System.out.println(m);
-            //System.out.println(g.modPow(m, p));
+        for (BigInteger m = BigInteger.ZERO; m.compareTo(B) <= 0; m = m.add(BigInteger.ONE)) {
             if ((g.modPow(m, p)).equals(M)) {
                 System.out.println("Message décrypté: " + m);
                 return m;

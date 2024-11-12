@@ -43,7 +43,7 @@ public class ServeurTest {
 
         // Vérifier que le nombre de votants a été mis à jour et que le vote a été agrégué
         assertEquals(1, r1.getNbVotants(), "Le nombre de votants doit être 1 après le vote");
-        assertArrayEquals(vote, r1.getVotes(), "Les votes doivent correspondre à l'agrégation");
+        assertArrayEquals(vote, r1.getVotesAgrege(), "Les votes doivent correspondre à l'agrégation");
     }
 
     @Test

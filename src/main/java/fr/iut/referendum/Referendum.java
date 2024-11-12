@@ -14,6 +14,39 @@ public class Referendum {
     private boolean open = false;
 
     private static int idCounter = 1;
+    private Object[] votes;
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public void setNbVotants(int nbVotants) {
+        this.nbVotants = nbVotants;
+    }
+
+    public void setDateFin(Date dateFin) {
+        this.dateFin = dateFin;
+    }
+
+    public void setVotesAgrege(BigInteger[] votesAgrege) {
+        this.votesAgrege = votesAgrege;
+    }
+
+    public BigInteger[] getPk() {
+        return pk;
+    }
+
+    public static int getIdCounter() {
+        return idCounter;
+    }
+
+    public static void setIdCounter(int idCounter) {
+        Referendum.idCounter = idCounter;
+    }
 
     public Referendum(String nom, Date dateFin) {
         this.id = idCounter++;
@@ -114,7 +147,7 @@ public class Referendum {
                 return 30;
             case 2:
                 if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
-                    return 29; // Leap year
+                    return 29; // Année bisextile
                 } else {
                     return 28;
                 }
@@ -159,4 +192,11 @@ public class Referendum {
     }
 
 
+    public Object[] getVotes() {
+        return votes;
+    }
+
+    public void setVotes(Object[] votes) {
+        this.votes = votes;
+    }
 }
