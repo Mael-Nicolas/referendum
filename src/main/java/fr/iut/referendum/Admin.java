@@ -53,7 +53,7 @@ public class Admin {
         }
     }
 
-    private static void infoReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
+    public static void infoReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
         writer.println("GET_SERVER_INFO");
         String response;
         while (!(response = reader.readLine()).isEmpty()) {
@@ -61,7 +61,7 @@ public class Admin {
         }
     }
 
-    private static void newReferendum(PrintWriter writer, Scanner clavier, BufferedReader reader) throws IOException {
+    public static void newReferendum(PrintWriter writer, Scanner clavier, BufferedReader reader) throws IOException {
         writer.println("NEW_REFERENDUM");
 
         System.out.println("Nom du referendum : ");
@@ -74,7 +74,7 @@ public class Admin {
         System.out.println("Server response: " + reader.readLine());
     }
 
-    private static void envoyeDate(PrintWriter writer, Scanner clavier) {
+    public static void envoyeDate(PrintWriter writer, Scanner clavier) {
         System.out.println("Annee : ");
         String annee = clavier.nextLine();
         while (!annee.matches("[0-9]+")|| Integer.parseInt(annee) < 2000 || Integer.parseInt(annee) > 2100) {
@@ -108,13 +108,13 @@ public class Admin {
         writer.println(heure);
     }
 
-    private static int getMaxDaysInMonth(int year, int month) {
+    public static int getMaxDaysInMonth(int year, int month) {
         switch (month) {
             case 4: case 6: case 9: case 11:
                 return 30;
             case 2:
                 if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
-                    return 29; // Leap year
+                    return 29; // année bisextile
                 } else {
                     return 28;
                 }

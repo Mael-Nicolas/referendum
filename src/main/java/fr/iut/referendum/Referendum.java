@@ -102,7 +102,7 @@ public class Referendum {
                 " - Temps restant : " + tempRestant();
     }
 
-    private static int getMaxDaysInMonth(int year, int month) {
+    public int getMaxDaysInMonth(int year, int month) {
         switch (month) {
             case 4: case 6: case 9: case 11:
                 return 30;

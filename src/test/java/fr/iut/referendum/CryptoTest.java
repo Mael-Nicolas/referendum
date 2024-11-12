@@ -2,6 +2,7 @@ package fr.iut.referendum;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigInteger;
@@ -103,5 +104,52 @@ class CryptoTest {
         BigInteger[] aggregatedWithInvalid = Crypto.agrege(encryptedMessage1, invalidCipher, publicKey);
         BigInteger decryptedInvalidAggregation = Crypto.decrypt(aggregatedWithInvalid, publicKey, privateKey, nbVotants);
         assertNull(decryptedInvalidAggregation, "L'agrégation avec un message invalide doit échouer et retourner null");
+    }
+
+    @Test
+    void testAggregationWithoutModularInverseFailure() {
+        // Génération de la clé publique et privée
+        BigInteger[] key = Crypto.genkey();
+        BigInteger p = key[0];
+        BigInteger sk = key[3];
+        BigInteger[] pk = new BigInteger[]{key[0], key[1], key[2]}; // p, g, h (sans sk)
+
+        // Message simple à chiffrer
+        BigInteger m = BigInteger.ONE;
+
+        // Chiffrement du message
+        BigInteger[] encryptedMessage1 = Crypto.encrypt(m, pk);
+
+        // Agrégation du message avec lui-même
+        BigInteger[] aggregatedCipher = Crypto.agrege(encryptedMessage1, encryptedMessage1, pk);
+
+        // Déchiffrement de l'agrégation
+        BigInteger decryptedMessage = Crypto.decrypt(aggregatedCipher, pk, sk, 2); // Nombre de votants = 2
+
+        // Vérification que le déchiffrement est correct (m + m = 2)
+        assertNotNull(decryptedMessage, "Le message déchiffré ne doit pas être nul.");
+        assertEquals(BigInteger.TWO, decryptedMessage, "Le message déchiffré doit être égal à 2.");
+    }
+
+    @Test
+    void testSimpleEncryptionDecryption() {
+        // Génération des clés
+        BigInteger[] key = Crypto.genkey();
+        BigInteger p = key[0];
+        BigInteger sk = key[3];
+        BigInteger[] pk = new BigInteger[]{key[0], key[1], key[2]}; // p, g, h (sans sk)
+
+        // Message simple à chiffrer
+        BigInteger m = BigInteger.ONE;
+
+        // Chiffrement
+        BigInteger[] encryptedMessage = Crypto.encrypt(m, pk);
+
+        // Déchiffrement
+        BigInteger decryptedMessage = Crypto.decrypt(encryptedMessage, pk, sk, 1); // Nombre de votants = 1
+
+        // Vérification que le message déchiffré est correct
+        assertNotNull(decryptedMessage, "Le message déchiffré ne doit pas être nul.");
+        assertEquals(m, decryptedMessage, "Le message déchiffré doit être égal au message original.");
     }
 }

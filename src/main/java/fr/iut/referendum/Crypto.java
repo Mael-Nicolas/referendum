@@ -33,7 +33,7 @@ public abstract class Crypto {
         }
         BigInteger sk = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE));
         BigInteger h = g.modPow(sk, p);
-        return new BigInteger[]{p,g,h,sk};
+        return new BigInteger[]{p, g, h, sk};
     }
 
     public static BigInteger[] agrege(BigInteger[] c1, BigInteger[] c2, BigInteger[] pk) {
@@ -49,11 +49,6 @@ public abstract class Crypto {
         BigInteger p = pk[0];
         BigInteger g = pk[1];
 
-        BigInteger inversible = c1.modPow(sk, p);
-        if (!inversible.gcd(p).equals(BigInteger.ONE)) {
-            return null;
-        }
-
         BigInteger M = c2.multiply(c1.modPow(sk, p).modInverse(p)).mod(p);   // M = v × (u^x)^−1 mod p
         BigInteger B = BigInteger.valueOf(nbVotants);
         for (BigInteger m = BigInteger.ZERO; m.compareTo(B) < 0; m = m.add(BigInteger.ONE)) {
@@ -63,5 +58,4 @@ public abstract class Crypto {
         }
         return null;
     }
-
 }
