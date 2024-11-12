@@ -5,6 +5,8 @@ import java.math.BigInteger;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Formattable;
+import java.util.List;
 
 public class ServerThread extends Thread {
     private Socket socket;
@@ -32,6 +34,12 @@ public class ServerThread extends Thread {
                 else if ("VOTER_REFERENDUM".equals(text)) {
                     Voter_Referendum(writer, reader);
                 }
+                else if ("RESULTAT_REFERENDUM".equals(text)) {
+                    Resultat_Referendum(writer, reader);
+                }
+                else if ("CLE_PUBLIQUE_REFERENDUM".equals(text)) {
+                    cle_publique_referendum(writer, reader);
+                }
                 else {
                     writer.println();
                 }
@@ -39,6 +47,41 @@ public class ServerThread extends Thread {
         } catch (IOException ex) {
             ex.getMessage();
         }
+    }
+
+    private void cle_publique_referendum(PrintWriter writer, BufferedReader reader) throws IOException {
+        BigInteger p = new BigInteger(reader.readLine());
+        BigInteger q = new BigInteger(reader.readLine());
+        BigInteger h = new BigInteger(reader.readLine());
+        BigInteger[] pk = {p, q, h};
+        List<Referendum> referendums = serveur.getReferendums();
+        for (Referendum referendum : referendums) {
+            referendum.setPk(pk);
+            referendum.setOpen(true);
+        }
+    }
+
+    private void Resultat_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {
+        int idReferendum = Integer.parseInt(reader.readLine());
+        Referendum referendum = serveur.getReferendum(idReferendum);
+
+        while (referendum == null || !referendum.fini()) {
+            writer.println("Erreur");
+            idReferendum = Integer.parseInt(reader.readLine());
+            referendum = serveur.getReferendum(idReferendum);
+        }
+        writer.println("Ok");
+
+        // envoie du resultat agregé
+        BigInteger[] VotesAgreget = referendum.getVotesAgrege();
+        writer.println(VotesAgreget[0]);
+        writer.println(VotesAgreget[1]);
+        writer.println(referendum.getNbVotants());
+        // reception du resultat (oui ou non)
+        String resultatReferendum = reader.readLine();
+        referendum.setResultat(resultatReferendum);
+        System.out.println("Resultat du referendum : " + resultatReferendum);
+        writer.println("Resultat enregistré");
     }
 
     private void Get_Server_Info(PrintWriter writer) {
@@ -69,7 +112,7 @@ public class ServerThread extends Thread {
         Referendum referendum = serveur.getReferendum(idReferendum);
 
         // vérif si le referendum existe et si il est fini
-        while (referendum == null || referendum.fini()) {
+        while (referendum == null || referendum.fini() || !referendum.isOpen()) {
             writer.println("Erreur");
             idReferendum = Integer.parseInt(reader.readLine());
             referendum = serveur.getReferendum(idReferendum);
@@ -85,6 +128,7 @@ public class ServerThread extends Thread {
         BigInteger c1 = new BigInteger(reader.readLine());
         BigInteger c2 = new BigInteger(reader.readLine());
         BigInteger[] c = new BigInteger[]{c1,c2}; // choix crypté
+        referendum.setNbVotants(referendum.getNbVotants() + 1);
         serveur.clientAVote(referendum, c);
         writer.println("Vote enregistré");
     }

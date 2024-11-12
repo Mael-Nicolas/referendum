@@ -6,20 +6,18 @@ import java.util.*;
 public class Referendum {
     private int id;
     private String nom;
-    private ArrayList<String> choix;
     private int nbVotants;
     private Date dateFin;
     private BigInteger[] votesAgrege;
     private BigInteger[] pk;
+    private String resultat = "";
+    private boolean open = false;
 
     private static int idCounter = 1;
 
     public Referendum(String nom, Date dateFin) {
         this.id = idCounter++;
         this.nom = nom;
-        this.choix = new ArrayList<>();
-        this.choix.add("Oui");
-        this.choix.add("Non");
         this.dateFin = dateFin;
         this.nbVotants = 0;
         this.votesAgrege = new BigInteger[]{BigInteger.ZERO, BigInteger.ZERO};
@@ -30,16 +28,24 @@ public class Referendum {
         return nom;
     }
 
-    public ArrayList<String> getChoix() {
-        return choix;
-    }
-
     public int getId() {
         return id;
     }
 
     public Date getDateFin() {
         return dateFin;
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
+    public void setResultat(String resultat) {
+        this.resultat = resultat;
     }
 
     public String dateFinAffichage() {
@@ -56,6 +62,7 @@ public class Referendum {
     public String tempRestant() {
         Date dateNow = new Date();
         if (fini()) {
+            open = false;
             return "Terminé";
         }
         String result = "";
@@ -97,7 +104,7 @@ public class Referendum {
 
     @Override
     public String toString() {
-        return "Referendum [" + id + "] " + nom + " : " + choix + "\n" +
+        return "Referendum [" + id + "] " + nom + " : Oui ou Non" + "\n" +
                 " - Date de fin : " + dateFinAffichage() + "\n" +
                 " - Temps restant : " + tempRestant();
     }
@@ -136,4 +143,18 @@ public class Referendum {
     public BigInteger[] getVotesAgrege() {
         return votesAgrege;
     }
+
+    public void setPk(BigInteger[] pk) {
+        this.pk = pk;
+    }
+
+    public int getNbVotants() {
+        return nbVotants;
+    }
+
+    public void setNbVotants(int nbVotants) {
+        this.nbVotants = nbVotants;
+    }
+
+
 }
