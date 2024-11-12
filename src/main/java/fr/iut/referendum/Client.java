@@ -90,16 +90,17 @@ public class Client {
             System.out.println("Choix invalide");
             choix = clavier.nextLine();
         }
-        int choixint;
+        BigInteger choixint;
         if (choix.equals("Oui")) {
-            choixint = 1;
+            choixint = BigInteger.ONE;
         } else {
-            choixint = 0;
+            choixint = BigInteger.ZERO;
         }
         // cryptage
-        //BigInteger[] choixCrypter = Crypto.encrypt();
+        BigInteger[] choixCrypter = Crypto.encrypt(choixint, pk);
 
-        //writer.println(choixCrypter);
+        writer.println(choixCrypter[0]);
+        writer.println(choixCrypter[1]);
         writer.println(this.login);
 
         System.out.println("Server response: " + reader.readLine());

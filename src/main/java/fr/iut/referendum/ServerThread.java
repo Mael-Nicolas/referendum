@@ -82,9 +82,11 @@ public class ServerThread extends Thread {
         writer.println(clePublique[1]);
         writer.println(clePublique[2]);
         // Enregistrement du vote
-        int choixVote = Integer.parseInt(reader.readLine()); // choix crypté
+        BigInteger c1 = new BigInteger(reader.readLine());
+        BigInteger c2 = new BigInteger(reader.readLine());
+        BigInteger[] c = new BigInteger[]{c1,c2}; // choix crypté
         String loginClient = reader.readLine();
-        serveur.clientAVote(idReferendum, loginClient, choixVote);
+        //serveur.clientAVote(idReferendum, loginClient, c); // enregistrement du vote chiffré à faire
         writer.println("Vote enregistré");
         System.out.println(referendum.getIdClientvote());
     }
