@@ -157,4 +157,11 @@ public class Referendum {
     }
 
 
+    public Object[] getVotes() {
+        return votes;
+    }
+
+    public void setVotes(Object[] votes) {
+        this.votes = votes;
+    }
 }
