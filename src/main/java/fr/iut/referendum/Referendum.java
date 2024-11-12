@@ -14,6 +14,7 @@ public class Referendum {
     private boolean open = false;
 
     private static int idCounter = 1;
+    private Object[] votes;
 
     public Referendum(String nom, Date dateFin) {
         this.id = idCounter++;
@@ -115,7 +116,7 @@ public class Referendum {
                 return 30;
             case 2:
                 if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
-                    return 29; // Leap year
+                    return 29; // Année bisextile
                 } else {
                     return 28;
                 }
