@@ -10,7 +10,7 @@ public abstract class Crypto {
         BigInteger g = key[2];
         BigInteger p = key[0];
         BigInteger pk = key[3];
-        BigInteger k = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE)); // k < p-1
+        BigInteger k = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random)x.mod(p.subtract(BigInteger.ONE)); // k < p-1
         BigInteger c1 = g.modPow(k, p); // c1 = g^k mod p
         BigInteger c2 = g.modPow(m, p).multiply(pk.modPow(k, p)).mod(p); // c2 = g^m * publickey^k mod p
         return new BigInteger[]{c1, c2};
@@ -45,12 +45,14 @@ public abstract class Crypto {
         return new BigInteger[]{u, v};
     }
 
-    public static BigInteger decrypt(BigInteger[] c, BigInteger g, BigInteger p, BigInteger pk) {
+    public static BigInteger decrypt(BigInteger[] c, BigInteger[] pk, BigInteger sk) {
         BigInteger c1 = c[0];
         BigInteger c2 = c[1];
+        BigInteger p = pk[0];
+        BigInteger g = pk[1];
 
-        BigInteger M = c2.multiply(c1.modPow(pk, p).modInverse(p)).mod(p);   // M = v × (u^x)^−1 mod p
-        BigInteger B = BigInteger.TWO.pow(3000); // si le message peut être codé sur 3000 bits
+        BigInteger M = c2.multiply(c1.modPow(sk, p).modInverse(p)).mod(p);   // M = v × (u^x)^−1 mod p
+        BigInteger B = BigInteger.TWO; // si le message en clair est soit oui soit non (1 ou 0)
         for (BigInteger m = BigInteger.ZERO; m.compareTo(B) < 0; m = m.add(BigInteger.ONE)) {
             if ((g.modPow(m, p)).equals(M)) {
                 return m;
