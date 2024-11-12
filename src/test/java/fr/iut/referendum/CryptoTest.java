@@ -11,7 +11,7 @@ public class CryptoTest {
     @Test
     public void testKeyGeneration() throws ExecutionException, InterruptedException {
         // Génération de clé avec 1024 bits pour une exécution plus rapide
-        BigInteger[] key = Crypto.genkey(1024);
+        BigInteger[] key = Crypto.genkey();
 
         BigInteger p = key[0];
         BigInteger q = key[1];
@@ -35,7 +35,7 @@ public class CryptoTest {
     @Test
     public void testEncrypt() throws ExecutionException, InterruptedException {
         // Génération de clés
-        BigInteger[] key = Crypto.genkey(1024);
+        BigInteger[] key = Crypto.genkey();
         BigInteger p = key[0];
         BigInteger g = key[2];
         BigInteger h = key[3];
@@ -57,7 +57,7 @@ public class CryptoTest {
     @Test
     public void testEncryptConsistency() throws ExecutionException, InterruptedException {
         // Génération de clés
-        BigInteger[] key = Crypto.genkey(1024);
+        BigInteger[] key = Crypto.genkey();
         BigInteger p = key[0];
         BigInteger g = key[2];
         BigInteger h = key[3];
@@ -75,46 +75,9 @@ public class CryptoTest {
     }
 
     @Test
-    public void testKeyGenerationTime() throws ExecutionException, InterruptedException {
-        // Mesurer le temps de génération pour différentes tailles de clés
-        measureKeyGenTime(1024);
-        measureKeyGenTime(2048);
-        measureKeyGenTime(3072);
-    }
-
-    @Test
-    public void testInvalidKeySize() {
-        // Essai de génération de clé avec une taille de clé trop petite (par exemple 256 bits)
-        assertThrows(IllegalArgumentException.class, () -> {
-            Crypto.genkey(256);
-        }, "Une taille de clé trop petite devrait lancer une exception");
-    }
-
-    private void measureKeyGenTime(int nbBits) throws ExecutionException, InterruptedException {
-        // Démarrer le chronomètre
-        long startTime = System.nanoTime();
-
-        // Générer la clé
-        BigInteger[] key = Crypto.genkey(nbBits);
-
-        // Arrêter le chronomètre
-        long endTime = System.nanoTime();
-
-        // Calculer la durée en millisecondes
-        long durationInMillis = (endTime - startTime) / 1_000_000;
-
-        // Afficher la durée
-        System.out.println("Génération de clé pour " + nbBits + " bits a pris " + durationInMillis + " ms");
-
-        // Vérification basique que la clé est bien générée
-        assertNotNull(key, "La clé ne doit pas être nulle");
-        assertEquals(5, key.length, "Le tableau de clés doit avoir une longueur de 5");
-    }
-
-    @Test
     public void testKeyGenerationValidity() {
         // Test standard pour générer une clé de 1024 bits
-        BigInteger[] key = Crypto.genkey(1024);
+        BigInteger[] key = Crypto.genkey();
 
         BigInteger p = key[0];
         BigInteger q = key[1];
@@ -139,35 +102,16 @@ public class CryptoTest {
     }
 
     @Test
-    public void testKeyGenerationWithSmallBits() {
-        // Test pour une taille de clé inférieure à 512 bits, cela doit lever une exception
-        assertThrows(IllegalArgumentException.class, () -> Crypto.genkey(256), "La génération de clé avec moins de 512 bits doit lancer une exception");
-    }
-
-    @Test
-    public void testKeyGenerationWith512Bits() {
-        // Test pour la taille minimale acceptable (512 bits)
-        BigInteger[] key = Crypto.genkey(512);
-
-        BigInteger p = key[0];
-        BigInteger q = key[1];
-
-        // Vérification que p et q sont des nombres premiers
-        assertTrue(p.isProbablePrime(40), "p devrait être un nombre premier pour 512 bits");
-        assertTrue(q.isProbablePrime(40), "q devrait être un nombre premier pour 512 bits");
-    }
-
-    @Test
     public void testKeyGenerationMaxBits() {
-        BigInteger[] key = Crypto.genkey(3072);
+        BigInteger[] key = Crypto.genkey();
         assertNotNull(key, "La génération de clé pour 3072 bits doit fonctionner");
     }
 
     @Test
     public void testKeyGenerationConsistency() {
         // Vérifie que deux générations de clés avec les mêmes paramètres ne produisent pas les mêmes clés
-        BigInteger[] key1 = Crypto.genkey(1024);
-        BigInteger[] key2 = Crypto.genkey(1024);
+        BigInteger[] key1 = Crypto.genkey();
+        BigInteger[] key2 = Crypto.genkey();
 
         assertNotEquals(key1[0], key2[0], "Les clés générées (p) ne devraient pas être identiques");
         assertNotEquals(key1[4], key2[4], "Les clés privées générées (x) ne devraient pas être identiques");
@@ -176,7 +120,7 @@ public class CryptoTest {
     @Test
     public void testKeyElementsRange() {
         // Teste que les éléments de la clé générée sont dans les plages attendues
-        BigInteger[] key = Crypto.genkey(1024);
+        BigInteger[] key = Crypto.genkey();
 
         BigInteger p = key[0];
         BigInteger q = key[1];
@@ -197,7 +141,7 @@ public class CryptoTest {
     @Test
     public void testEncryptBasic() {
         // Génération de clés
-        BigInteger[] key = Crypto.genkey(1024);
+        BigInteger[] key = Crypto.genkey();
         BigInteger p = key[0];
         BigInteger g = key[2];
         BigInteger h = key[3];
@@ -219,7 +163,7 @@ public class CryptoTest {
     @Test
     public void testEncryptWithLargeMessage() {
         // Génération de clés
-        BigInteger[] key = Crypto.genkey(1024);
+        BigInteger[] key = Crypto.genkey();
         BigInteger p = key[0];
         BigInteger g = key[2];
         BigInteger h = key[3];
@@ -241,7 +185,7 @@ public class CryptoTest {
     @Test
     public void testEncryptWithZeroMessage() {
         // Génération de clés
-        BigInteger[] key = Crypto.genkey(1024);
+        BigInteger[] key = Crypto.genkey();
         BigInteger p = key[0];
         BigInteger g = key[2];
         BigInteger h = key[3];
@@ -258,5 +202,21 @@ public class CryptoTest {
         // Vérification que c1 et c2 sont dans Zp
         assertTrue(c1.compareTo(BigInteger.ZERO) > 0 && c1.compareTo(p) < 0, "c1 doit être dans Zp");
         assertTrue(c2.compareTo(BigInteger.ZERO) > 0 && c2.compareTo(p) < 0, "c2 doit être dans Zp");
+    }
+
+    @Test
+    void encrypt() {
+    }
+
+    @Test
+    void genkey() {
+    }
+
+    @Test
+    void agrege() {
+    }
+
+    @Test
+    void decrypt() {
     }
 }
