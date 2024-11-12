@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Client {
-    private int id;
+    public int id;
     private String login;
     private String password;
 
@@ -62,7 +62,7 @@ public class Client {
         }
     }
 
-    private void voterReferendum(PrintWriter writer, BufferedReader reader, Scanner clavier) throws IOException {
+    public void voterReferendum(PrintWriter writer, BufferedReader reader, Scanner clavier) throws IOException {
         infoReferendum(writer, reader);
 
         writer.println("VOTER_REFERENDUM");
@@ -101,7 +101,6 @@ public class Client {
 
         writer.println(choixCrypter[0]);
         writer.println(choixCrypter[1]);
-        writer.println(this.login);
 
         System.out.println("Server response: " + reader.readLine());
     }

@@ -6,33 +6,26 @@ import java.util.*;
 public class Referendum {
     private int id;
     private String nom;
-    private ArrayList<String> choix;
-    private Map<String,String> loginClientvote = new HashMap<String,String>();
+    private int nbVotants;
     private Date dateFin;
-    private int resultatAgrege;
+    private BigInteger[] votesAgrege;
     private BigInteger[] pk;
+    private String resultat = "";
+    private boolean open = false;
 
     private static int idCounter = 1;
 
     public Referendum(String nom, Date dateFin) {
         this.id = idCounter++;
         this.nom = nom;
-        this.choix = new ArrayList<>();
-        this.choix.add("Oui");
-        this.choix.add("Non");
         this.dateFin = dateFin;
+        this.nbVotants = 0;
+        this.votesAgrege = new BigInteger[]{BigInteger.ZERO, BigInteger.ZERO};
+        //this.pk = scrutateur.getPublicKey(); TODO
     }
 
     public String getNom() {
         return nom;
-    }
-
-    public ArrayList<String> getChoix() {
-        return choix;
-    }
-
-    public Map<String, String> getIdClientvote() {
-        return loginClientvote;
     }
 
     public int getId() {
@@ -41,6 +34,18 @@ public class Referendum {
 
     public Date getDateFin() {
         return dateFin;
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
+
+    public void setResultat(String resultat) {
+        this.resultat = resultat;
     }
 
     public String dateFinAffichage() {
@@ -57,6 +62,7 @@ public class Referendum {
     public String tempRestant() {
         Date dateNow = new Date();
         if (fini()) {
+            open = false;
             return "Terminé";
         }
         String result = "";
@@ -98,12 +104,12 @@ public class Referendum {
 
     @Override
     public String toString() {
-        return "Referendum [" + id + "] " + nom + " : " + choix + "\n" +
+        return "Referendum [" + id + "] " + nom + " : Oui ou Non" + "\n" +
                 " - Date de fin : " + dateFinAffichage() + "\n" +
                 " - Temps restant : " + tempRestant();
     }
 
-    private static int getMaxDaysInMonth(int year, int month) {
+    public int getMaxDaysInMonth(int year, int month) {
         switch (month) {
             case 4: case 6: case 9: case 11:
                 return 30;
@@ -118,18 +124,37 @@ public class Referendum {
         }
     }
 
-    /*
-    * Renvoie le resultat du referendum s'il est terminé
-    * retourne 0 pour le choix 0
-    * retourne 1 pour le choix 1
-    * Sinon renvoie -1 (referendum non terminé)
-    */
-
     public int getNbVotes() {
-        return loginClientvote.size();
+        return nbVotants;
+    }
+
+    public void ajouterVotant() {
+        nbVotants++;
     }
 
     public BigInteger[] getClePublique() {
         return pk;
     }
+
+    public void agregeVote(BigInteger[] c) {
+        votesAgrege = Crypto.agrege(votesAgrege, c, pk);
+    }
+
+    public BigInteger[] getVotesAgrege() {
+        return votesAgrege;
+    }
+
+    public void setPk(BigInteger[] pk) {
+        this.pk = pk;
+    }
+
+    public int getNbVotants() {
+        return nbVotants;
+    }
+
+    public void setNbVotants(int nbVotants) {
+        this.nbVotants = nbVotants;
+    }
+
+
 }

@@ -21,7 +21,7 @@ public abstract class Crypto {
         BigInteger p;
         BigInteger q;
         do {
-            q = new BigInteger(3072, tauxPremier, random); // q premier
+            q = new BigInteger(512, tauxPremier, random); // q premier
             p = q.multiply(BigInteger.valueOf(2)).add(BigInteger.ONE); // p = 2q + 1
         } while (!p.isProbablePrime(tauxPremier)); // p premier
         BigInteger g;
@@ -33,7 +33,7 @@ public abstract class Crypto {
         }
         BigInteger sk = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE));
         BigInteger h = g.modPow(sk, p);
-        return new BigInteger[]{p,g,h,sk};
+        return new BigInteger[]{p, g, h, sk};
     }
 
     public static BigInteger[] agrege(BigInteger[] c1, BigInteger[] c2, BigInteger[] pk) {
@@ -56,8 +56,6 @@ public abstract class Crypto {
                 return m;
             }
         }
-
         return null;
     }
-
 }
