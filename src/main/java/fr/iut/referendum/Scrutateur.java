@@ -108,7 +108,4 @@ public class Scrutateur {
         }
     }
 
-    public BigInteger[] getPk() {
-        return pk;
-    }
 }
