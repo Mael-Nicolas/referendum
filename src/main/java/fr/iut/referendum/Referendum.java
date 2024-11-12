@@ -1,5 +1,6 @@
 package fr.iut.referendum;
 
+import java.math.BigInteger;
 import java.util.*;
 
 public class Referendum {
@@ -8,6 +9,8 @@ public class Referendum {
     private ArrayList<String> choix;
     private Map<String,String> loginClientvote = new HashMap<String,String>();
     private Date dateFin;
+    private int resultatAgrege;
+    private BigInteger[] pk;
 
     private static int idCounter = 1;
 
@@ -120,16 +123,13 @@ public class Referendum {
     * retourne 0 pour le choix 0
     * retourne 1 pour le choix 1
     * Sinon renvoie -1 (referendum non terminé)
-     */
-    public int getResultat(int nb) {
-        if (tempRestant().equals("Terminé")) {
-            if (loginClientvote.size()/2 > nb) {
-                return 0;
-            }
-            else {
-                return 1;
-            }
-        }
-        return -1;
+    */
+
+    public int getNbVotes() {
+        return loginClientvote.size();
+    }
+
+    public BigInteger[] getClePublique() {
+        return pk;
     }
 }

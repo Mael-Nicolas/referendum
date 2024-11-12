@@ -1,6 +1,7 @@
 package fr.iut.referendum;
 
 import java.io.*;
+import java.math.BigInteger;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,6 +68,7 @@ public class ServerThread extends Thread {
         int idReferendum = Integer.parseInt(reader.readLine());
         Referendum referendum = serveur.getReferendum(idReferendum);
 
+        // vérif si le referendum existe et si il est fini
         while (referendum == null || referendum.fini()) {
             writer.println("Erreur");
             idReferendum = Integer.parseInt(reader.readLine());
@@ -74,7 +76,13 @@ public class ServerThread extends Thread {
         }
         writer.println("Ok");
 
-        String choixVote = reader.readLine();
+        // Envoi Clé publique du referendum
+        BigInteger[] clePublique = referendum.getClePublique();
+        writer.println(clePublique[0]);
+        writer.println(clePublique[1]);
+        writer.println(clePublique[2]);
+        // Enregistrement du vote
+        int choixVote = Integer.parseInt(reader.readLine()); // choix crypté
         String loginClient = reader.readLine();
         serveur.clientAVote(idReferendum, loginClient, choixVote);
         writer.println("Vote enregistré");

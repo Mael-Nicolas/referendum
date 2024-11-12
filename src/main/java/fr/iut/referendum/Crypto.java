@@ -36,9 +36,10 @@ public abstract class Crypto {
         return new BigInteger[]{p, q, g, pk, sk};
     }
 
-    public static BigInteger[] agrege(BigInteger[] c1, BigInteger[] c2, BigInteger pk) {
-        BigInteger u = c1[0].multiply(c2[0]).mod(pk);
-        BigInteger v = c1[1].multiply(c2[1]).mod(pk);
+    public static BigInteger[] agrege(BigInteger[] c1, BigInteger[] c2, BigInteger[] pk) {
+        BigInteger p = pk[0];
+        BigInteger u = c1[0].multiply(c2[0]).mod(p);
+        BigInteger v = c1[1].multiply(c2[1]).mod(p);
         return new BigInteger[]{u, v};
     }
 
