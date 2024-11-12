@@ -46,6 +46,7 @@ public class Client {
 
             System.out.println("Pour obtenir les informations des refrendum, tapez info");
             System.out.println("Pour voter pour un referundum, tapez voter");
+            System.out.println("Pour obtenir le résultat d'un referendum, tapez resultat");
             System.out.println("Pour quitter, tapez exit");
 
             Scanner clavier = new Scanner(System.in);
@@ -61,6 +62,8 @@ public class Client {
                 }
                 else if (s.equals("voter")) {
                     voterReferendum(writer, reader, clavier);
+                } else if (s.equals("resultat")){
+                    resultatReferendum(writer, clavier, reader);
                 }
             }
         } catch (UnknownHostException ex) {
@@ -68,6 +71,19 @@ public class Client {
         } catch (IOException ex) {
             System.out.println("I/O error: " + ex.getMessage());
         }
+    }
+
+    private static void resultatReferendum(PrintWriter writer, Scanner clavier, BufferedReader reader) throws IOException {
+        writer.println("RESULTAT_CLIENT_REFERENDUM");
+        System.out.println("Choisir ID du referendum : ");
+        String idReferendum = clavier.nextLine();
+        writer.println(Integer.parseInt(idReferendum));
+        while (!idReferendum.matches("[0-9]+") || Integer.parseInt(idReferendum) <= 0 || reader.readLine().equals("Erreur")) {
+            System.out.println("Choix invalide");
+            idReferendum = clavier.nextLine();
+            writer.println(Integer.parseInt(idReferendum));
+        }
+        System.out.println("Server response: " + reader.readLine());
     }
 
     public void infoReferendum(PrintWriter writer, BufferedReader reader) throws IOException {

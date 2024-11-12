@@ -18,9 +18,6 @@ public class Scrutateur {
         sk = tab[3];
     }
 
-    public BigInteger[] getPk() {
-        return pk;
-    }
 
     public String dechiffrer(BigInteger[] agrege, int nbVotants) {
         BigInteger resultat = Crypto.decrypt(agrege, pk, sk, nbVotants);
@@ -43,6 +40,8 @@ public class Scrutateur {
              BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
 
             System.out.println("Pour obtenir les informations des refrendum, tapez info");
+            System.out.println("Pour obtenir le résultat d'un referendum, tapez resultat");
+            System.out.println("Pour envoyer la clé publique, tapez envoyePK");
             System.out.println("Pour quitter, tapez exit");
 
             Scanner clavier = new Scanner(System.in);
@@ -59,7 +58,7 @@ public class Scrutateur {
                 else if (s.equals("resultat")) {
                     resultatReferendum(writer, reader, clavier);
                 }
-                else if (s.equals("envoyeClePublique")) {
+                else if (s.equals("envoyePK")) {
                     envoyeClePubliqueReferendum(writer, reader);
                 }
             }
@@ -85,11 +84,12 @@ public class Scrutateur {
         BigInteger c2 = new BigInteger(reader.readLine());
         BigInteger[] resultatAgrege = {c1, c2};
         int nbVotants = Integer.parseInt(reader.readLine());
-        writer.println(dechiffrer(resultatAgrege, nbVotants));
+        writer.println(dechiffrer(resultatAgrege, nbVotants)); // ICI renvoi null
         System.out.println("Serveur réponse" + reader.readLine());
     }
 
-    void envoyeClePubliqueReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
+    private void envoyeClePubliqueReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
+        System.out.println("Envoie de la clé publique");
         writer.println("CLE_PUBLIQUE_REFERENDUM");
         writer.println(pk[0]);  // p
         writer.println(pk[1]);  // g
