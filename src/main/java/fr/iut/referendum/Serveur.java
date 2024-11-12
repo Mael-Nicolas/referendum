@@ -72,7 +72,7 @@ public class Serveur {
 
             Referendum r1 = new Referendum("Killian président ?", new Date(2025-1900, Calendar.JANUARY, 1, 0, 0));
             Referendum r2 = new Referendum("Vincent revienne a Montpellier ?", new Date(2028-1900, Calendar.FEBRUARY, 29, 20, 0));
-            Referendum r3 = new Referendum("Ouverture BL3 ?", new Date(2024-1900, Calendar.NOVEMBER, 12, 15, 7));
+            Referendum r3 = new Referendum("Ouverture BL3 ?", new Date(2024-1900, Calendar.NOVEMBER, 12, 15, 53));
             Serveur serveur = new Serveur(new ArrayList<>(List.of(r1, r2, r3)));
             while (true) {
                 Socket socket = serverSocket.accept();
