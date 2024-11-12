@@ -10,7 +10,7 @@ public abstract class Crypto {
         BigInteger g = key[2];
         BigInteger p = key[0];
         BigInteger pk = key[3];
-        BigInteger k = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random)x.mod(p.subtract(BigInteger.ONE)); // k < p-1
+        BigInteger k = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE)); // k < p-1
         BigInteger c1 = g.modPow(k, p); // c1 = g^k mod p
         BigInteger c2 = g.modPow(m, p).multiply(pk.modPow(k, p)).mod(p); // c2 = g^m * publickey^k mod p
         return new BigInteger[]{c1, c2};
