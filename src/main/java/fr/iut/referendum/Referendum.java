@@ -7,9 +7,9 @@ public class Referendum {
     private int id;
     private String nom;
     private ArrayList<String> choix;
-    private Map<String,String> loginClientvote = new HashMap<String,String>();
+    private int nbVotants;
     private Date dateFin;
-    private int resultatAgrege;
+    private BigInteger[] votesAgrege;
     private BigInteger[] pk;
 
     private static int idCounter = 1;
@@ -21,6 +21,9 @@ public class Referendum {
         this.choix.add("Oui");
         this.choix.add("Non");
         this.dateFin = dateFin;
+        this.nbVotants = 0;
+        this.votesAgrege = new BigInteger[]{BigInteger.ZERO, BigInteger.ZERO};
+        //this.pk = scrutateur.getPublicKey(); TODO
     }
 
     public String getNom() {
@@ -29,10 +32,6 @@ public class Referendum {
 
     public ArrayList<String> getChoix() {
         return choix;
-    }
-
-    public Map<String, String> getIdClientvote() {
-        return loginClientvote;
     }
 
     public int getId() {
@@ -118,18 +117,23 @@ public class Referendum {
         }
     }
 
-    /*
-    * Renvoie le resultat du referendum s'il est terminé
-    * retourne 0 pour le choix 0
-    * retourne 1 pour le choix 1
-    * Sinon renvoie -1 (referendum non terminé)
-    */
-
     public int getNbVotes() {
-        return loginClientvote.size();
+        return nbVotants;
+    }
+
+    public void ajouterVotant() {
+        nbVotants++;
     }
 
     public BigInteger[] getClePublique() {
         return pk;
+    }
+
+    public void agregeVote(BigInteger[] c) {
+        votesAgrege = Crypto.agrege(votesAgrege, c, pk);
+    }
+
+    public BigInteger[] getVotesAgrege() {
+        return votesAgrege;
     }
 }

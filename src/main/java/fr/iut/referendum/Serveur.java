@@ -1,5 +1,6 @@
 package fr.iut.referendum;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,9 +40,9 @@ public class Serveur {
         return null;
     }
 
-    public void clientAVote(int idReferendum, String loginClient, String choix) {
-        Referendum referendum = getReferendum(idReferendum);
-        referendum.getIdClientvote().put(loginClient, choix);
+    public void clientAVote(Referendum referendum, BigInteger[] c) {
+        referendum.ajouterVotant();
+        referendum.agregeVote(c);
     }
 
     @Override

@@ -101,7 +101,6 @@ public class Client {
 
         writer.println(choixCrypter[0]);
         writer.println(choixCrypter[1]);
-        writer.println(this.login);
 
         System.out.println("Server response: " + reader.readLine());
     }
