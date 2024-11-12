@@ -15,6 +15,38 @@ public class Referendum {
 
     private static int idCounter = 1;
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public void setNbVotants(int nbVotants) {
+        this.nbVotants = nbVotants;
+    }
+
+    public void setDateFin(Date dateFin) {
+        this.dateFin = dateFin;
+    }
+
+    public void setVotesAgrege(BigInteger[] votesAgrege) {
+        this.votesAgrege = votesAgrege;
+    }
+
+    public BigInteger[] getPk() {
+        return pk;
+    }
+
+    public static int getIdCounter() {
+        return idCounter;
+    }
+
+    public static void setIdCounter(int idCounter) {
+        Referendum.idCounter = idCounter;
+    }
+
     public Referendum(String nom, Date dateFin) {
         this.id = idCounter++;
         this.nom = nom;

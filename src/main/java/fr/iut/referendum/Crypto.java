@@ -62,7 +62,7 @@ public abstract class Crypto {
         System.out.println("M: " + M);
 
         BigInteger B = BigInteger.valueOf(nbVotants);
-        for (BigInteger m = BigInteger.ZERO; m.compareTo(B) < 0; m = m.add(BigInteger.ONE)) {
+        for (BigInteger m = BigInteger.ZERO; m.compareTo(B) <= 0; m = m.add(BigInteger.ONE)) {
             if ((g.modPow(m, p)).equals(M)) {
                 System.out.println("Message décrypté: " + m);
                 return m;
