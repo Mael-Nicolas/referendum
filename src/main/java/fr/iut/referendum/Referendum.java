@@ -138,7 +138,8 @@ public class Referendum {
     }
 
     public void agregeVote(BigInteger[] c) {
-        votesAgrege = Crypto.agrege(votesAgrege, c, pk);
+        votesAgrege[0] = votesAgrege[0].add(c[0]);
+        votesAgrege[1] = votesAgrege[1].add(c[1]);
     }
 
     public BigInteger[] getVotesAgrege() {

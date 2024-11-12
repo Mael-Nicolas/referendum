@@ -81,7 +81,7 @@ public class CryptoTest {
         BigInteger sk = keys[3]; // clé secrète
 
         // Message à crypter
-        BigInteger message = BigInteger.valueOf(42);
+        BigInteger message = BigInteger.valueOf(5);
 
         // Cryptage du message
         BigInteger[] encrypted = Crypto.encrypt(message, pk);
