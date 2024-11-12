@@ -11,7 +11,6 @@ public class Scrutateur {
 
     private final BigInteger[] pk;
     private final BigInteger sk;
-    private BigInteger resChiffre;
 
     public Scrutateur() {
         BigInteger[] tab = Crypto.genkey();
@@ -19,17 +18,15 @@ public class Scrutateur {
         sk = tab[3];
     }
 
-    public BigInteger[] getPk() {
-        return pk;
-    }
-
-    public BigInteger recupererResultat(BigInteger resChiffre) {
-        this.resChiffre = resChiffre;
-    }
-
-    public BigInteger dechiffrer(BigInteger[] agrege, int nbVotants) {
+    public String dechiffrer(BigInteger[] agrege, int nbVotants) {
         BigInteger resultat = Crypto.decrypt(agrege, pk, sk, nbVotants);
-        return resultat;
+        if (resultat == null) {
+            return "Erreur";
+        }
+        else if ((resultat.compareTo(BigInteger.valueOf(nbVotants).divide(BigInteger.TWO))) > 0){
+            return "Oui";
+        }
+        return "Non";
     }
 
     public void run(String hostname, int port) {
@@ -58,6 +55,9 @@ public class Scrutateur {
                 else if (s.equals("resultat")) {
                     resultatReferendum(writer, reader, clavier);
                 }
+                else if (s.equals("envoyeClePublique")) {
+                    envoyeClePubliqueReferendum(writer, reader);
+                }
             }
         } catch (UnknownHostException ex) {
             System.out.println("Server not found: " + ex.getMessage());
@@ -77,11 +77,19 @@ public class Scrutateur {
             idReferendum = clavier.nextLine();
             writer.println(Integer.parseInt(idReferendum));
         }
-        BigInteger resultat = new BigInteger(reader.readLine());
+        BigInteger c1 = new BigInteger(reader.readLine());
+        BigInteger c2 = new BigInteger(reader.readLine());
+        BigInteger[] resultatAgrege = {c1, c2};
+        int nbVotants = Integer.parseInt(reader.readLine());
+        writer.println(dechiffrer(resultatAgrege, nbVotants));
+        System.out.println("Serveur réponse" + reader.readLine());
+    }
 
-        // code
-
-        //writer.println(resultatDechiffre);
+    private void envoyeClePubliqueReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
+        writer.println("CLE_PUBLIQUE_REFERENDUM");
+        writer.println(pk[0]);  // p
+        writer.println(pk[1]);  // g
+        writer.println(pk[2]);  // h
         System.out.println("Serveur réponse" + reader.readLine());
     }
 
