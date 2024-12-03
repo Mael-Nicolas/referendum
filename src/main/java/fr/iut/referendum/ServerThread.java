@@ -25,28 +25,42 @@ public class ServerThread extends Thread {
 
             String text;
             while ((text = reader.readLine()) != null) {
-                if ("GET_SERVER_INFO".equals(text)) {
-                    Get_Server_Info(writer);
-                }
-                else if ("NEW_REFERENDUM".equals(text)) {
-                    New_Referendum(reader, writer);
-                }
-                else if ("VOTER_REFERENDUM".equals(text)) {
-                    Voter_Referendum(writer, reader);
-                }
-                else if ("RESULTAT_REFERENDUM".equals(text)) {
-                    Resultat_Referendum(writer, reader);
-                }
-                else if ("CLE_PUBLIQUE_REFERENDUM".equals(text)) {
-                    cle_publique_referendum(writer, reader);
-                } else if ("RESULTAT_CLIENT_REFERENDUM".equals(text)) {
-                    resultat_client_referendum(writer, reader);
-                } else {
-                    writer.println();
-                }
+                Command(text, reader, writer);
             }
+
         } catch (IOException ex) {
-            ex.getMessage();
+            ex.printStackTrace();
+            try {
+                socket.close();
+            } catch (IOException e) {
+                System.err.println("Erreur lors de la fermeture du socket : " + e.getMessage());
+            }
+        }
+    }
+
+    private void Command(String command, BufferedReader reader, PrintWriter writer) throws IOException {
+        switch (command) {
+            case "GET_SERVER_INFO":
+                Get_Server_Info(writer);
+                break;
+            case "NEW_REFERENDUM":
+                New_Referendum(reader, writer);
+                break;
+            case "VOTER_REFERENDUM":
+                Voter_Referendum(writer, reader);
+                break;
+            case "RESULTAT_REFERENDUM":
+                Resultat_Referendum(writer, reader);
+                break;
+            case "CLE_PUBLIQUE_REFERENDUM":
+                cle_publique_referendum(writer, reader);
+                break;
+            case "RESULTAT_CLIENT_REFERENDUM":
+                resultat_client_referendum(writer, reader);
+                break;
+            default:
+                writer.println("Commande inconnue");
+                break;
         }
     }
 
