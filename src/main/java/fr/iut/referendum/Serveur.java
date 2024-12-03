@@ -63,6 +63,10 @@ public class Serveur {
     }
 
     public static void main(String[] args) {
+        // Certificat SSL
+        System.setProperty("javax.net.ssl.keyStore", "keystore.jks");
+        System.setProperty("javax.net.ssl.keyStorePassword", "Admin!123");
+
         try (ServerSocket serverSocket = new ServerSocket(3390)) {
             System.out.println("Server open on port " + serverSocket.getLocalPort());
 
