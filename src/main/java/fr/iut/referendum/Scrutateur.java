@@ -28,7 +28,7 @@ public class Scrutateur {
             return "Erreur";
         }
         else if ((resultat.compareTo(BigInteger.valueOf(nbVotants).divide(BigInteger.TWO))) > 0){
-            return "Oui";
+            return "Oui";  // cas egalité
         }
         return "Non";
     }

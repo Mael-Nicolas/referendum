@@ -26,7 +26,7 @@ public abstract class Crypto {
         } while (!p.isProbablePrime(tauxPremier)); // p premier
         BigInteger g;
         do {
-            g = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE)); // g < p-1
+            g = new BigInteger(p.subtract(BigInteger.ONE).bitLength() +128, random).mod(p); // g < p-1
         } while (g.modPow(BigInteger.TWO, p).compareTo(BigInteger.ONE) == 0); // g^2 mod p == 0
         if (g.modPow(q, p).compareTo(BigInteger.ONE) != 0) { // g^q mod p != 0
             g = g.modPow(BigInteger.TWO, p); // g = g^2 mod p
