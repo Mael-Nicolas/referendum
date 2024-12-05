@@ -58,14 +58,7 @@ public class Scrutateur {
                     String commande = clavier.nextLine();
                     commande = clavier.nextLine();
                     if (commande.equals("exit")) {
-                        System.out.println("Fermeture de la connexion.");
-                        writer.println("EXIT");
-                        // Attendre une confirmation de déconnexion
-                        String response = reader.readLine();
-                        if (response != null && response.equals("1")) {
-                            System.out.println("Déconnecté du serveur.");
-                        }
-                        running = false;
+                        running = exit(writer, reader);
                     } else if (commande.equals("info")) {
                         infoReferendum(writer, reader);
                     } else if (commande.equals("resultat")) {
@@ -78,6 +71,19 @@ public class Scrutateur {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private static boolean exit(PrintWriter writer, BufferedReader reader) throws IOException {
+        boolean running;
+        System.out.println("Fermeture de la connexion.");
+        writer.println("EXIT");
+        // Attendre une confirmation de déconnexion
+        String response = reader.readLine();
+        if (response != null && response.equals("1")) {
+            System.out.println("Déconnecté du serveur.");
+        }
+        running = false;
+        return running;
     }
 
     private void resultatReferendum(PrintWriter writer, BufferedReader reader, Scanner clavier) throws IOException {
