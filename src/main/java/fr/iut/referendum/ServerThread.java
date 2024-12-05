@@ -58,6 +58,11 @@ public class ServerThread extends Thread {
             case "RESULTAT_CLIENT_REFERENDUM":
                 resultat_client_referendum(writer, reader);
                 break;
+            case "EXIT":
+                System.out.println("Le client " + socket.getInetAddress() + " s'est déconnecté.");
+                writer.println("1");
+                socket.close();
+                break;
             default:
                 writer.println("Commande inconnue");
                 break;

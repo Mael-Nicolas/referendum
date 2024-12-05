@@ -58,6 +58,13 @@ public class Scrutateur {
                     String commande = clavier.nextLine();
                     commande = clavier.nextLine();
                     if (commande.equals("exit")) {
+                        System.out.println("Fermeture de la connexion.");
+                        writer.println("EXIT");
+                        // Attendre une confirmation de déconnexion
+                        String response = reader.readLine();
+                        if (response != null && response.equals("1")) {
+                            System.out.println("Déconnecté du serveur.");
+                        }
                         running = false;
                     } else if (commande.equals("info")) {
                         infoReferendum(writer, reader);
