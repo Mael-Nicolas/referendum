@@ -1,5 +1,7 @@
 package fr.iut.referendum;
 
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.Socket;
@@ -36,40 +38,43 @@ public class Client {
     }
 
     public void run(String hostname, int port) {
-        try (Socket socket = new Socket(hostname, port);
-             // pour envoyer des messages au serveur
-             OutputStream output = socket.getOutputStream();
-             PrintWriter writer = new PrintWriter(output, true);
-             // pour recevoir des messages du serveur
-             InputStream input = socket.getInputStream();
-             BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
+        try {
+            // Configuration SSL
+            System.setProperty("javax.net.ssl.trustStore", "keystore.jks");
+            System.setProperty("javax.net.ssl.trustStorePassword", "Admin!123");
 
-            System.out.println("Pour obtenir les informations des refrendum, tapez info");
-            System.out.println("Pour voter pour un referundum, tapez voter");
-            System.out.println("Pour obtenir le résultat d'un referendum, tapez resultat");
-            System.out.println("Pour quitter, tapez exit");
+            // Création d'une socket sécurisée
+            SSLSocketFactory socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+            try (SSLSocket socket = (SSLSocket) socketFactory.createSocket(hostname, port);
+                 OutputStream output = socket.getOutputStream();
+                 PrintWriter writer = new PrintWriter(output, true);
+                 InputStream input = socket.getInputStream();
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
 
-            Scanner clavier = new Scanner(System.in);
-            String s;
-            boolean running = true;
-            while (running) {
-                s = clavier.nextLine();
-                if (s.equals("exit")) {
-                    running = false;
-                }
-                else if (s.equals("info")) {
-                    infoReferendum(writer, reader);
-                }
-                else if (s.equals("voter")) {
-                    voterReferendum(writer, reader, clavier);
-                } else if (s.equals("resultat")){
-                    resultatReferendum(writer, clavier, reader);
+                System.out.println("Connexion sécurisée au serveur établie.");
+                System.out.println("Pour obtenir les informations des refrendum, tapez info");
+                System.out.println("Pour voter pour un referendum, tapez voter");
+                System.out.println("Pour obtenir le résultat d'un referendum, tapez resultat");
+                System.out.println("Pour quitter, tapez exit");
+
+                Scanner clavier = new Scanner(System.in);
+                boolean running = true;
+
+                while (running) {
+                    String commande = clavier.nextLine();
+                    if (commande.equals("exit")) {
+                        running = false;
+                    } else if (commande.equals("info")) {
+                        infoReferendum(writer, reader);
+                    } else if (commande.equals("voter")) {
+                        voterReferendum(writer, reader, clavier);
+                    } else if (commande.equals("resultat")) {
+                        resultatReferendum(writer, clavier, reader);
+                    }
                 }
             }
-        } catch (UnknownHostException ex) {
-            System.out.println("Server not found: " + ex.getMessage());
-        } catch (IOException ex) {
-            System.out.println("I/O error: " + ex.getMessage());
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
