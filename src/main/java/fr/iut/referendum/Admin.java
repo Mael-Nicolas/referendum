@@ -85,6 +85,10 @@ public class Admin {
 
         System.out.println("Nom du referendum : ");
         String nom = clavier.nextLine();
+        while (nom.isEmpty()) {
+            System.out.println("Nom invalide");
+            nom = clavier.nextLine();
+        }
         writer.println(nom);
 
         System.out.println("Date de fin : ");

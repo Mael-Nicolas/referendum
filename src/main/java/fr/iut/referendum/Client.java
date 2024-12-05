@@ -80,12 +80,21 @@ public class Client {
 
     private static void resultatReferendum(PrintWriter writer, Scanner clavier, BufferedReader reader) throws IOException {
         writer.println("RESULTAT_CLIENT_REFERENDUM");
+        // choix referendum
         System.out.println("Choisir ID du referendum : ");
         String idReferendum = clavier.nextLine();
-        writer.println(Integer.parseInt(idReferendum));
-        while (!idReferendum.matches("[0-9]+") || Integer.parseInt(idReferendum) <= 0 || reader.readLine().equals("Erreur")) {
+        while (!idReferendum.matches("[0-9]+") || idReferendum.isEmpty() || Integer.parseInt(idReferendum) <= 0) {
             System.out.println("Choix invalide");
             idReferendum = clavier.nextLine();
+        }
+        writer.println(Integer.parseInt(idReferendum));
+        while (reader.readLine().equals("Erreur")) {
+            System.out.println("Choix invalide");
+            idReferendum = clavier.nextLine();
+            while (!idReferendum.matches("[0-9]+") || idReferendum.isEmpty() || Integer.parseInt(idReferendum) <= 0) {
+                System.out.println("Choix invalide");
+                idReferendum = clavier.nextLine();
+            }
             writer.println(Integer.parseInt(idReferendum));
         }
         System.out.println("Server response: " + reader.readLine());
@@ -107,10 +116,18 @@ public class Client {
         // choix referendum
         System.out.println("Choisir ID du referendum : ");
         String idReferendum = clavier.nextLine();
-        writer.println(Integer.parseInt(idReferendum));
-        while (!idReferendum.matches("[0-9]+") || Integer.parseInt(idReferendum) <= 0 || reader.readLine().equals("Erreur")) {
+        while (!idReferendum.matches("[0-9]+") || idReferendum.isEmpty() || Integer.parseInt(idReferendum) <= 0) {
             System.out.println("Choix invalide");
             idReferendum = clavier.nextLine();
+        }
+        writer.println(Integer.parseInt(idReferendum));
+        while (reader.readLine().equals("Erreur")) {
+            System.out.println("Choix invalide");
+            idReferendum = clavier.nextLine();
+            while (!idReferendum.matches("[0-9]+") || idReferendum.isEmpty() || Integer.parseInt(idReferendum) <= 0) {
+                System.out.println("Choix invalide");
+                idReferendum = clavier.nextLine();
+            }
             writer.println(Integer.parseInt(idReferendum));
         }
 
