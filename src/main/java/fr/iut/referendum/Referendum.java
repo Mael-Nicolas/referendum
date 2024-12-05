@@ -104,9 +104,20 @@ public class Referendum {
 
     @Override
     public String toString() {
-        return "Referendum [" + id + "] " + nom + " : Oui ou Non" + "\n" +
+        String result = "";
+        if (this.fini()) {
+            this.setOpen(false);
+        }
+        if (this.isOpen()) {
+            this.setOpen(!this.fini());
+            result += "Referendum ouvert\n";
+        } else {
+            result += "Referendum fermé\n";
+        }
+        result += "Referendum [" + id + "] " + nom + " : Oui ou Non" + "\n" +
                 " - Date de fin : " + dateFinAffichage() + "\n" +
                 " - Temps restant : " + tempRestant();
+        return result;
     }
 
     public int getMaxDaysInMonth(int year, int month) {

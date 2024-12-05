@@ -55,15 +55,7 @@ public class Serveur {
     public String toString() {
         String result = "---------------------------------------------------------------------------------------------\n";
         for (Referendum referendum : referendums) {
-            if (referendum.fini()) {
-                referendum.setOpen(false);
-            }
-            if (referendum.isOpen()) {
-                result += "Referendum ouvert\n";
-            } else {
-                result += "Referendum fermé\n";
-            }
-            result += referendum.toString() + "\n" + "---------------------------------------------------------------------------------------------\n";
+            result += referendum + "\n" + "---------------------------------------------------------------------------------------------\n";
         }
         return result;
     }
