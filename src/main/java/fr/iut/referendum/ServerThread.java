@@ -25,13 +25,20 @@ public class ServerThread extends Thread {
 
             String text;
             while ((text = reader.readLine()) != null) {
-                Command(text, reader, writer);
+                try {
+                    Command(text, reader, writer);
+                } catch (Exception e) {
+                    System.err.println("Erreur lors de l'exécution d'une commande : " + e.getMessage());
+                }
             }
 
         } catch (IOException ex) {
-            ex.printStackTrace();
+            System.out.println("Le client " + socket.getInetAddress() + " s'est déconnecté.");
+        } finally {
             try {
-                socket.close();
+                if (!socket.isClosed()) {
+                    socket.close();
+                }
             } catch (IOException e) {
                 System.err.println("Erreur lors de la fermeture du socket : " + e.getMessage());
             }
