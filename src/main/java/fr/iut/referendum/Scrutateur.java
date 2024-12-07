@@ -106,12 +106,18 @@ public class Scrutateur {
             writer.println(Integer.parseInt(idReferendum));
         }
 
-        BigInteger c1 = new BigInteger(reader.readLine());
-        BigInteger c2 = new BigInteger(reader.readLine());
-        BigInteger[] resultatAgrege = {c1, c2};
-        int nbVotants = Integer.parseInt(reader.readLine());
-        writer.println(dechiffrer(resultatAgrege, nbVotants)); // ICI renvoi null
-        System.out.println("Serveur réponse" + reader.readLine());
+        if (reader.readLine().equals("Error01")){
+            System.out.println("Serveur réponse : " + reader.readLine());
+            System.out.println("Serveur réponse : " + reader.readLine());
+        }
+        else {
+            BigInteger c1 = new BigInteger(reader.readLine());
+            BigInteger c2 = new BigInteger(reader.readLine());
+            BigInteger[] resultatAgrege = {c1, c2};
+            int nbVotants = Integer.parseInt(reader.readLine());
+            writer.println(dechiffrer(resultatAgrege, nbVotants)); // ICI renvoi null
+            System.out.println("Serveur réponse : " + reader.readLine());
+        }
     }
 
     private void envoyeClePubliqueReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
@@ -120,14 +126,14 @@ public class Scrutateur {
         writer.println(pk[0]);  // p
         writer.println(pk[1]);  // g
         writer.println(pk[2]);  // h
-        System.out.println("Serveur réponse" + reader.readLine());
+        System.out.println("Serveur réponse : " + reader.readLine());
     }
 
     public void infoReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
         writer.println("GET_SERVER_INFO");
         String response;
         while (!(response = reader.readLine()).isEmpty()) {
-            System.out.println("Server response: " + response);
+            System.out.println("Serveur réponse : " + response);
         }
     }
 

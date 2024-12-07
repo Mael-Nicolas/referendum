@@ -116,7 +116,23 @@ public class ServerThread extends Thread {
             idReferendum = Integer.parseInt(reader.readLine());
             referendum = serveur.getReferendum(idReferendum);
         }
-        writer.println("Ok");
+        writer.println(""); // Pas erreur
+
+        // Test si le resultat est déjà calculé ou null
+        if (referendum.getResultat() != null) {
+            writer.println("Error01");
+            writer.println("Resultat déjà calculé");
+            writer.println(referendum.getResultat());
+            return;
+        }
+
+        if (referendum.getNbVotants() == 0) {
+            writer.println("Error01");
+            referendum.setResultat("Egalité");
+            writer.println("Nombre de votants égal à 0");
+            writer.println("Résultat : " + referendum.getResultat());
+            return;
+        }
 
         // envoie du resultat agregé
         BigInteger[] VotesAgreget = referendum.getVotesAgrege();

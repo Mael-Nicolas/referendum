@@ -10,7 +10,7 @@ public class Referendum {
     private Date dateFin;
     private BigInteger[] votesAgrege;
     private BigInteger[] pk;
-    private String resultat = "";
+    private String resultat = null;
     private boolean open = false;
 
     private static int idCounter = 1;
