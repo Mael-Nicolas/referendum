@@ -20,20 +20,6 @@ public class Scrutateur {
         sk = tab[3];
     }
 
-    public BigInteger[] getPk() {
-        return pk;
-    }
-
-    public String dechiffrer(BigInteger[] agrege, int nbVotants) {
-        BigInteger resultat = Crypto.decrypt(agrege, pk, sk, nbVotants);
-        if (resultat == null) {
-            return "Erreur";
-        } else if ((resultat.compareTo(BigInteger.valueOf(nbVotants).divide(BigInteger.TWO))) > 0) {
-            return "Oui";  // cas egalité
-        }
-        return "Non";
-    }
-
     public void run(String hostname, int port) {
         try {
             // Configuration SSL
@@ -115,9 +101,32 @@ public class Scrutateur {
             BigInteger c2 = new BigInteger(reader.readLine());
             BigInteger[] resultatAgrege = {c1, c2};
             int nbVotants = Integer.parseInt(reader.readLine());
-            writer.println(dechiffrer(resultatAgrege, nbVotants)); // ICI renvoi null
+            String decrypted = dechiffrer(resultatAgrege, nbVotants);
+            System.out.println("Résultat du referendum : " + decrypted);
+            writer.println(decrypted);
             System.out.println("Serveur réponse : " + reader.readLine());
         }
+    }
+
+    public BigInteger[] getPk() {
+        return pk;
+    }
+
+    public String dechiffrer(BigInteger[] agrege, int nbVotants) {
+        System.out.println("Début du déchiffrement");
+
+        BigInteger resultat = Crypto.decrypt(agrege, pk, sk, nbVotants);
+
+        long nbVotantsDiv2 = nbVotants / 2;
+        if (resultat == null) {
+            return "Erreur";
+        } else if (resultat.compareTo(BigInteger.valueOf(nbVotantsDiv2)) == 0 && nbVotants % 2 == 0) {
+            return "Egalité";
+        }
+        else if (resultat.compareTo(BigInteger.valueOf(nbVotantsDiv2)) > 0) {
+            return "Oui";
+        }
+        return "Non";
     }
 
     private void envoyeClePubliqueReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
@@ -136,5 +145,4 @@ public class Scrutateur {
             System.out.println("Serveur réponse : " + response);
         }
     }
-
 }

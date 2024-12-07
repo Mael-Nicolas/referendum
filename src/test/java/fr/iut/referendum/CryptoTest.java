@@ -116,7 +116,7 @@ public class CryptoTest {
 
         // Vérification que le message décrypté est correct
         assertNotNull(decryptedMessage, "Le message décrypté ne doit pas être nul");
-        assertEquals(9, decryptedMessage, "Le message décrypté doit être égal au message original");
+        assertEquals(BigInteger.valueOf(9), decryptedMessage, "Le message décrypté doit être égal au message original");
     }
 
     // Test de décryptage avec un nombre incorrect de votants
