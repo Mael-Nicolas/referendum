@@ -56,7 +56,6 @@ public class Scrutateur {
                 boolean running = true;
                 while (running) {
                     String commande = clavier.nextLine();
-                    commande = clavier.nextLine();
                     if (commande.equals("exit")) {
                         running = exit(writer, reader);
                     } else if (commande.equals("info")) {
