@@ -75,41 +75,14 @@ public class ControleurClient {
         int idReferendum = Integer.parseInt(selectedReferendum.split(" - ")[0]);
         boolean choix = radioOui.isSelected();
 
-        if (!client.voterReferendum(writer, reader, idReferendum, choix)) {
-            labelStatus.setText("Erreur lors de l'envoi du vote");
+        try {
+            if (!client.voterReferendum(writer, reader, idReferendum, choix)) {
+                labelStatus.setText("Erreur lors de l'envoi du vote");
+            } else {
+                labelStatus.setText("Vote enregistré.");
+            }
+        } catch (Exception e) {
+            labelStatus.setText("Erreur de liaison avec le serveur");
         }
-        else {
-            labelStatus.setText("Vote enregistré.");
-        }
-//        try {
-//            writer.println("VOTER_REFERENDUM");
-//            writer.println(idReferendum);
-//            String response = reader.readLine();
-//            if ("Ok".equals(response)) {
-//                // Receive public key
-//                BigInteger p = new BigInteger(reader.readLine());
-//                BigInteger g = new BigInteger(reader.readLine());
-//                BigInteger h = new BigInteger(reader.readLine());
-//                BigInteger[] pk = new BigInteger[]{p, g, h};
-//
-//                // Get vote choice
-//                String choix = radioOui.isSelected() ? "Oui" : "Non";
-//                BigInteger choixint = "Oui".equals(choix) ? BigInteger.ONE : BigInteger.ZERO;
-//
-//                // Encrypt choice
-//                BigInteger[] choixCrypter = Crypto.encrypt(choixint, pk);
-//
-//                // Send encrypted vote
-//                writer.println(choixCrypter[0]);
-//                writer.println(choixCrypter[1]);
-//
-//                labelStatus.setText("Vote enregistré: " + reader.readLine());
-//            } else {
-//                labelStatus.setText("Erreur de sélection du référendum.");
-//            }
-//        } catch (Exception e) {
-//            labelStatus.setText("Erreur de liaison avec le serveur");
-//            throw new RuntimeException(e);
-//        }
     }
 }

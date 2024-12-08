@@ -126,7 +126,8 @@ public class Client {
             writer.println("VOTER_REFERENDUM");
             writer.println(idReferendum);
 
-            if (reader.readLine().equals("Erreur")) {
+            String response = reader.readLine();
+            if ("Erreur".equals(response)) {
                 return false;
             }
 

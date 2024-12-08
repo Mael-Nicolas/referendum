@@ -156,7 +156,7 @@ public class ServerThread extends Thread {
     private void Get_Server_Info(PrintWriter writer) {
         List<Referendum> referendums = serveur.getReferendums();
         for (Referendum referendum : referendums) {
-            writer.println(referendum.getId() + " - " + referendum.getNom() + " - " + referendum.dateFinAffichage() + " - " + referendum.isOpen());
+            writer.println(referendum.getId() + " - " + referendum.getNom() + " - " + referendum.dateFinAffichage());
         }
         writer.println("fin");
     }
