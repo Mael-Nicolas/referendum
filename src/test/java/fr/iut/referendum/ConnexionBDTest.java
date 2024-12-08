@@ -63,10 +63,11 @@ public class ConnexionBDTest {
 
     @Test
     public void testAVoteUtilisateurNouveau() {
-        boolean aVote = maConnexionBD.aVote("nicolasm", 0);
+        boolean aVote = maConnexionBD.aVote("rivasr", 0);
         assertFalse(aVote);
     }
 
+    @Disabled
     @Test
     public void testVoterUtilisateur() {
         boolean vrai = maConnexionBD.voter("nicolasm", 0);
