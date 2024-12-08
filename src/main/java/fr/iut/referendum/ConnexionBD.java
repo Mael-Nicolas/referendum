@@ -1,9 +1,6 @@
 package fr.iut.referendum;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 public class ConnexionBD {
 
@@ -27,13 +24,32 @@ public class ConnexionBD {
         } catch (Exception e) {
             throw new RuntimeException("Problème dans le statement");
         }
+    }
 
+
+    /*
+    Renvoi vrai si le login et mdp en paramètres correspondent à un employé dans la BD
+    A utiliser pour la connexion avec le login et le mdp rentré dans les champs correspondants
+     */
+    public boolean employeConnexion(String login, String mdp) {
         try {
-            rs = st.executeQuery("");
+            rs = st.executeQuery("SELECT * FROM Employes WHERE loginEmploye = " + login);
         } catch (Exception e) {
             throw new RuntimeException("Problème dans la requête");
         }
-
+        try {
+            if (!rs.next()) {
+                System.out.println("Nom d'utilisateur inconnu");
+                return false;
+            }
+            if (!rs.getString("mdpEmploye").equals(mdp)) {
+                System.out.println("Mdp d'utilisateur incorrect");
+                return false;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Probleme dans la lecture");
+        }
+        return true;
     }
 
     public void deconnexion() {
@@ -44,7 +60,6 @@ public class ConnexionBD {
         } catch (Exception e) {
             throw new RuntimeException("Problème deconnexion");
         }
-
     }
 
 }
