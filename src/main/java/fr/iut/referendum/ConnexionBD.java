@@ -103,6 +103,29 @@ public class ConnexionBD {
         return true;
     }
 
+    /*
+    Enregistrement dans la BD d'un nouveau référendum
+     */
+    public boolean creerReferendum(int id, String nom, Date dateFin) {
+        try {
+            int res = st.executeUpdate("INSERT INTO Referendums (idReferendum, nomReferendum, dateFin) VALUES " +
+                    "('" + id + "', '" + nom + "', '" + dateFin + "', 1)");
+            if (res == 0) {
+                System.out.println("AJout impossible");
+                return false;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Problème dans l'insertion d'un référendum");
+        }
+        return true;
+    }
+
+
+    // Fonction pour renvoyer la liste des référendums
+
+    // Fonction pour récupérer le nombre de votant sur un référendum (pour decrypt)
+
+
     public void deconnexion() {
         try {
             rs.close();
