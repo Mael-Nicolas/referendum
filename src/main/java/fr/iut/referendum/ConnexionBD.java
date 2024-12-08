@@ -71,6 +71,22 @@ public class ConnexionBD {
         return true;
     }
 
+    /*
+    Permet de créer un nouveau employé dans la BD sans doublons
+     */
+    public boolean creerEmploye(String loginEmploye, String mdp) {
+        try {
+            int res = st.executeUpdate("INSERT INTO Employes (loginEmploye, mdpEmploye) VALUES ('" + loginEmploye + "', '" + mdp + "')");
+            if (res == 0) {
+                System.out.println("Création impossible"); // ex: utilisateur existe déjà
+                return false;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Problème dans l'insertion'");
+        }
+        return true;
+    }
+
     public void deconnexion() {
         try {
             rs.close();
