@@ -154,7 +154,11 @@ public class ServerThread extends Thread {
     }
 
     private void Get_Server_Info(PrintWriter writer) {
-        writer.println(serveur.toString());
+        List<Referendum> referendums = serveur.getReferendums();
+        for (Referendum referendum : referendums) {
+            writer.println(referendum.getId() + " - " + referendum.getNom() + " - " + referendum.dateFinAffichage() + " - " + referendum.isOpen());
+        }
+        writer.println("fin");
     }
 
     private void New_Referendum(BufferedReader reader, PrintWriter writer) throws IOException {
@@ -181,10 +185,9 @@ public class ServerThread extends Thread {
         Referendum referendum = serveur.getReferendum(idReferendum);
 
         // vérif si le referendum existe et si il est fini
-        while (referendum == null || referendum.fini() || !referendum.isOpen()) {
+        if (referendum == null || referendum.fini() || !referendum.isOpen()) {
             writer.println("Erreur");
-            idReferendum = Integer.parseInt(reader.readLine());
-            referendum = serveur.getReferendum(idReferendum);
+            return;
         }
         writer.println("Ok");
 

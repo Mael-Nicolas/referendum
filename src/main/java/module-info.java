@@ -3,5 +3,5 @@ open module referendum {
     requires javafx.controls;
     requires javafx.graphics;
     requires javafx.fxml;
-    requires java.naming;
+    requires java.sql;
 }
