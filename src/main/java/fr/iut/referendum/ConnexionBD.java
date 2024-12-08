@@ -54,7 +54,7 @@ public class ConnexionBD {
     /*
     Permet de vérifier si un employé à voté pour le référendum en paramètre (et donc ne peut pas revoter)
      */
-    public boolean aVote(String loginEmploye, Number idReferendum) {
+    public boolean aVote(String loginEmploye, int idReferendum) {
         try {
             rs = st.executeQuery("SELECT * FROM Voter WHERE loginEmploye = '" + loginEmploye + "' AND idReferendum = '" + idReferendum + "'");
         } catch (Exception e) {
@@ -83,6 +83,22 @@ public class ConnexionBD {
             }
         } catch (Exception e) {
             throw new RuntimeException("Problème dans l'insertion'");
+        }
+        return true;
+    }
+
+    /*
+    Permet de dire que l'utilisateur a voté sur le referendum en paramètre
+     */
+    public boolean voter(String loginEmploye, int idReferendum) {
+        try {
+            int res = st.executeUpdate("INSERT INTO Voter VALUES ('" + loginEmploye + "', '" + idReferendum + "')");
+            if (res == 0) {
+                System.out.println("AJout impossible"); // ex: couple employe/referendum existe déjà car clé primaire
+                return false;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Problème dans l'ajout d'un vote"); // ex : employe ou referendum non existant
         }
         return true;
     }
