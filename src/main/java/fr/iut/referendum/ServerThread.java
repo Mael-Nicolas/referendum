@@ -3,10 +3,7 @@ package fr.iut.referendum;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Formattable;
-import java.util.List;
+import java.util.*;
 
 public class ServerThread extends Thread {
     private Socket socket;
@@ -28,7 +25,11 @@ public class ServerThread extends Thread {
                 try {
                     Command(text, reader, writer);
                 } catch (Exception e) {
-                    System.err.println("Erreur lors de l'exécution d'une commande : " + e.getMessage());
+                    if (e.getMessage().equals("Connection reset")) {
+                        System.out.println("Le client " + socket.getInetAddress() + " s'est déconnecté.");
+                        break;
+                    }
+                    System.err.println("Erreur lors de l'exécution d'une commande : " + e.getMessage() /* + "\n" + Arrays.toString(e.getStackTrace()) */);
                 }
             }
 
@@ -40,7 +41,7 @@ public class ServerThread extends Thread {
                     socket.close();
                 }
             } catch (IOException e) {
-                System.err.println("Erreur lors de la fermeture du socket : " + e.getMessage());
+                System.err.println("Erreur lors de la fermeture du socket : " + e.getMessage() /* + "\n" + Arrays.toString(e.getStackTrace()) */);
             }
         }
     }
@@ -87,7 +88,7 @@ public class ServerThread extends Thread {
         }
         writer.println("Ok");
         String resultat = referendum.getResultat();
-        if (resultat.isEmpty()) {
+        if (resultat == null) {
             writer.println("Resultat non disponible");
             return;
         }

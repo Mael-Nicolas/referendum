@@ -133,7 +133,7 @@ public class Scrutateur {
         System.out.println("Envoie de la clé publique");
         writer.println("CLE_PUBLIQUE_REFERENDUM");
         writer.println(pk[0]);  // p
-        writer.println(pk[1]);  // g
+        writer.println(pk[1]);  // q
         writer.println(pk[2]);  // h
         System.out.println("Serveur réponse : " + reader.readLine());
     }
