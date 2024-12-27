@@ -11,7 +11,7 @@ public class Referendum {
     private BigInteger[] votesAgrege;
     private BigInteger[] pk;
     private String resultat = null;
-    private boolean open = true;
+    private boolean open = false;
 
     private static int idCounter = 1;
     private Object[] votes;
