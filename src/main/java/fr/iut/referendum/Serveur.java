@@ -92,8 +92,8 @@ public class Serveur {
 
             // Création de référendums de test
             Referendum r1 = new Referendum("Killian président ?", new Date(2025 - 1900, Calendar.JANUARY, 1, 0, 0));
-            Referendum r2 = new Referendum("Vincent revient à Montpellier ?", new Date(2024 - 1900, Calendar.DECEMBER, 9, 13, 2));
-            Referendum r3 = new Referendum("Ouverture BL3 ?", new Date(2024 - 1900, Calendar.DECEMBER, 9, 16, 10));
+            Referendum r2 = new Referendum("Vincent revient à Montpellier ?", new Date(2024 - 1900, Calendar.DECEMBER, 27, 18, 56));
+            Referendum r3 = new Referendum("Ouverture BL3 ?", new Date(2024 - 1900, Calendar.DECEMBER, 27, 16, 10));
             Serveur serveur = new Serveur(new ArrayList<>(List.of(r1, r2, r3)));
 
             // Boucle de gestion des connexions clients

@@ -37,7 +37,7 @@ public class Referendum {
     }
 
     public boolean isOpen() {
-        return open;
+        return open && !fini() && pk != null;
     }
 
     public void setOpen(boolean open) {
@@ -104,20 +104,7 @@ public class Referendum {
 
     @Override
     public String toString() {
-        String result = "";
-        if (this.fini()) {
-            this.setOpen(false);
-        }
-        if (this.isOpen()) {
-            this.setOpen(!this.fini());
-            result += "Referendum ouvert\n";
-        } else {
-            result += "Referendum fermé\n";
-        }
-        result += "Referendum [" + id + "] " + nom + " : Oui ou Non" + "\n" +
-                " - Date de fin : " + dateFinAffichage() + "\n" +
-                " - Temps restant : " + tempRestant();
-        return result;
+        return id + " - " + nom + " - " + dateFinAffichage() + " - " + (isOpen()? "Ouvert" : "Fermé") + " - " + tempRestant();
     }
 
     public int getMaxDaysInMonth(int year, int month) {

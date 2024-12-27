@@ -37,47 +37,6 @@ public class Client {
         this.password = password;
     }
 
-//    public void run(String hostname, int port) {
-//        try {
-//            // Configuration SSL
-//            System.setProperty("javax.net.ssl.trustStore", "keystore.jks");
-//            System.setProperty("javax.net.ssl.trustStorePassword", "Admin!123");
-//
-//            // Création d'une socket sécurisée
-//            SSLSocketFactory socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-//            try (SSLSocket socket = (SSLSocket) socketFactory.createSocket(hostname, port);
-//                 OutputStream output = socket.getOutputStream();
-//                 PrintWriter writer = new PrintWriter(output, true);
-//                 InputStream input = socket.getInputStream();
-//                 BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
-//
-//                System.out.println("Connexion sécurisée au serveur établie.");
-//                System.out.println("Pour obtenir les informations des refrendum, tapez info");
-//                System.out.println("Pour voter pour un referendum, tapez voter");
-//                System.out.println("Pour obtenir le résultat d'un referendum, tapez resultat");
-//                System.out.println("Pour quitter, tapez exit");
-//
-//                Scanner clavier = new Scanner(System.in);
-//                boolean running = true;
-//
-//                while (running) {
-//                    String commande = clavier.nextLine();
-//                    if (commande.equals("exit")) {
-//                        running = exit(writer, reader);
-//                    } else if (commande.equals("info")) {
-//                        infoReferendum(writer, reader);
-//                    } else if (commande.equals("voter")) {
-//                        voterReferendum(writer, reader, clavier);
-//                    } else if (commande.equals("resultat")) {
-//                        resultatReferendum(writer, clavier, reader);
-//                    }
-//                }
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//    }
-
     private static boolean exit(PrintWriter writer, BufferedReader reader) throws IOException {
         boolean running;
         System.out.println("Fermeture de la connexion.");
@@ -132,7 +91,7 @@ public class Client {
             }
 
             // réception clé publique
-            BigInteger p = new BigInteger(reader.readLine());
+            BigInteger p = new BigInteger(response);
             BigInteger g = new BigInteger(reader.readLine());
             BigInteger h = new BigInteger(reader.readLine());
             BigInteger[] pk = new BigInteger[]{p,g,h};
@@ -145,62 +104,11 @@ public class Client {
             writer.println(choixCrypter[0]);
             writer.println(choixCrypter[1]);
 
-            return true;
+            return reader.readLine().equals("Vote enregistré");
         }
         catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
-//    public void voterReferendum(PrintWriter writer, BufferedReader reader, Scanner clavier) throws IOException {
-//        infoReferendum(writer, reader);
-//
-//        writer.println("VOTER_REFERENDUM");
-//
-//        // choix referendum
-//        System.out.println("Choisir ID du referendum : ");
-//        String idReferendum = clavier.nextLine();
-//        while (!idReferendum.matches("[0-9]+") || idReferendum.isEmpty() || Integer.parseInt(idReferendum) <= 0) {
-//            System.out.println("Choix invalide");
-//            idReferendum = clavier.nextLine();
-//        }
-//        writer.println(Integer.parseInt(idReferendum));
-//        while (reader.readLine().equals("Erreur")) {
-//            System.out.println("Choix invalide");
-//            idReferendum = clavier.nextLine();
-//            while (!idReferendum.matches("[0-9]+") || idReferendum.isEmpty() || Integer.parseInt(idReferendum) <= 0) {
-//                System.out.println("Choix invalide");
-//                idReferendum = clavier.nextLine();
-//            }
-//            writer.println(Integer.parseInt(idReferendum));
-//        }
-//
-//        // réception clé publique
-//        BigInteger p = new BigInteger(reader.readLine());
-//        BigInteger g = new BigInteger(reader.readLine());
-//        BigInteger h = new BigInteger(reader.readLine());
-//        BigInteger[] pk = new BigInteger[]{p,g,h};
-//
-//        // choix vote
-//        System.out.println("Saisir vote (Oui ou Non) : ");
-//        String choix = clavier.nextLine();
-//        while (!choix.equals("Oui") && !choix.equals("Non")) {
-//            System.out.println("Choix invalide");
-//            choix = clavier.nextLine();
-//        }
-//        BigInteger choixint;
-//        if (choix.equals("Oui")) {
-//            choixint = BigInteger.ONE;
-//        } else {
-//            choixint = BigInteger.ZERO;
-//        }
-//        // cryptage
-//        BigInteger[] choixCrypter = Crypto.encrypt(choixint, pk);
-//
-//        writer.println(choixCrypter[0]);
-//        writer.println(choixCrypter[1]);
-//
-//        System.out.println("Server response: " + reader.readLine());
-//    }
 }
 

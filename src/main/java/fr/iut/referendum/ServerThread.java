@@ -3,9 +3,7 @@ package fr.iut.referendum;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Formattable;
 import java.util.List;
 
 public class ServerThread extends Thread {
@@ -28,7 +26,7 @@ public class ServerThread extends Thread {
                 try {
                     Command(text, reader, writer);
                 } catch (Exception e) {
-                    System.err.println("Erreur lors de l'exécution d'une commande : " + e.getMessage());
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -116,7 +114,7 @@ public class ServerThread extends Thread {
             referendum.setOpen(false);
         }
 
-        while (referendum == null || !referendum.fini() || referendum.isOpen() || referendum.getClePublique() == null) {
+        while (referendum == null || referendum.isOpen()) {
             writer.println("Erreur");
             idReferendum = Integer.parseInt(reader.readLine());
             referendum = serveur.getReferendum(idReferendum);
@@ -156,7 +154,7 @@ public class ServerThread extends Thread {
     private void Get_Server_Info(PrintWriter writer) {
         List<Referendum> referendums = serveur.getReferendums();
         for (Referendum referendum : referendums) {
-            writer.println(referendum.getId() + " - " + referendum.getNom() + " - " + referendum.dateFinAffichage());
+            writer.println(referendum.toString());
         }
         writer.println("fin");
     }
@@ -185,14 +183,18 @@ public class ServerThread extends Thread {
         Referendum referendum = serveur.getReferendum(idReferendum);
 
         // vérif si le referendum existe et si il est fini
-        if (referendum == null || referendum.fini() || !referendum.isOpen()) {
+        if (referendum == null || !referendum.isOpen()) {
             writer.println("Erreur");
             return;
         }
-        writer.println("Ok");
 
         // Envoi Clé publique du referendum
         BigInteger[] clePublique = referendum.getClePublique();
+        if (clePublique == null) {
+            writer.println("Erreur");
+            return;
+        }
+
         writer.println(clePublique[0]);
         writer.println(clePublique[1]);
         writer.println(clePublique[2]);
