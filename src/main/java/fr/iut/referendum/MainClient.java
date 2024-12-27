@@ -16,7 +16,7 @@ public class MainClient extends Application {
     private VueChoixReferendums vueChoixReferendums;
     private Stage primaryStage;
 
-    private final boolean avecVueConnexion = false;
+    private final boolean avecVueConnexion = true;
     private final String hostname = "localhost";
     private final int port = 3390;
 
@@ -24,7 +24,6 @@ public class MainClient extends Application {
 
     private PrintWriter writer;
     private BufferedReader reader;
-
 
     @Override
     public void start(Stage primaryStage) {
@@ -35,19 +34,21 @@ public class MainClient extends Application {
     public void connexionClient() {
         if (avecVueConnexion) {
             vueConnexion = new VueConnexion();
+            vueConnexion.clientProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != null) {
+                    client = newValue;
+                    demarrerChoixReferendums();
+                }
+            });
             vueConnexion.show();
-        }
-        else {
+        } else {
             demarrerChoixReferendums();
         }
     }
 
     public void demarrerChoixReferendums() {
-        if (avecVueConnexion) {
-            client = vueConnexion.getClient();
-        }
-        else {
-            client = new Client("bonsc", "12345678"); // Modif pour voter (Login)
+        if (client == null) {
+            client = new Client("bonsc", "12345678");
         }
         configurationSocket();
         vueChoixReferendums = new VueChoixReferendums(client, writer, reader);

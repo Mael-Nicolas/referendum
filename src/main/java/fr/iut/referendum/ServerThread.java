@@ -85,7 +85,7 @@ public class ServerThread extends Thread {
         }
         writer.println("Ok");
         String resultat = referendum.getResultat();
-        if (resultat.isEmpty()) {
+        if (resultat == null) {
             writer.println("Resultat non disponible");
             return;
         }
@@ -147,7 +147,7 @@ public class ServerThread extends Thread {
         // reception du resultat (oui ou non)
         String resultatReferendum = reader.readLine();
         referendum.setResultat(resultatReferendum);
-        System.out.println("Resultat du referendum : " + resultatReferendum);
+        System.out.println("Resultat du referendum " + referendum.getId() + " : " + resultatReferendum);
         writer.println("Resultat enregistré");
     }
 

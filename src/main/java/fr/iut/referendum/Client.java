@@ -1,11 +1,7 @@
 package fr.iut.referendum;
 
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.math.BigInteger;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.Scanner;
 
 public class Client {
@@ -50,26 +46,13 @@ public class Client {
         return running;
     }
 
-    private static void resultatReferendum(PrintWriter writer, Scanner clavier, BufferedReader reader) throws IOException {
+    public String resultatReferendum(PrintWriter writer, BufferedReader reader, int idReferendum) throws IOException {
         writer.println("RESULTAT_CLIENT_REFERENDUM");
-        // choix referendum
-        System.out.println("Choisir ID du referendum : ");
-        String idReferendum = clavier.nextLine();
-        while (!idReferendum.matches("[0-9]+") || idReferendum.isEmpty() || Integer.parseInt(idReferendum) <= 0) {
-            System.out.println("Choix invalide");
-            idReferendum = clavier.nextLine();
+        writer.println(idReferendum);
+        if (reader.readLine().equals("Erreur")) {
+            return null;
         }
-        writer.println(Integer.parseInt(idReferendum));
-        while (reader.readLine().equals("Erreur")) {
-            System.out.println("Choix invalide");
-            idReferendum = clavier.nextLine();
-            while (!idReferendum.matches("[0-9]+") || idReferendum.isEmpty() || Integer.parseInt(idReferendum) <= 0) {
-                System.out.println("Choix invalide");
-                idReferendum = clavier.nextLine();
-            }
-            writer.println(Integer.parseInt(idReferendum));
-        }
-        System.out.println("Server response: " + reader.readLine());
+        return reader.readLine();
     }
 
     public void infoReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
