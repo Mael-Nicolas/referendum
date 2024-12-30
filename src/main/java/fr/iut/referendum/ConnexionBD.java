@@ -1,6 +1,9 @@
 package fr.iut.referendum;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConnexionBD {
 
@@ -37,7 +40,8 @@ public class ConnexionBD {
                 return false;
             }
         } catch (Exception e) {
-            throw new RuntimeException("Problème dans la requête", e);
+            System.out.println("Connexion impossible");
+            return false;
         }
         return true;
     }
@@ -56,7 +60,8 @@ public class ConnexionBD {
                 return false;
             }
         } catch (Exception e) {
-            throw new RuntimeException("Problème dans la requête", e);
+            System.out.println("Problème dans la requête");
+            return false;
         }
         return true;
     }
@@ -74,7 +79,8 @@ public class ConnexionBD {
             System.out.println("Employé déjà existant");
             return false;
         } catch (Exception e) {
-            throw new RuntimeException("Problème dans l'insertion", e);
+            System.out.println("Création impossible");
+            return false;
         }
         return true;
     }
@@ -92,7 +98,8 @@ public class ConnexionBD {
             System.out.println("Clés non existantes dans les tables d'origines ou couple déjà existant : " + e.getMessage());
             return false;
         } catch (Exception e) {
-            throw new RuntimeException("Problème dans l'ajout d'un vote", e);
+            System.out.println("Problème dans l'ajout d'un vote");
+            return false;
         }
         return true;
     }
@@ -100,21 +107,57 @@ public class ConnexionBD {
     /*
     Enregistrement dans la BD d'un nouveau référendum
     */
-    public boolean creerReferendum(int id, String nom, java.util.Date dateFinJava) {
-        String query = "INSERT INTO Referendums VALUES (?, ?, ?, 1)";
+    public boolean creerReferendum(String nom, LocalDateTime dateFin) {
+        String query = "INSERT INTO Referendums (NOMREFERENDUM, DATEFIN) VALUES (?, ?)";
         try (PreparedStatement ps = cn.prepareStatement(query)) {
-            java.sql.Date dateFin = new java.sql.Date(dateFinJava.getTime());
-            ps.setInt(1, id);
-            ps.setString(2, nom);
-            ps.setDate(3, dateFin);
+            ps.setString(1, nom);
+            ps.setTimestamp(2, Timestamp.valueOf(dateFin));
             ps.executeUpdate();
         } catch (SQLIntegrityConstraintViolationException e) {
             System.out.println("Referendum déjà existant");
             return false;
         } catch (Exception e) {
-            throw new RuntimeException("Problème dans l'ajout d'un referendum", e);
+            System.out.println("Problème dans l'ajout d'un referendum");
+            return false;
         }
         return true;
+    }
+
+    public Referendum getDernierReferendum() {
+        String query = "SELECT * FROM Referendums WHERE idReferendum = (SELECT MAX(idReferendum) FROM Referendums)";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            rs = ps.executeQuery();
+            if (!rs.next()) {
+                System.out.println("Il n'y a pas de referendum");
+                return null;
+            }
+            return new Referendum(rs.getInt("idReferendum"),
+                    rs.getString("nomReferendum"),
+                    rs.getTimestamp("dateFin").toLocalDateTime());
+        } catch (Exception e) {
+            System.out.println("Problème dans la requête");
+            return null;
+        }
+    }
+
+    public List<Referendum> getReferendums() {
+        String query = "SELECT * FROM Referendums ORDER BY idReferendum";
+        List<Referendum> referendums = new ArrayList<>();
+        try (Statement s = cn.createStatement();
+             ResultSet rs = s.executeQuery(query)) {
+            while (rs.next()) {
+                Referendum referendum = new Referendum(
+                        rs.getInt("idReferendum"),
+                        rs.getString("nomReferendum"),
+                        rs.getTimestamp("dateFin").toLocalDateTime()
+                );
+                referendums.add(referendum);
+            }
+        } catch (SQLException e) {
+            System.out.println("Problème dans la requête");
+            return referendums;
+        }
+        return referendums;
     }
 
     public void deconnexion() {

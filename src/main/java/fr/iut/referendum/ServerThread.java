@@ -1,16 +1,22 @@
 package fr.iut.referendum;
 
+import javafx.util.converter.LocalDateTimeStringConverter;
+
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class ServerThread extends Thread {
     private Socket socket;
     private Serveur serveur;
+    private ConnexionBD connexionBD;
 
     public ServerThread(Socket socket, Serveur serveur) {
         this.socket = socket;
+        this.connexionBD = new ConnexionBD();
         this.serveur = serveur;
     }
 
@@ -103,7 +109,6 @@ public class ServerThread extends Thread {
         List<Referendum> referendums = serveur.getReferendums();
         for (Referendum referendum : referendums) {
             referendum.setPk(pk);
-            referendum.setOpen(true);
         }
         writer.println("Clé publique enregistrée");
     }
@@ -113,11 +118,7 @@ public class ServerThread extends Thread {
         int idReferendum = Integer.parseInt(reader.readLine());
         Referendum referendum = serveur.getReferendum(idReferendum);
 
-        if (referendum.fini()) {
-            referendum.setOpen(false);
-        }
-
-        while (referendum == null || !referendum.fini() || referendum.isOpen() || referendum.getClePublique() == null) {
+        while (referendum == null || referendum.isOpen()) {
             writer.println("Erreur");
             idReferendum = Integer.parseInt(reader.readLine());
             referendum = serveur.getReferendum(idReferendum);
@@ -150,31 +151,37 @@ public class ServerThread extends Thread {
         // reception du resultat (oui ou non)
         String resultatReferendum = reader.readLine();
         referendum.setResultat(resultatReferendum);
-        System.out.println("Resultat du referendum : " + resultatReferendum);
+        System.out.println("Resultat du referendum " + referendum.getId() + " : " + resultatReferendum);
         writer.println("Resultat enregistré");
     }
 
     private void Get_Server_Info(PrintWriter writer) {
-        writer.println(serveur.toString());
+        List<Referendum> referendums = serveur.getReferendums();
+        for (Referendum referendum : referendums) {
+            writer.println(referendum.toString());
+        }
+        writer.println("fin");
     }
 
     private void New_Referendum(BufferedReader reader, PrintWriter writer) throws IOException {
         String nom = reader.readLine();
-        Date date = creeDate(reader);
+        LocalDateTime date = creeDate(reader);
+        Referendum referendum;
 
-        Referendum referendum = new Referendum(nom, date);
-        serveur.addReferendum(referendum);
-        System.out.println("Referendum créé : " + referendum);
-        writer.println("Referendum créé");
+        if (connexionBD.creerReferendum(nom, date) && (referendum = connexionBD.getDernierReferendum()) != null) {
+            serveur.addReferendum(referendum);
+            System.out.println("Referendum créé : " + referendum);
+            writer.println("Referendum créé");
+        }
+        writer.println("Erreur");
     }
 
-    private Date creeDate(BufferedReader reader) throws IOException {
+    private LocalDateTime creeDate(BufferedReader reader) throws IOException {
         int annee = Integer.parseInt(reader.readLine());
         int mois = Integer.parseInt(reader.readLine());
         int jour = Integer.parseInt(reader.readLine());
         int heure = Integer.parseInt(reader.readLine());
-        Date date = new Date(annee - 1900, mois-1, jour, heure, 0);
-        return date;
+        return LocalDateTime.of(annee, mois, jour, heure, 0);
     }
 
     private void Voter_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {
@@ -182,15 +189,18 @@ public class ServerThread extends Thread {
         Referendum referendum = serveur.getReferendum(idReferendum);
 
         // vérif si le referendum existe et si il est fini
-        while (referendum == null || referendum.fini() || !referendum.isOpen()) {
+        if (referendum == null || !referendum.isOpen()) {
             writer.println("Erreur");
-            idReferendum = Integer.parseInt(reader.readLine());
-            referendum = serveur.getReferendum(idReferendum);
+            return;
         }
-        writer.println("Ok");
 
         // Envoi Clé publique du referendum
         BigInteger[] clePublique = referendum.getClePublique();
+        if (clePublique == null) {
+            writer.println("Erreur");
+            return;
+        }
+
         writer.println(clePublique[0]);
         writer.println(clePublique[1]);
         writer.println(clePublique[2]);

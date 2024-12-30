@@ -2,13 +2,7 @@ package fr.iut.referendum;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-import javax.xml.transform.Source;
 import java.io.*;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.sql.SQLOutput;
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.Scanner;
 
 public class Admin {
@@ -88,7 +82,7 @@ public class Admin {
     public static void infoReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
         writer.println("GET_SERVER_INFO");
         String response;
-        while (!(response = reader.readLine()).isEmpty()) {
+        while (!(response = reader.readLine()).equals("fin")) {
             System.out.println("Server response: " + response);
         }
     }
