@@ -1,27 +1,23 @@
 package fr.iut.referendum;
 
 import java.math.BigInteger;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Referendum {
     private int id;
     private String nom;
     private int nbVotants;
-    private Date dateFin;
+    private LocalDateTime dateFin;
     private BigInteger[] votesAgrege;
     private BigInteger[] pk;
-    private String resultat = null;
-    private boolean open = true;
+    private String resultat;
 
-    private static int idCounter = 1;
-    private Object[] votes;
-
-    public Referendum(String nom, Date dateFin) {
-        this.id = idCounter++;
+    public Referendum(int id, String nom, LocalDateTime dateFin) {
+        this.id = id;
         this.nom = nom;
         this.dateFin = dateFin;
         this.nbVotants = 0;
-        this.votesAgrege = null;
     }
 
     public String getNom() {
@@ -32,16 +28,12 @@ public class Referendum {
         return id;
     }
 
-    public Date getDateFin() {
+    public LocalDateTime getDateFin() {
         return dateFin;
     }
 
     public boolean isOpen() {
-        return open && !fini() && pk != null;
-    }
-
-    public void setOpen(boolean open) {
-        this.open = open;
+        return !fini() && pk != null;
     }
 
     public void setResultat(String resultat) {
@@ -49,77 +41,65 @@ public class Referendum {
     }
 
     public String dateFinAffichage() {
-        int annee = dateFin.getYear() + 1900;
-        int mois = dateFin.getMonth() + 1;
-        return dateFin.getDate() + "/" + mois + "/" + annee + " " + dateFin.getHours() + ":" + dateFin.getMinutes();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return dateFin.format(formatter);
     }
 
     public boolean fini() {
-        Date dateNow = new Date();
-        return dateNow.after(dateFin);
+        return LocalDateTime.now().isAfter(dateFin);
     }
 
     public String tempRestant() {
-        Date dateNow = new Date();
         if (fini()) {
-            open = false;
             return "Terminé";
         }
-        String result = "";
-        int annee = dateFin.getYear() - dateNow.getYear();
-        int mois = dateFin.getMonth() - dateNow.getMonth();
-        int jour = dateFin.getDate() - dateNow.getDate();
-        int heure = dateFin.getHours() - dateNow.getHours();
-        int min = dateFin.getMinutes() - dateNow.getMinutes();
-        if (min < 0) {
-            min += 60;
-            heure--;
+        LocalDateTime now = LocalDateTime.now();
+        int years = dateFin.getYear() - now.getYear();
+        int months = dateFin.getMonthValue() - now.getMonthValue();
+        int days = dateFin.getDayOfMonth() - now.getDayOfMonth();
+        int hours = dateFin.getHour() - now.getHour();
+        int minutes = dateFin.getMinute() - now.getMinute();
+
+        if (minutes < 0) {
+            minutes += 60;
+            hours--;
         }
-        if (heure < 0) {
-            heure += 24;
-            jour--;
+        if (hours < 0) {
+            hours += 24;
+            days--;
         }
-        if (jour < 0) {
-            int nbJour = getMaxDaysInMonth(annee, mois-1);
-            jour += nbJour;
-            mois--;
+        if (days < 0) {
+            months--;
+            days += now.getMonth().length(now.toLocalDate().isLeapYear());
         }
-        if (mois < 0) {
-            mois += 12;
-            annee--;
+        if (months < 0) {
+            years--;
+            months += 12;
         }
-        if (annee != 0) {
-            result += annee + " an(s) ";
+
+        StringBuilder sb = new StringBuilder();
+        if (years > 0) {
+            sb.append(years).append(" an(s) ");
         }
-        if (mois != 0) {
-            result += mois + " mois ";
+        if (months > 0) {
+            sb.append(months).append(" mois ");
         }
-        if (jour != 0) {
-            result += jour + " jour(s) ";
+        if (days > 0) {
+            sb.append(days).append(" jour(s) ");
         }
-        result += heure + " heure(s) ";
-        result += min + " minute(s) ";
-        return result;
+        if (hours > 0) {
+            sb.append(hours).append(" heure(s) ");
+        }
+        if (minutes > 0) {
+            sb.append(minutes).append(" minute(s)");
+        }
+
+        return sb.toString().trim();
     }
 
     @Override
     public String toString() {
         return id + " - " + nom + " - " + dateFinAffichage() + " - " + (isOpen()? "Ouvert" : "Fermé") + " - " + tempRestant();
-    }
-
-    public int getMaxDaysInMonth(int year, int month) {
-        switch (month) {
-            case 4: case 6: case 9: case 11:
-                return 30;
-            case 2:
-                if ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)) {
-                    return 29; // Année bisextile
-                } else {
-                    return 28;
-                }
-            default:
-                return 31;
-        }
     }
 
     public int getNbVotes() {
@@ -156,14 +136,5 @@ public class Referendum {
 
     public String getResultat() {
         return resultat;
-    }
-
-
-    public Object[] getVotes() {
-        return votes;
-    }
-
-    public void setVotes(Object[] votes) {
-        this.votes = votes;
     }
 }

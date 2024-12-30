@@ -48,7 +48,7 @@ public class MainClient extends Application {
 
     public void demarrerChoixReferendums() {
         if (client == null) {
-            client = new Client("bonsc", "12345678");
+            client = new Client("bonsc", "12345");
         }
         configurationSocket();
         vueChoixReferendums = new VueChoixReferendums(client, writer, reader);

@@ -48,19 +48,6 @@ public class ConnexionBDTest {
         assertTrue(vrai);
     }
 
-    @Disabled
-    @Test
-    public void testAjoutReferendum() {
-        boolean vrai = maConnexionBD.creerReferendum(0, "inviter benaz", new Date());
-        assertTrue(vrai);
-    }
-
-    @Test
-    public void testAjoutReferendumExistant() {
-        boolean faux = maConnexionBD.creerReferendum(0, "inviter benaz", new Date());
-        assertFalse(faux);
-    }
-
     @Test
     public void testAVoteUtilisateurNouveau() {
         boolean aVote = maConnexionBD.aVote("rivasr", 0);

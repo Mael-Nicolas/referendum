@@ -4,9 +4,6 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.math.BigInteger;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.security.SecureRandom;
 import java.util.Scanner;
 
 public class Scrutateur {
@@ -141,7 +138,7 @@ public class Scrutateur {
     public void infoReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
         writer.println("GET_SERVER_INFO");
         String response;
-        while (!(response = reader.readLine()).isEmpty()) {
+        while (!(response = reader.readLine()).equals("fin")) {
             System.out.println("Serveur réponse : " + response);
         }
     }

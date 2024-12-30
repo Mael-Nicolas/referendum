@@ -1,6 +1,7 @@
 package fr.iut.referendum.vues;
 
 import fr.iut.referendum.Client;
+import fr.iut.referendum.ConnexionBD;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
@@ -27,6 +28,8 @@ public class VueConnexion extends Stage {
     @FXML
     private Button buttonCreer, buttonConnecter;
 
+    private ConnexionBD connexionBD;
+
     public VueConnexion() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/connexionClient.fxml"));
@@ -40,6 +43,8 @@ public class VueConnexion extends Stage {
 
         buttonConnecter.setOnAction(event -> handleLogin());
         buttonCreer.setOnAction(event -> handleCreateAccount());
+
+        connexionBD = new ConnexionBD();
     }
 
     public Client getClient() {
@@ -62,10 +67,14 @@ public class VueConnexion extends Stage {
             loginStatusLabel.setText("Veuillez remplir tous les champs.");
         } else {
             // Logic to authenticate the user
-            Client client = new Client(username, password);
-            setClient(client);
-            loginStatusLabel.setText("Connexion réussie.");
-            this.close();
+            if (!connexionBD.employeConnexion(username, password)) {
+                loginStatusLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
+            }
+            else {
+                Client client = new Client(username, password);
+                setClient(client);
+                this.close();
+            }
         }
     }
 
@@ -76,10 +85,18 @@ public class VueConnexion extends Stage {
         if (username.isEmpty() || password.isEmpty()) {
             loginStatusLabel.setText("Veuillez remplir tous les champs.");
         } else {
-            // Logic to create a new account
-            Client client = new Client(username, password);
-            //setClient(client);
-            loginStatusLabel.setText("Compte créé avec succès.");
+            if (!connexionBD.creerEmploye(username, password)) {
+                loginStatusLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
+            }
+            else {
+                loginStatusLabel.setText("Compte créé avec succès.");
+            }
         }
+    }
+
+    @Override
+    public void close() {
+        connexionBD.deconnexion();
+        super.close();
     }
 }

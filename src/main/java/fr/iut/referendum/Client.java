@@ -2,10 +2,8 @@ package fr.iut.referendum;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.util.Scanner;
 
 public class Client {
-    public int id;
     private String login;
     private String password;
 
@@ -25,10 +23,7 @@ public class Client {
         this.login = login;
     }
 
-    private static int idCounter = 1;
-
     public Client(String login, String password) {
-        this.id = idCounter++;
         this.login = login;
         this.password = password;
     }

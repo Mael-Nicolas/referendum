@@ -1,17 +1,22 @@
 package fr.iut.referendum;
 
+import javafx.util.converter.LocalDateTimeStringConverter;
+
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ServerThread extends Thread {
     private Socket socket;
     private Serveur serveur;
+    private ConnexionBD connexionBD;
 
     public ServerThread(Socket socket, Serveur serveur) {
         this.socket = socket;
+        this.connexionBD = new ConnexionBD();
         this.serveur = serveur;
     }
 
@@ -100,7 +105,6 @@ public class ServerThread extends Thread {
         List<Referendum> referendums = serveur.getReferendums();
         for (Referendum referendum : referendums) {
             referendum.setPk(pk);
-            referendum.setOpen(true);
         }
         writer.println("Clé publique enregistrée");
     }
@@ -109,10 +113,6 @@ public class ServerThread extends Thread {
 
         int idReferendum = Integer.parseInt(reader.readLine());
         Referendum referendum = serveur.getReferendum(idReferendum);
-
-        if (referendum.fini()) {
-            referendum.setOpen(false);
-        }
 
         while (referendum == null || referendum.isOpen()) {
             writer.println("Erreur");
@@ -161,21 +161,23 @@ public class ServerThread extends Thread {
 
     private void New_Referendum(BufferedReader reader, PrintWriter writer) throws IOException {
         String nom = reader.readLine();
-        Date date = creeDate(reader);
+        LocalDateTime date = creeDate(reader);
+        Referendum referendum;
 
-        Referendum referendum = new Referendum(nom, date);
-        serveur.addReferendum(referendum);
-        System.out.println("Referendum créé : " + referendum);
-        writer.println("Referendum créé");
+        if (connexionBD.creerReferendum(nom, date) && (referendum = connexionBD.getDernierReferendum()) != null) {
+            serveur.addReferendum(referendum);
+            System.out.println("Referendum créé : " + referendum);
+            writer.println("Referendum créé");
+        }
+        writer.println("Erreur");
     }
 
-    private Date creeDate(BufferedReader reader) throws IOException {
+    private LocalDateTime creeDate(BufferedReader reader) throws IOException {
         int annee = Integer.parseInt(reader.readLine());
         int mois = Integer.parseInt(reader.readLine());
         int jour = Integer.parseInt(reader.readLine());
         int heure = Integer.parseInt(reader.readLine());
-        Date date = new Date(annee - 1900, mois-1, jour, heure, 0);
-        return date;
+        return LocalDateTime.of(annee, mois, jour, heure, 0);
     }
 
     private void Voter_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {

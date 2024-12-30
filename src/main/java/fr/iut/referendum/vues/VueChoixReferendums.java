@@ -1,12 +1,12 @@
 package fr.iut.referendum.vues;
 
 import fr.iut.referendum.Client;
+import fr.iut.referendum.ConnexionBD;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 
 import java.io.*;
 
@@ -27,10 +27,13 @@ public class VueChoixReferendums extends BorderPane {
     private BufferedReader reader;
     private PrintWriter writer;
 
+    private ConnexionBD connexionBD;
+
     public VueChoixReferendums(Client client, PrintWriter writer, BufferedReader reader) {
         this.client = client;
         this.reader = reader;
         this.writer = writer;
+        connexionBD = new ConnexionBD();
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/choixReferendums.fxml"));
@@ -91,9 +94,13 @@ public class VueChoixReferendums extends BorderPane {
         boolean choix = radioOui.isSelected();
 
         try {
-            if (!client.voterReferendum(writer, reader, idReferendum, choix)) {
+            if (connexionBD.aVote(client.getLogin(), idReferendum)) {
+                statue.setText("Vous avez déjà voté pour ce référendum");
+            }
+            else if (!client.voterReferendum(writer, reader, idReferendum, choix)) {
                 statue.setText("Vote impossible");
             } else {
+                connexionBD.voter(client.getLogin(), idReferendum);
                 statue.setText("Vote enregistré");
             }
         } catch (Exception e) {
