@@ -254,7 +254,7 @@ public class Scrutateur {
     public void infoReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
         writer.println("GET_SERVER_INFO");
         String response;
-        while (!(response = reader.readLine()).isEmpty()) {
+        while (!(response = reader.readLine()).equals("fin")) {
             System.out.println("Serveur réponse : " + response);
         }
     }
