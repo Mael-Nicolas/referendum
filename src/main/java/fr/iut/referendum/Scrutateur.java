@@ -1,24 +1,17 @@
 package fr.iut.referendum;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.*;
 import java.math.BigInteger;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Scanner;
 
 public class Scrutateur {
-
-    private final BigInteger[] pk;
-    private final BigInteger sk;
-
-    public Scrutateur() {
-        BigInteger[] tab = Crypto.genkey();
-        pk = new BigInteger[]{tab[0], tab[1], tab[2]};
-        sk = tab[3];
-    }
+    BigInteger[] pk;
+    BigInteger sk;
 
     public void run(String hostname, int port) {
         try {
@@ -35,6 +28,8 @@ public class Scrutateur {
                  BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
                 System.out.println("Pour obtenir les informations des refrendum, tapez info");
                 System.out.println("Pour obtenir le résultat d'un referendum, tapez resultat");
+                System.out.println("Pour creer un fichier sécurisation (pk et sk), tapez newFile");
+                System.out.println("Pour utiliser un fichier existant, tapez loadFile");
                 System.out.println("Pour envoyer la clé publique, tapez envoyePK");
                 System.out.println("Pour quitter, tapez exit");
 
@@ -50,12 +45,122 @@ public class Scrutateur {
                         resultatReferendum(writer, reader, clavier);
                     } else if (commande.equals("envoyePK")) {
                         envoyeClePubliqueReferendum(writer, reader);
+                    } else if (commande.equals("newFile")) {
+                        newFileReferendum();
+                    } else if (commande.equals("loadFile")) {
+                        loadFileReferendum();
                     }
                 }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void loadFileReferendum() {
+        System.out.println("Chargement du fichier de sécurisation");
+        try {
+            System.out.println("Tappez le nom du fichier (avec txt à la fin) : ");
+            Scanner clavier = new Scanner(System.in);
+            String fileName = clavier.nextLine();
+            File file = new File(fileName);
+
+            if (!file.exists()) {
+                System.out.println("Fichier inexistant");
+                return;
+            }
+
+            System.out.println("Tappez le mot de passe pour le fichier : ");
+            String password = clavier.nextLine();
+
+            if (password.length() != 16) {
+                System.out.println("Le mot de passe doit avoir exactement 16 caractères.");
+                return;
+            }
+
+            String encryptedData;
+            try (Scanner myReader = new Scanner(file)) {
+                encryptedData = myReader.nextLine();
+            }
+
+            String decryptedData = decryptData(encryptedData, password);
+
+            String[] values = decryptedData.split("\n");
+            if (values.length != 5 || !values[4].equals("Fin") ) {
+                System.out.println("Mot de passe incorrect.");
+                return;
+            }
+
+            pk = new BigInteger[3];
+            pk[0] = new BigInteger(values[0]);
+            pk[1] = new BigInteger(values[1]);
+            pk[2] = new BigInteger(values[2]);
+            sk = new BigInteger(values[3]);
+
+            System.out.println("Chargement du fichier réussi.");
+        } catch (IOException e) {
+            System.out.println("Erreur lors du chargement du fichier");
+        } catch (Exception e) {
+            System.out.println("Erreur lors du déchiffrement des données.");
+        }
+    }
+
+    private String decryptData(String encryptedData, String password) throws Exception {
+        try {
+        SecretKeySpec key = new SecretKeySpec(password.getBytes(), "AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedData));
+        return new String(decryptedBytes);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public void newFileReferendum() {
+        System.out.println("Création du fichier de sécurisation");
+        try {
+            System.out.println("Tappez un mot de passe pour le fichier : ");
+            Scanner clavier = new Scanner(System.in);
+            String password = clavier.nextLine();
+
+            if (password.length() != 16) {
+                System.out.println("Le mot de passe doit avoir exactement 16 caractères.");
+                return;
+            }
+
+            BigInteger[] tab = Crypto.genkey();
+            pk = new BigInteger[]{tab[0], tab[1], tab[2]};
+            sk = tab[3];
+
+            File file = new File("secure.txt");
+            if (file.createNewFile()) {
+                System.out.println("Fichier créé : " + file.getName());
+            } else {
+                System.out.println("Le fichier existe déjà.");
+            }
+            String dataToEncrypt = pk[0] + "\n" + pk[1] + "\n" + pk[2] + "\n" + sk + "\n" + "Fin";
+            String encryptedData = encryptData(dataToEncrypt, password);
+
+            try (FileWriter myWriter = new FileWriter("secure.txt")) {
+                myWriter.write(encryptedData);
+            }
+            System.out.println("Écriture dans le fichier réussie.");
+        } catch (IOException e) {
+            System.out.println("Erreur lors de la création du fichier.");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Erreur lors du chiffrement des données.");
+            e.printStackTrace();
+        }
+    }
+
+    private String encryptData(String data, String password) throws Exception {
+        SecretKeySpec key = new SecretKeySpec(password.getBytes(), "AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, key);
+        byte[] encryptedBytes = cipher.doFinal(data.getBytes());
+        return Base64.getEncoder().encodeToString(encryptedBytes);
     }
 
     private static boolean exit(PrintWriter writer, BufferedReader reader) throws IOException {
@@ -72,6 +177,10 @@ public class Scrutateur {
     }
 
     private void resultatReferendum(PrintWriter writer, BufferedReader reader, Scanner clavier) throws IOException {
+        if (pk == null || sk == null) {
+            System.out.println("Clé non enregistrée");
+            return;
+        }
         writer.println("RESULTAT_REFERENDUM");
 
         // choix referendum
@@ -130,6 +239,10 @@ public class Scrutateur {
     }
 
     private void envoyeClePubliqueReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
+        if (pk == null || sk == null) {
+            System.out.println("Clé non enregistrée");
+            return;
+        }
         System.out.println("Envoie de la clé publique");
         writer.println("CLE_PUBLIQUE_REFERENDUM");
         writer.println(pk[0]);  // p
