@@ -6,6 +6,7 @@ import java.math.BigInteger;
 public class Client {
     private String login;
     private String password;
+    Crypto crypto = new ElGamalCrypto();
 
     public String getPassword() {
         return password;
@@ -77,7 +78,7 @@ public class Client {
             // choix vote
             BigInteger choixint = choix ? BigInteger.ONE : BigInteger.ZERO;
             // cryptage
-            BigInteger[] choixCrypter = Crypto.encrypt(choixint, pk);
+            BigInteger[] choixCrypter = crypto.encrypt(choixint, pk);
 
             writer.println(choixCrypter[0]);
             writer.println(choixCrypter[1]);

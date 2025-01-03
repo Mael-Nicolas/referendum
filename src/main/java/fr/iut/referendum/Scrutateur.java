@@ -12,6 +12,8 @@ import java.util.Scanner;
 public class Scrutateur {
     BigInteger[] pk;
     BigInteger sk;
+    Crypto crypto = new ElGamalCrypto();
+
 
     public void run(String hostname, int port) {
         try {
@@ -129,7 +131,7 @@ public class Scrutateur {
                 return;
             }
 
-            BigInteger[] tab = Crypto.genkey();
+            BigInteger[] tab = crypto.genkey();
             pk = new BigInteger[]{tab[0], tab[1], tab[2]};
             sk = tab[3];
 
@@ -224,7 +226,7 @@ public class Scrutateur {
     public String dechiffrer(BigInteger[] agrege, int nbVotants) {
         System.out.println("Début du déchiffrement");
 
-        BigInteger resultat = Crypto.decrypt(agrege, pk, sk, nbVotants);
+        BigInteger resultat = crypto.decrypt(agrege, pk, sk, nbVotants);
 
         long nbVotantsDiv2 = nbVotants / 2;
         if (resultat == null) {

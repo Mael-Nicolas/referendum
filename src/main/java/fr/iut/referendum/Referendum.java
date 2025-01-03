@@ -12,6 +12,7 @@ public class Referendum {
     private BigInteger[] votesAgrege;
     private BigInteger[] pk;
     private String resultat;
+    Crypto crypto = new ElGamalCrypto();
 
     public Referendum(int id, String nom, LocalDateTime dateFin) {
         this.id = id;
@@ -118,7 +119,7 @@ public class Referendum {
         if (votesAgrege == null) {
             votesAgrege = c;
         } else {
-            votesAgrege = Crypto.agrege(votesAgrege, c, pk);
+            votesAgrege = crypto.agrege(votesAgrege, c, pk);
         }
     }
 

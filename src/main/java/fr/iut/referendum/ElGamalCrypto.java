@@ -1,0 +1,64 @@
+package fr.iut.referendum;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
+public class ElGamalCrypto implements Crypto {
+    private static final SecureRandom random = new SecureRandom();
+
+    public BigInteger[] encrypt(BigInteger m, BigInteger[] pk) {
+        BigInteger p = pk[0];
+        BigInteger g = pk[1];
+        BigInteger h = pk[2];
+        BigInteger k = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE)); // k < p-1
+        BigInteger c1 = g.modPow(k, p); // c1 = g^k mod p
+        BigInteger c2 = g.modPow(m, p).multiply(h.modPow(k, p)).mod(p); // c2 = g^m * publickey^k mod p
+        return new BigInteger[]{c1, c2};
+    }
+
+    public BigInteger[] genkey() {
+        int tauxPremier = 40; // Taux de certitude de primalité
+        BigInteger p;
+        BigInteger q;
+        do {
+            q = new BigInteger(512, tauxPremier, random); // q premier
+            p = q.multiply(BigInteger.valueOf(2)).add(BigInteger.ONE); // p = 2q + 1
+        } while (!p.isProbablePrime(tauxPremier)); // p premier
+        BigInteger g;
+        do {
+            g = new BigInteger(p.subtract(BigInteger.ONE).bitLength() + 128, random).mod(p); // g < p-1
+        } while (g.modPow(BigInteger.TWO, p).compareTo(BigInteger.ONE) == 0); // g^2 mod p == 0
+        if (g.modPow(q, p).compareTo(BigInteger.ONE) != 0) { // g^q mod p != 0
+            g = g.modPow(BigInteger.TWO, p); // g = g^2 mod p
+        }
+        BigInteger sk = new BigInteger(p.subtract(BigInteger.ONE).bitLength(), random).mod(p.subtract(BigInteger.ONE));
+        BigInteger h = g.modPow(sk, p);
+        return new BigInteger[]{p, g, h, sk};
+    }
+
+    public BigInteger[] agrege(BigInteger[] c1, BigInteger[] c2, BigInteger[] pk) {
+        BigInteger p = pk[0];
+        BigInteger u = c1[0].multiply(c2[0]).mod(p);
+        BigInteger v = c1[1].multiply(c2[1]).mod(p);
+        return new BigInteger[]{u, v};
+    }
+
+    public BigInteger decrypt(BigInteger[] c, BigInteger[] pk, BigInteger sk, int nbVotants) {
+        BigInteger c1 = c[0];
+        BigInteger c2 = c[1];
+        BigInteger p = pk[0];
+        BigInteger g = pk[1];
+
+        BigInteger M = c2.multiply(c1.modPow(sk, p).modInverse(p)).mod(p);   // M = v × (u^x)^−1 mod p
+
+        BigInteger B = BigInteger.valueOf(nbVotants);
+        for (BigInteger m = BigInteger.ZERO; m.compareTo(B) <= 0; m = m.add(BigInteger.ONE)) {
+            BigInteger gPowM = g.modPow(m, p);
+            if (gPowM.equals(M)) {
+                return m;
+            }
+        }
+        System.out.println("Déchiffrement échoué");
+        return null;
+    }
+}
