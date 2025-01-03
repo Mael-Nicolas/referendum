@@ -1,5 +1,7 @@
 package fr.iut.referendum;
 
+import fr.iut.referendum.libs.MotDePasse;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ public class ConnexionBD {
                 System.out.println("Nom d'utilisateur inconnu");
                 return false;
             }
-            if (!rs.getString("mdpEmploye").equals(mdp)) {
+            if (!MotDePasse.verifierMDP(mdp, rs.getString("mdpEmploye"))) {
                 System.out.println("Mdp d'utilisateur incorrect");
                 return false;
             }
@@ -73,7 +75,7 @@ public class ConnexionBD {
         String query = "INSERT INTO Employes VALUES (?, ?, 0)";
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, loginEmploye);
-            ps.setString(2, mdp);
+            ps.setString(2, MotDePasse.hacher(mdp));
             ps.executeUpdate();
         } catch (SQLIntegrityConstraintViolationException e) {
             System.out.println("Employé déjà existant");

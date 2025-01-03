@@ -10,7 +10,7 @@ public class MotDePasse {
         return BCrypt.hashpw(password + poivre, BCrypt.gensalt());
     }
 
-    public static boolean verifierHash(String password, String hash) {
+    public static boolean verifierMDP(String password, String hash) {
         return BCrypt.checkpw(password + poivre, hash);
     }
 
