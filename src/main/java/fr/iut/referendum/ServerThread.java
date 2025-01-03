@@ -118,10 +118,8 @@ public class ServerThread extends Thread {
         int idReferendum = Integer.parseInt(reader.readLine());
         Referendum referendum = serveur.getReferendum(idReferendum);
 
-        while (referendum == null || referendum.isOpen()) {
+        if (referendum == null || referendum.isOpen()) {
             writer.println("Erreur");
-            idReferendum = Integer.parseInt(reader.readLine());
-            referendum = serveur.getReferendum(idReferendum);
         }
         writer.println("Ok"); // Pas erreur
 
@@ -152,7 +150,7 @@ public class ServerThread extends Thread {
         String resultatReferendum = reader.readLine();
         referendum.setResultat(resultatReferendum);
         System.out.println("Resultat du referendum " + referendum.getId() + " : " + resultatReferendum);
-        writer.println("Resultat enregistré");
+        writer.println("Resultat du referendum");
     }
 
     private void Get_Server_Info(PrintWriter writer) {

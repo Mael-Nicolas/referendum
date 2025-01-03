@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<fx:root prefHeight="500.0" prefWidth="600.0" type="BorderPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <top>
+        <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+            <Label fx:id="labelClient" text="." />
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="30.0" prefWidth="142.0" text="Faite un choix" />
+        </VBox>
+    </top>
+    <center>
+        <ListView fx:id="listViewReferendums" prefHeight="300.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets top="2.0" />
+            </BorderPane.margin></ListView>
+    </center>
+    <bottom>
+        <VBox alignment="CENTER" spacing="5.0" BorderPane.alignment="CENTER">
+            <Label fx:id="statue" alignment="CENTER" prefHeight="30.0" prefWidth="501.0" text="." />
+            <Label alignment="CENTER" text="Fichier Clé" />
+            <Label fx:id="labelfichier" text="Fichier sélétionner : Aucun" />
+            <TextField fx:id="nomfichier" alignment="CENTER" promptText="Nom du fichier avec .txt">
+            <VBox.margin>
+               <Insets left="200.0" right="200.0" />
+            </VBox.margin></TextField>
+         <PasswordField fx:id="mdpfichier" alignment="CENTER" promptText="Mot de passe">
+            <VBox.margin>
+               <Insets left="200.0" right="200.0" />
+            </VBox.margin>
+         </PasswordField>
+         <HBox alignment="CENTER" prefHeight="40.0" prefWidth="50.0" spacing="10.0">
+            <children>
+                <Button fx:id="buttonNewFile" text="Créer Clé Référendum" />
+                <Button fx:id="buttonLoadFile" text="Ouvrir Clé" />
+                <Button fx:id="buttonEnvoyer" text="Envoyé Clé Référendum" />
+                <Button fx:id="buttonResultat" text="Résultat Référendum" />
+                <Button fx:id="buttonReload" text="Reload" />
+            </children>
+         </HBox>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+        </VBox>
+    </bottom>
+</fx:root>
