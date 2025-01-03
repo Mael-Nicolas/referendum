@@ -4,4 +4,5 @@ open module referendum {
     requires javafx.graphics;
     requires javafx.fxml;
     requires java.sql;
+    requires jbcrypt;
 }
