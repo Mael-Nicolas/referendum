@@ -21,7 +21,7 @@ public class ElGamalCrypto implements Crypto {
         BigInteger p;
         BigInteger q;
         do {
-            q = new BigInteger(512, tauxPremier, random); // q premier
+            q = new BigInteger(3072, tauxPremier, random); // q premier
             p = q.multiply(BigInteger.valueOf(2)).add(BigInteger.ONE); // p = 2q + 1
         } while (!p.isProbablePrime(tauxPremier)); // p premier
         BigInteger g;
