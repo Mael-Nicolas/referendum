@@ -20,7 +20,7 @@ public class MainClient extends Application {
     private final String hostname = "localhost";
     private final int port = 3390;
 
-    private Client client;
+    private String loginClient;
 
     private PrintWriter writer;
     private BufferedReader reader;
@@ -34,24 +34,25 @@ public class MainClient extends Application {
     public void connexionClient() {
         if (avecVueConnexion) {
             vueConnexion = new VueConnexion();
-            vueConnexion.clientProperty().addListener((observable, oldValue, newValue) -> {
+            vueConnexion.loginProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null) {
-                    client = newValue;
+                    loginClient = newValue;
                     demarrerChoixReferendums();
                 }
             });
             vueConnexion.show();
         } else {
+            loginClient = "bonsc";
             demarrerChoixReferendums();
         }
     }
 
     public void demarrerChoixReferendums() {
-        if (client == null) {
-            client = new Client("bonsc", "12345");
+        if (loginClient == null) {
+            return;
         }
         configurationSocket();
-        vueChoixReferendums = new VueChoixReferendums(client, writer, reader);
+        vueChoixReferendums = new VueChoixReferendums(loginClient, writer, reader);
         Scene sceneVueChoixReferendums = new Scene(vueChoixReferendums);
         primaryStage.setScene(sceneVueChoixReferendums);
         primaryStage.setTitle("Choix Referendums");
