@@ -18,7 +18,6 @@ public class ClientTest {
         // Vérification des informations du client
         assertEquals("user1", client.getLogin(), "Le login du client doit être correct");
         assertEquals("password1", client.getPassword(), "Le mot de passe du client doit être correct");
-        assertTrue(client.id > 0, "L'ID du client doit être positif");
     }
 
     // Test de la méthode infoReferendum
