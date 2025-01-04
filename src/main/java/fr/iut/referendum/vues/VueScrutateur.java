@@ -57,6 +57,7 @@ public class VueScrutateur extends BorderPane {
         labelClient.setText("Scrutateur : " + login);
         labelfichier.setText("Fichier sélétionner : Aucun");
 
+        loadReferendums();
         creerBindings();
     }
 
@@ -64,7 +65,6 @@ public class VueScrutateur extends BorderPane {
         buttonReload.setOnMouseClicked(mouseEvent -> {
             loadReferendums();
         } );
-        loadReferendums();
         
         buttonEnvoyer.setOnMouseClicked(mouseEvent -> {
             try {
@@ -167,7 +167,6 @@ public class VueScrutateur extends BorderPane {
             }
 
             String password = mdpfichier.getText();
-            System.out.println(password);
 
             if (password.length() != 16) {
                 statue.setText("Le mot de passe doit avoir exactement 16 caractères.");
@@ -232,24 +231,20 @@ public class VueScrutateur extends BorderPane {
             statue.setText("Clé non enregistrée");
             return;
         }
-        writer.println("RESULTAT_REFERENDUM");
 
         // choix referendum
-        loadReferendums();
         String selectedReferendum = listViewReferendums.getSelectionModel().getSelectedItem();
         if (selectedReferendum == null) {
             statue.setText("Veuillez sélectionner un référendum");
             return;
         }
-        System.out.println("test");
         int idReferendum = Integer.parseInt(selectedReferendum.split(" - ")[0]);
-        System.out.println(idReferendum);
+        writer.println("RESULTAT_REFERENDUM");
         writer.println(idReferendum);
         if (reader.readLine().equals("Erreur")) {
             statue.setText("Choix invalide");
             return;
         }
-        /*
         if (reader.readLine().equals("Error01")){
             statue.setText(reader.readLine() + " : " + reader.readLine());
         }
@@ -260,8 +255,12 @@ public class VueScrutateur extends BorderPane {
             int nbVotants = Integer.parseInt(reader.readLine());
             String decrypted = dechiffrer(resultatAgrege, nbVotants);
             writer.println(decrypted);
+            if (decrypted.equals("Erreur")) {
+                statue.setText("Erreur lors du déchiffrement");
+                return;
+            }
             statue.setText(reader.readLine() + " : " + decrypted);
-        }*/
+        }
     }
 
     public String dechiffrer(BigInteger[] agrege, int nbVotants) {

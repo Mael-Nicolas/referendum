@@ -1,6 +1,5 @@
 package fr.iut.referendum.vues;
 
-import fr.iut.referendum.Client;
 import fr.iut.referendum.ConnexionBD;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -17,7 +16,7 @@ import java.io.IOException;
 
 public class VueConnexion extends Stage {
 
-    private final ObjectProperty<Client> clientProperty = new SimpleObjectProperty<>();
+    private final ObjectProperty<String> loginProperty = new SimpleObjectProperty<>();
 
     @FXML
     private TextField usernameField;
@@ -47,16 +46,12 @@ public class VueConnexion extends Stage {
         connexionBD = new ConnexionBD();
     }
 
-    public Client getClient() {
-        return clientProperty.get();
+    public void setLogin(String client) {
+        this.loginProperty.set(client);
     }
 
-    public void setClient(Client client) {
-        this.clientProperty.set(client);
-    }
-
-    public ObjectProperty<Client> clientProperty() {
-        return clientProperty;
+    public ObjectProperty<String> loginProperty() {
+        return loginProperty;
     }
 
     @FXML
@@ -71,8 +66,7 @@ public class VueConnexion extends Stage {
                 loginStatusLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
             }
             else {
-                Client client = new Client(username, password);
-                setClient(client);
+                setLogin(username);
                 this.close();
             }
         }

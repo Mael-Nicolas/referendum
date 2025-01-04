@@ -40,7 +40,7 @@ public class ServerThread extends Thread {
             }
 
         } catch (IOException ex) {
-            System.out.println("Le client " + socket.getInetAddress() + " s'est déconnecté.");
+            System.out.println(socket.getInetAddress() + " s'est déconnecté.");
         } finally {
             try {
                 if (!socket.isClosed()) {
@@ -106,6 +106,7 @@ public class ServerThread extends Thread {
         BigInteger q = new BigInteger(reader.readLine());
         BigInteger h = new BigInteger(reader.readLine());
         BigInteger[] pk = {p, q, h};
+        // A changer pour avoir la clé publique du referendum sur la base de donnée
         List<Referendum> referendums = serveur.getReferendums();
         for (Referendum referendum : referendums) {
             referendum.setPk(pk);
@@ -120,6 +121,7 @@ public class ServerThread extends Thread {
 
         if (referendum == null || referendum.isOpen()) {
             writer.println("Erreur");
+            return;
         }
         writer.println("Ok"); // Pas erreur
 
@@ -148,6 +150,9 @@ public class ServerThread extends Thread {
         writer.println(referendum.getNbVotants());
         // reception du resultat (oui ou non)
         String resultatReferendum = reader.readLine();
+        if (resultatReferendum.equals("Erreur")) {
+            return;
+        }
         referendum.setResultat(resultatReferendum);
         System.out.println("Resultat du referendum " + referendum.getId() + " : " + resultatReferendum);
         writer.println("Resultat du referendum");

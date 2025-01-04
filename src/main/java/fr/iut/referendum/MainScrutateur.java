@@ -20,7 +20,7 @@ public class MainScrutateur extends Application {
     private final String hostname = "localhost";
     private final int port = 3390;
 
-    private Scrutateur scrutateur;
+    private String loginScrutateur;
 
     private PrintWriter writer;
     private BufferedReader reader;
@@ -34,23 +34,22 @@ public class MainScrutateur extends Application {
     private void connexionScrutateur() {
         if (avecVueConnexion) {
             vueConnexion = new VueConnexion();
-            vueConnexion.clientProperty().addListener((observable, oldValue, newValue) -> {
+            vueConnexion.loginProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null) {
-                    // scrutateur = newValue; modifier pour Scrutateur
-                    // VueConnexion.clientProperty() devrait retourner un Scrutateur
-                    scrutateur = new Scrutateur();
+                    loginScrutateur = newValue;
                     demarrerChoixReferendums();
                 }
             });
             vueConnexion.show();
         } else {
+            loginScrutateur = "bonsc";
             demarrerChoixReferendums();
         }
     }
 
     private void demarrerChoixReferendums() {
-        if (scrutateur == null) {
-            scrutateur = new Scrutateur();
+        if (loginScrutateur == null) {
+            return;
         }
         configurationSocket();
         vueScrutateur = new VueScrutateur("bonsc", writer, reader);
