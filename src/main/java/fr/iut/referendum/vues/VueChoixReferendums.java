@@ -85,8 +85,50 @@ public class VueChoixReferendums extends BorderPane {
             loadReferendums();
         });
         buttonResultat.setOnMouseClicked(mouseEvent -> actionResultat(new ActionEvent()));
+        buttonCGU.setOnMouseClicked(mouseEvent -> {
+            loadCGU();
+        });
+        buttonML.setOnMouseClicked(mouseEvent -> {
+            loadML();
+        });
 
         loadReferendums();
+    }
+
+    private static void loadCGU() {
+        StringBuilder text = new StringBuilder();
+        File file = new File("src/main/Légal/CGU.txt");
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                text.append(scanner.nextLine()).append("\n");
+            }
+        } catch (FileNotFoundException e) {
+            text = new StringBuilder("Erreur de chargement des CGU");
+        }
+
+        Scene scene = new Scene(new VueText(text.toString(), "Conditions générales d'utilisation"));
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("CGU");
+        stage.show();
+    }
+
+    private static void loadML() {
+        StringBuilder text = new StringBuilder();
+        File file = new File("src/main/Légal/ML.txt");
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                text.append(scanner.nextLine()).append("\n");
+            }
+        } catch (FileNotFoundException e) {
+            text = new StringBuilder("Erreur de chargement des mentions légales");
+        }
+
+        Scene scene = new Scene(new VueText(text.toString(), "Mentions légales"));
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("Mentions légales");
+        stage.show();
     }
 
     private void loadReferendums() {

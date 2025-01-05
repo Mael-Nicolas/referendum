@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<fx:root prefHeight="500.0" prefWidth="600.0" type="BorderPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" >
+<fx:root prefHeight="500.0" prefWidth="600.0" type="BorderPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
     <top>
         <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
             <Label fx:id="labelClient" />
@@ -39,6 +34,18 @@
                   <Button fx:id="buttonSelect" text="Voter" />
                   <Button fx:id="buttonResultat" text="Résultat" />
                   <Button fx:id="buttonReload" text="Reload" />
+            </children>
+         </HBox>
+         <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="20.0" prefWidth="20.0">
+           <items>
+             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+           </items>
+         </SplitPane>
+         <HBox fx:id="hboxBas" alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+            <children>
+               <Button fx:id="buttonCGU" mnemonicParsing="false" text="CGU" />
+               <Button fx:id="buttonML" mnemonicParsing="false" text="Mentions Légales" />
             </children>
          </HBox>
         </VBox>
