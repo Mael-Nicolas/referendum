@@ -3,6 +3,7 @@ package fr.iut.referendum.vues;
 import fr.iut.referendum.Client;
 import fr.iut.referendum.ConnexionBD;
 import fr.iut.referendum.Crypto;
+import fr.iut.referendum.ElGamalCrypto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -196,7 +197,8 @@ public class VueChoixReferendums extends BorderPane {
             // choix vote
             BigInteger choixint = choix ? BigInteger.ONE : BigInteger.ZERO;
             // cryptage
-            BigInteger[] choixCrypter = Crypto.encrypt(choixint, pk);
+            ElGamalCrypto crypto = new ElGamalCrypto();
+            BigInteger[] choixCrypter = crypto.encrypt(choixint, pk);
 
             writer.println(choixCrypter[0]);
             writer.println(choixCrypter[1]);

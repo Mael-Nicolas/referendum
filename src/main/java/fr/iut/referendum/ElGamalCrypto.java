@@ -58,7 +58,6 @@ public class ElGamalCrypto implements Crypto {
                 return m;
             }
         }
-        System.out.println("Déchiffrement échoué");
         return null;
     }
 }
