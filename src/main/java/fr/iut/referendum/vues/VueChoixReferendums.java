@@ -6,22 +6,28 @@ import fr.iut.referendum.Crypto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 import java.io.*;
 import java.math.BigInteger;
+import java.util.Scanner;
 
 public class VueChoixReferendums extends BorderPane {
 
     @FXML
     private ListView<String> listViewReferendums;
     @FXML
-    private Button buttonSelect, buttonReload, buttonResultat;
+    private Button buttonSelect, buttonReload, buttonResultat, buttonAdmin, buttonCGU, buttonML;
     @FXML
     private Label labelClient, statue;
     @FXML
     private RadioButton radioOui, radioNon;
+    @FXML
+    private HBox hboxBas;
 
     private ToggleGroup toggleGroup;
 
@@ -52,7 +58,24 @@ public class VueChoixReferendums extends BorderPane {
 
         labelClient.setText("Client : " + login);
 
+        estAdmin();
+
         creerBindings();
+    }
+
+    private void estAdmin() {
+        if (true) { //connexionBD.estAdmin(login);
+            buttonAdmin = new Button("Section administratreur");
+            hboxBas.getChildren().add(buttonAdmin);
+            buttonAdmin.setOnMouseClicked(mouseEvent -> {
+                Scene scene = new Scene(new VueAdmin(login, writer, reader));
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setTitle("Section Administrateur");
+                stage.show();
+            });
+
+        }
     }
 
     private void creerBindings() {
@@ -60,7 +83,7 @@ public class VueChoixReferendums extends BorderPane {
         buttonReload.setOnMouseClicked(mouseEvent -> {
             statue.setText("");
             loadReferendums();
-        } );
+        });
         buttonResultat.setOnMouseClicked(mouseEvent -> actionResultat(new ActionEvent()));
 
         loadReferendums();
@@ -98,8 +121,7 @@ public class VueChoixReferendums extends BorderPane {
         try {
             if (connexionBD.aVote(login, idReferendum)) {
                 statue.setText("Vous avez déjà voté pour ce référendum");
-            }
-            else if (!voterReferendum(writer, reader, idReferendum, choix)) {
+            } else if (!voterReferendum(writer, reader, idReferendum, choix)) {
                 statue.setText("Vote impossible");
             } else {
                 connexionBD.voter(login, idReferendum);
@@ -107,8 +129,7 @@ public class VueChoixReferendums extends BorderPane {
             }
         } catch (Exception e) {
             statue.setText("Erreur de liaison avec le serveur");
-        }
-        finally {
+        } finally {
             listViewReferendums.getItems().clear();
             loadReferendums();
         }
@@ -128,7 +149,7 @@ public class VueChoixReferendums extends BorderPane {
             BigInteger p = new BigInteger(response);
             BigInteger g = new BigInteger(reader.readLine());
             BigInteger h = new BigInteger(reader.readLine());
-            BigInteger[] pk = new BigInteger[]{p,g,h};
+            BigInteger[] pk = new BigInteger[]{p, g, h};
 
             // choix vote
             BigInteger choixint = choix ? BigInteger.ONE : BigInteger.ZERO;
@@ -139,8 +160,7 @@ public class VueChoixReferendums extends BorderPane {
             writer.println(choixCrypter[1]);
 
             return reader.readLine().equals("Vote enregistré");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
