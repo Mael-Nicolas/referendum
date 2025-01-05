@@ -263,7 +263,7 @@ public class VueScrutateur extends BorderPane {
     public String dechiffrer(BigInteger[] agrege, int nbVotants) {
         statue.setText("Début du déchiffrement");
 
-        ElGamalCrypto crypto = new ElGamalCrypto();
+        Crypto crypto = new ElGamalCrypto();
         BigInteger resultat = crypto.decrypt(agrege, pk, sk, nbVotants);
 
         long nbVotantsDiv2 = nbVotants / 2;
