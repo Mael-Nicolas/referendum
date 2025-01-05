@@ -37,7 +37,7 @@
                 <Button fx:id="buttonLoadFile" text="Ouvrir Clé" />
                 <Button fx:id="buttonEnvoyer" text="Envoyé Clé Référendum" />
                 <Button fx:id="buttonResultat" text="Résultat Référendum" />
-                <Button fx:id="buttonReload" text="Reload" />
+                <Button fx:id="buttonReload" text="Rafraîchir" />
             </children>
          </HBox>
          <BorderPane.margin>

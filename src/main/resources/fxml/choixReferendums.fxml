@@ -33,7 +33,7 @@
             <children>
                   <Button fx:id="buttonSelect" text="Voter" />
                   <Button fx:id="buttonResultat" text="Résultat" />
-                  <Button fx:id="buttonReload" text="Reload" />
+                  <Button fx:id="buttonReload" text="Rafraîchir" />
             </children>
          </HBox>
          <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="20.0" prefWidth="20.0">
