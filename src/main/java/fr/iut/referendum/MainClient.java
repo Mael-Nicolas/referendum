@@ -16,7 +16,7 @@ public class MainClient extends Application {
     private VueChoixReferendums vueChoixReferendums;
     private Stage primaryStage;
 
-    private final boolean avecVueConnexion = true;
+    private final boolean avecVueConnexion = false;
     private final String hostname = "localhost";
     private final int port = 3390;
 

@@ -4,14 +4,13 @@ import fr.iut.referendum.ConnexionBD;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 
 public class VueAdmin extends BorderPane {
     @FXML
@@ -20,6 +19,12 @@ public class VueAdmin extends BorderPane {
     // private Button ;
     @FXML
     private Label labelClient, statue;
+    @FXML
+    private Button buttonCreerReferendum, buttonReload;
+    @FXML
+    private TextField nomReferendum, heureFin;
+    @FXML
+    private DatePicker datePickerFin;
 
     private String login;
     private BufferedReader reader;
@@ -48,7 +53,43 @@ public class VueAdmin extends BorderPane {
     }
 
     private void creerBindings() {
+        buttonReload.setOnMouseClicked(mouseEvent -> {
+            statue.setText("");
+            loadReferendums();
+        });
 
+        buttonCreerReferendum.setOnMouseClicked(mouseEvent -> {
+            try {
+                newReferendum();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        loadReferendums();
+    }
+
+    private void newReferendum() throws IOException {
+        if (nomReferendum.getText().isEmpty() || datePickerFin.getValue() == null || heureFin.getText().isEmpty()) {
+            statue.setText("Veuillez remplir tous les champs");
+            return;
+        }
+        writer.println("NEW_REFERENDUM");
+        writer.println(nomReferendum.getText());
+        writer.println(datePickerFin.getValue().getYear());
+        writer.println(datePickerFin.getValue().getMonthValue());
+        writer.println(datePickerFin.getValue().getDayOfMonth());
+        String[] heure = heureFin.getText().split(":");
+        if (!heure[0].matches("[0-9]+") || Integer.parseInt(heure[0]) < 0 || Integer.parseInt(heure[0]) > 23) {
+            statue.setText("Heure invalide");
+            return;
+        }
+        if (!heure[1].matches("[0-9]+") || Integer.parseInt(heure[1]) < 0 || Integer.parseInt(heure[1]) > 59) {
+            statue.setText("Minute invalide");
+            return;
+        }
+        writer.println(heure[0]);
+        writer.println(heure[1]);
+        statue.setText(reader.readLine());
         loadReferendums();
     }
 

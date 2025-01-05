@@ -175,8 +175,8 @@ public class ServerThread extends Thread {
             serveur.addReferendum(referendum);
             System.out.println("Referendum créé : " + referendum);
             writer.println("Referendum créé");
-        }
-        writer.println("Erreur");
+        } else
+            writer.println("Erreur");
     }
 
     private LocalDateTime creeDate(BufferedReader reader) throws IOException {
@@ -184,7 +184,8 @@ public class ServerThread extends Thread {
         int mois = Integer.parseInt(reader.readLine());
         int jour = Integer.parseInt(reader.readLine());
         int heure = Integer.parseInt(reader.readLine());
-        return LocalDateTime.of(annee, mois, jour, heure, 0);
+        int minute = Integer.parseInt(reader.readLine());
+        return LocalDateTime.of(annee, mois, jour, heure, minute);
     }
 
     private void Voter_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {
