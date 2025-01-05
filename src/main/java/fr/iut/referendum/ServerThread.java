@@ -40,7 +40,7 @@ public class ServerThread extends Thread {
             }
 
         } catch (IOException ex) {
-            System.out.println("Le client " + socket.getInetAddress() + " s'est déconnecté.");
+            System.out.println(socket.getInetAddress() + " s'est déconnecté.");
         } finally {
             try {
                 if (!socket.isClosed()) {
@@ -106,6 +106,7 @@ public class ServerThread extends Thread {
         BigInteger q = new BigInteger(reader.readLine());
         BigInteger h = new BigInteger(reader.readLine());
         BigInteger[] pk = {p, q, h};
+        // A changer pour avoir la clé publique du referendum sur la base de donnée
         List<Referendum> referendums = serveur.getReferendums();
         for (Referendum referendum : referendums) {
             referendum.setPk(pk);
@@ -118,10 +119,9 @@ public class ServerThread extends Thread {
         int idReferendum = Integer.parseInt(reader.readLine());
         Referendum referendum = serveur.getReferendum(idReferendum);
 
-        while (referendum == null || referendum.isOpen()) {
+        if (referendum == null || referendum.isOpen()) {
             writer.println("Erreur");
-            idReferendum = Integer.parseInt(reader.readLine());
-            referendum = serveur.getReferendum(idReferendum);
+            return;
         }
         writer.println("Ok"); // Pas erreur
 
@@ -150,9 +150,12 @@ public class ServerThread extends Thread {
         writer.println(referendum.getNbVotants());
         // reception du resultat (oui ou non)
         String resultatReferendum = reader.readLine();
+        if (resultatReferendum.equals("Erreur")) {
+            return;
+        }
         referendum.setResultat(resultatReferendum);
         System.out.println("Resultat du referendum " + referendum.getId() + " : " + resultatReferendum);
-        writer.println("Resultat enregistré");
+        writer.println("Resultat du referendum");
     }
 
     private void Get_Server_Info(PrintWriter writer) {
@@ -172,8 +175,8 @@ public class ServerThread extends Thread {
             serveur.addReferendum(referendum);
             System.out.println("Referendum créé : " + referendum);
             writer.println("Referendum créé");
-        }
-        writer.println("Erreur");
+        } else
+            writer.println("Erreur");
     }
 
     private LocalDateTime creeDate(BufferedReader reader) throws IOException {
@@ -181,7 +184,8 @@ public class ServerThread extends Thread {
         int mois = Integer.parseInt(reader.readLine());
         int jour = Integer.parseInt(reader.readLine());
         int heure = Integer.parseInt(reader.readLine());
-        return LocalDateTime.of(annee, mois, jour, heure, 0);
+        int minute = Integer.parseInt(reader.readLine());
+        return LocalDateTime.of(annee, mois, jour, heure, minute);
     }
 
     private void Voter_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {
