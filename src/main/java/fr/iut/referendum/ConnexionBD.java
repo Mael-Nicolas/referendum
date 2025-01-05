@@ -162,6 +162,68 @@ public class ConnexionBD {
         return referendums;
     }
 
+    // scrutateurs
+
+    /*
+    Permet de créer un nouveau scrutateur dans la BD sans doublons
+    */
+    public boolean creerScrutateur(String loginScrutateur, String mdp) {
+        String query = "INSERT INTO Scrutateur VALUES (?, ?)";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, loginScrutateur);
+            ps.setString(2, MotDePasse.hacher(mdp));
+            ps.executeUpdate();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println("Scrutateur déjà existant");
+            return false;
+        } catch (Exception e) {
+            System.out.println("Création impossible");
+            return false;
+        }
+        return true;
+    }
+
+    /*
+    Renvoi vrai si le login et mdp en paramètres correspondent à un scrutateur dans la BD
+    */
+    public boolean scrutateurConnexion(String login, String mdp) {
+        String query = "SELECT * FROM Scrutateurs WHERE loginScrutateur = ?";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, login);
+            rs = ps.executeQuery();
+            if (!rs.next()) {
+                System.out.println("Nom du scrutateur inconnu");
+                return false;
+            }
+            if (!MotDePasse.verifierMDP(mdp, rs.getString("mdpScrutateur"))) {
+                System.out.println("Mdp du scrutateur incorrect");
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("Connexion impossible");
+            return false;
+        }
+        return true;
+    }
+
+    /*
+    Récupérer les logins des scrutateurs existants
+     */
+    public List<String> getScrutateurs() {
+        String query = "SELECT loginScrutateur FROM Scrutateur ORDER BY loginScrutateur";
+        List<String> scrutateurs = new ArrayList<>();
+        try (Statement s = cn.createStatement();
+             ResultSet rs = s.executeQuery(query)) {
+            while (rs.next()) {
+                scrutateurs.add(rs.getString("loginScrutateur"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Problème dans la requête");
+            return scrutateurs;
+        }
+        return scrutateurs;
+    }
+
     public void deconnexion() {
         try {
             if (rs != null) {
