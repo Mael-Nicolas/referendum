@@ -12,11 +12,18 @@
         </VBox>
     </top>
     <center>
-        <ListView fx:id="listViewReferendums" prefHeight="300.0" prefWidth="800.0" BorderPane.alignment="CENTER">
-            <BorderPane.margin>
-                <Insets top="2.0"/>
-            </BorderPane.margin>
-        </ListView>
+        <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
+            <ListView fx:id="listViewReferendums" prefHeight="300.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+                <BorderPane.margin>
+                    <Insets top="2.0"/>
+                </BorderPane.margin>
+            </ListView>
+            <ListView fx:id="listViewScrutateur" prefHeight="300.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+                <BorderPane.margin>
+                    <Insets top="2.0"/>
+                </BorderPane.margin>
+            </ListView>
+        </VBox>
     </center>
     <bottom>
         <VBox alignment="CENTER" BorderPane.alignment="CENTER">
@@ -38,7 +45,8 @@
                 <children>
                     <Button fx:id="buttonCreerReferendum" mnemonicParsing="false" text="Créer un référendum"/>
                     <Button fx:id="buttonSuprReferendum" mnemonicParsing="false" text="Supprimer un référendum"/>
-                    <Button fx:id="buttonReload" text="Rafraîchir" />
+                    <Button fx:id="buttonReload" text="Rafraîchir"/>
+                    <Button fx:id="buttonGererScrutateur" text="Gérer Scrutateur"/>
                 </children>
             </HBox>
         </VBox>

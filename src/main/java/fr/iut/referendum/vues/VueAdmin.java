@@ -4,8 +4,10 @@ import fr.iut.referendum.ConnexionBD;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,13 +16,11 @@ import java.util.Date;
 
 public class VueAdmin extends BorderPane {
     @FXML
-    private ListView<String> listViewReferendums;
-    // @FXML
-    // private Button ;
+    private ListView<String> listViewReferendums, listViewScrutateur;
     @FXML
     private Label labelClient, statue;
     @FXML
-    private Button buttonCreerReferendum, buttonSuprReferendum, buttonReload;
+    private Button buttonCreerReferendum, buttonSuprReferendum, buttonReload, buttonGererScrutateur;
     @FXML
     private TextField nomReferendum, heureFin;
     @FXML
@@ -56,6 +56,7 @@ public class VueAdmin extends BorderPane {
         buttonReload.setOnMouseClicked(mouseEvent -> {
             statue.setText("");
             loadReferendums();
+            loadScrutateur();
         });
 
         buttonCreerReferendum.setOnMouseClicked(mouseEvent -> {
@@ -73,7 +74,18 @@ public class VueAdmin extends BorderPane {
                 throw new RuntimeException(e);
             }
         });
+
+        buttonGererScrutateur.setOnMouseClicked(mouseEvent -> {
+            Scene scene = new Scene(new VueCrudScrutateur(login, writer, reader));
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("Gestion des scrutateurs");
+            stage.show();
+
+        });
+
         loadReferendums();
+        loadScrutateur();
     }
 
     private void supprimerReferendum() throws IOException {
@@ -126,5 +138,10 @@ public class VueAdmin extends BorderPane {
             statue.setText("Erreur de chargement des référendums");
             throw new RuntimeException(e);
         }
+    }
+
+    private void loadScrutateur() {
+        listViewScrutateur.getItems().clear();
+        // listViewScrutateur.getItems().addAll(connexionBD.getScrutateurs());
     }
 }
