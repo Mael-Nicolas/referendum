@@ -89,7 +89,6 @@ public class ServerThread extends Thread {
     private void supr_referendum(PrintWriter writer, BufferedReader reader) throws IOException {
         int idReferendum = Integer.parseInt(reader.readLine());
         if(true /*connexionBD.supprimerReferendum(idReferendum)*/){
-            serveur.removeReferendum(idReferendum);
             writer.println("Referendum supprimé");
         } else {
             writer.println("Erreur");
@@ -120,7 +119,7 @@ public class ServerThread extends Thread {
         BigInteger h = new BigInteger(reader.readLine());
         BigInteger[] pk = {p, q, h};
         // A changer pour avoir la clé publique du referendum sur la base de donnée
-        List<Referendum> referendums = serveur.getReferendums();
+        List<Referendum> referendums = connexionBD.getReferendums();
         for (Referendum referendum : referendums) {
             referendum.setPk(pk);
         }
@@ -172,7 +171,7 @@ public class ServerThread extends Thread {
     }
 
     private void Get_Server_Info(PrintWriter writer) {
-        List<Referendum> referendums = serveur.getReferendums();
+        List<Referendum> referendums = connexionBD.getReferendums();
         for (Referendum referendum : referendums) {
             writer.println(referendum.toString());
         }
@@ -185,11 +184,11 @@ public class ServerThread extends Thread {
         Referendum referendum;
 
         if (connexionBD.creerReferendum(nom, date) && (referendum = connexionBD.getDernierReferendum()) != null) {
-            serveur.addReferendum(referendum);
             System.out.println("Referendum créé : " + referendum);
             writer.println("Referendum créé");
-        } else
+        } else {
             writer.println("Erreur");
+        }
     }
 
     private LocalDateTime creeDate(BufferedReader reader) throws IOException {

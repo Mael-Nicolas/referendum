@@ -11,24 +11,8 @@ import java.io.*;
 import java.net.*;
 
 public class Serveur {
-    private ConnexionBD connexionBD;
-
-    private List<Referendum> referendums;
-
-    public Serveur(List<Referendum> referendums) {
-        this.referendums = referendums;
-        connexionBD = new ConnexionBD();
-    }
-
-    public List<Referendum> getReferendums() {
-        return referendums;
-    }
-
-    public void addReferendum(Referendum referendum) {
-        this.referendums.add(referendum);
-    }
-
     public Referendum getReferendum(int id) {
+        List<Referendum> referendums = new ConnexionBD().getReferendums();
         for (Referendum referendum : referendums) {
             if (referendum.getId() == id) {
                 return referendum;
@@ -67,9 +51,7 @@ public class Serveur {
                 System.out.println("Adresse locale = " + adrLocale.getHostAddress());
                 System.out.println("Nom de la machine locale = " + adrLocale.getHostName());
 
-                // Affectation des referendums de la BD
-                List<Referendum> referendums = new ConnexionBD().getReferendums();
-                Serveur serveur = new Serveur(referendums);
+                Serveur serveur = new Serveur();
 
                 // Boucle de gestion des connexions clients
                 while (true) {
@@ -80,13 +62,6 @@ public class Serveur {
             }
         } catch (Exception e) {
             throw new RuntimeException("Erreur lors de la création du serveur", e);
-        }
-    }
-
-    public void removeReferendum(int idReferendum) {
-        Referendum referendum = getReferendum(idReferendum);
-        if (referendum != null) {
-            referendums.remove(referendum);
         }
     }
 }
