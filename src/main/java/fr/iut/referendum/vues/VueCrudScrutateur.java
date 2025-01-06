@@ -74,7 +74,8 @@ public class VueCrudScrutateur extends BorderPane {
             statue.setText("Veuillez sélectionner un scrutateur");
             return;
         }
-        // connexionBD.supprimerScrutateur(listViewScrutateur.getSelectionModel().getSelectedItem());
+        String loginScrutateur = listViewScrutateur.getSelectionModel().getSelectedItem();
+        // connexionBD.supprimerScrutateur(loginScrutateur);
     }
 
     private void modifierScrutateur() {
@@ -86,7 +87,8 @@ public class VueCrudScrutateur extends BorderPane {
             statue.setText("Veuillez remplir tous les champs");
             return;
         }
-        // connexionBD.modifierScrutateur(listViewScrutateur.getSelectionModel().getSelectedItem());
+        String loginScrutateur = listViewScrutateur.getSelectionModel().getSelectedItem();
+        // connexionBD.modifierScrutateur(loginScrutateur, usernameField.getText(), passwordField.getText());
     }
 
     private void creerScrutateur() {

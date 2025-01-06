@@ -13,15 +13,6 @@ import java.io.*;
 import java.net.*;
 
 public class Serveur {
-    public Referendum getReferendum(int id) {
-        List<Referendum> referendums = new ConnexionBD().getReferendums();
-        for (Referendum referendum : referendums) {
-            if (referendum.getId() == id) {
-                return referendum;
-            }
-        }
-        return null;
-    }
 
     public static void main(String[] args) {
         try {

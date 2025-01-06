@@ -87,6 +87,12 @@ public class ServerThread extends Thread {
 
     private void supr_referendum(PrintWriter writer, BufferedReader reader) throws IOException {
         int idReferendum = Integer.parseInt(reader.readLine());
+        /*
+        Referendum referendum = connexionBD.getReferendum(idReferendum);
+        if (!referendum.fini()) {
+            writer.println("Erreur");
+            return;
+        }*/
         if(true /*connexionBD.supprimerReferendum(idReferendum)*/){
             writer.println("Referendum supprimé");
         } else {
@@ -96,12 +102,12 @@ public class ServerThread extends Thread {
 
     private void resultat_client_referendum(PrintWriter writer, BufferedReader reader) throws IOException {
         int idReferendum = Integer.parseInt(reader.readLine());
-        Referendum referendum = serveur.getReferendum(idReferendum);
+        Referendum referendum = connexionBD.getReferendum(idReferendum);
 
         while (referendum == null) {
             writer.println("Erreur");
             idReferendum = Integer.parseInt(reader.readLine());
-            referendum = serveur.getReferendum(idReferendum);
+            referendum = connexionBD.getReferendum(idReferendum);
         }
         writer.println("Ok");
         String resultat = referendum.getResultat();
@@ -128,7 +134,7 @@ public class ServerThread extends Thread {
     private void Resultat_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {
 
         int idReferendum = Integer.parseInt(reader.readLine());
-        Referendum referendum = serveur.getReferendum(idReferendum);
+        Referendum referendum = connexionBD.getReferendum(idReferendum);
 
         if (referendum == null || referendum.isOpen()) {
             writer.println("Erreur");
@@ -201,7 +207,7 @@ public class ServerThread extends Thread {
 
     private void Voter_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {
         int idReferendum = Integer.parseInt(reader.readLine());
-        Referendum referendum = serveur.getReferendum(idReferendum);
+        Referendum referendum = connexionBD.getReferendum(idReferendum);
 
         // vérif si le referendum existe et si il est fini
         if (referendum == null || !referendum.isOpen()) {
