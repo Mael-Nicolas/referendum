@@ -133,12 +133,13 @@ public class ConnexionBD {
     Permet de faire un utilisateur en admin
      */
     public boolean passerAdmin(String loginEmploye) {
-        String query = "UPDATE Employes SET estAdmin = 1 WHERE loginEmployes = ?";
+        String query = "UPDATE Employes SET estAdmin = 1 WHERE loginEmploye = ?";
         int res = 0;
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, loginEmploye);
             res = ps.executeUpdate();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             System.out.println("Problème dans la requête");
             return false;
         }
