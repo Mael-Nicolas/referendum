@@ -37,6 +37,7 @@
             <HBox alignment="CENTER" prefHeight="60.0" prefWidth="600.0" spacing="15.0">
                 <children>
                     <Button fx:id="buttonCreerReferendum" mnemonicParsing="false" text="Créer un référendum"/>
+                    <Button fx:id="buttonSuprReferendum" mnemonicParsing="false" text="Supprimer un référendum"/>
                     <Button fx:id="buttonReload" text="Rafraîchir" />
                 </children>
             </HBox>

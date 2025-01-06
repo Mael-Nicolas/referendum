@@ -72,6 +72,9 @@ public class ServerThread extends Thread {
             case "RESULTAT_CLIENT_REFERENDUM":
                 resultat_client_referendum(writer, reader);
                 break;
+            case "SUPPR_REFERENDUM":
+                supr_referendum(writer, reader);
+                break;
             case "EXIT":
                 System.out.println("Le client " + socket.getInetAddress() + " s'est déconnecté.");
                 writer.println("1");
@@ -80,6 +83,16 @@ public class ServerThread extends Thread {
             default:
                 writer.println("Commande inconnue");
                 break;
+        }
+    }
+
+    private void supr_referendum(PrintWriter writer, BufferedReader reader) throws IOException {
+        int idReferendum = Integer.parseInt(reader.readLine());
+        if(true /*connexionBD.supprimerReferendum(idReferendum)*/){
+            serveur.removeReferendum(idReferendum);
+            writer.println("Referendum supprimé");
+        } else {
+            writer.println("Erreur");
         }
     }
 
@@ -211,7 +224,7 @@ public class ServerThread extends Thread {
         // Enregistrement du vote
         BigInteger c1 = new BigInteger(reader.readLine());
         BigInteger c2 = new BigInteger(reader.readLine());
-        BigInteger[] c = new BigInteger[]{c1,c2}; // choix crypté
+        BigInteger[] c = new BigInteger[]{c1, c2}; // choix crypté
         clientAVote(referendum, c);
         writer.println("Vote enregistré");
     }

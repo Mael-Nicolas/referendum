@@ -20,7 +20,7 @@ public class VueAdmin extends BorderPane {
     @FXML
     private Label labelClient, statue;
     @FXML
-    private Button buttonCreerReferendum, buttonReload;
+    private Button buttonCreerReferendum, buttonSuprReferendum, buttonReload;
     @FXML
     private TextField nomReferendum, heureFin;
     @FXML
@@ -65,6 +65,27 @@ public class VueAdmin extends BorderPane {
                 throw new RuntimeException(e);
             }
         });
+
+        buttonSuprReferendum.setOnMouseClicked(mouseEvent -> {
+            try {
+                supprimerReferendum();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        loadReferendums();
+    }
+
+    private void supprimerReferendum() throws IOException {
+        if (listViewReferendums.getSelectionModel().getSelectedItem() == null) {
+            statue.setText("Veuillez sélectionner un référendum");
+            return;
+        }
+        writer.println("SUPPR_REFERENDUM");
+        String selectedReferendum = listViewReferendums.getSelectionModel().getSelectedItem();
+        int idReferendum = Integer.parseInt(selectedReferendum.split(" - ")[0]);
+        writer.println(idReferendum);
+        statue.setText(reader.readLine());
         loadReferendums();
     }
 

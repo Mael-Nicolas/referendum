@@ -82,4 +82,11 @@ public class Serveur {
             throw new RuntimeException("Erreur lors de la création du serveur", e);
         }
     }
+
+    public void removeReferendum(int idReferendum) {
+        Referendum referendum = getReferendum(idReferendum);
+        if (referendum != null) {
+            referendums.remove(referendum);
+        }
+    }
 }
