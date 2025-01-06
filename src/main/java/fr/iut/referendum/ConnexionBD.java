@@ -70,6 +70,28 @@ public class ConnexionBD {
     }
 
     /*
+    Permet de vérifier si un employé est admin
+     */
+    public boolean estAdmin(String loginEmploye) {
+        String query = "SELECT estAdmin FROM Employes WHERE loginEmploye = ?";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, loginEmploye);
+            rs = ps.executeQuery();
+            if (!rs.next()) {
+                System.out.println("Il n'y a pas d'utilisateur de login " + loginEmploye);
+                return false;
+            }
+            if (rs.getInt("estAdmin") == 0) {
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("Problème dans la requête");
+            return false;
+        }
+        return true;
+    }
+
+    /*
     Permet de créer un nouveau employé dans la BD sans doublons
     */
     public boolean creerEmploye(String loginEmploye, String mdp) {
@@ -86,6 +108,41 @@ public class ConnexionBD {
             return false;
         }
         return true;
+    }
+
+    /*
+    Permet de créer un nouveau employé dans la BD sans doublons
+    */
+    public boolean creerAdmin(String loginEmploye, String mdp) {
+        String query = "INSERT INTO Employes VALUES (?, ?, 1)";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, loginEmploye);
+            ps.setString(2, MotDePasse.hacher(mdp));
+            ps.executeUpdate();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println("Employé déjà existant");
+            return false;
+        } catch (Exception e) {
+            System.out.println("Création impossible");
+            return false;
+        }
+        return true;
+    }
+
+    /*
+    Permet de faire un utilisateur en admin
+     */
+    public boolean passerAdmin(String loginEmploye) {
+        String query = "UPDATE Employes SET estAdmin = 1 WHERE loginEmployes = ?";
+        int res = 0;
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, loginEmploye);
+            res = ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Problème dans la requête");
+            return false;
+        }
+        return res > 0;
     }
 
     /*
