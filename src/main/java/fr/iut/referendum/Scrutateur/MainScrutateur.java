@@ -1,6 +1,7 @@
 package fr.iut.referendum.Scrutateur;
 
 import fr.iut.referendum.vues.VueConnexion;
+import fr.iut.referendum.vues.VueConnexionScrutateur;
 import fr.iut.referendum.vues.VueScrutateur;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -12,7 +13,7 @@ import javax.net.ssl.SSLSocketFactory;
 
 public class MainScrutateur extends Application {
 
-    private VueConnexion vueConnexion;
+    private VueConnexionScrutateur vueConnexionScrutateur;
     private VueScrutateur vueScrutateur;
     private Stage primaryStage;
 
@@ -33,14 +34,14 @@ public class MainScrutateur extends Application {
 
     private void connexionScrutateur() {
         if (avecVueConnexion) {
-            vueConnexion = new VueConnexion();
-            vueConnexion.loginProperty().addListener((observable, oldValue, newValue) -> {
+            vueConnexionScrutateur = new VueConnexionScrutateur();
+            vueConnexionScrutateur.loginProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null) {
                     loginScrutateur = newValue;
                     demarrerChoixReferendums();
                 }
             });
-            vueConnexion.show();
+            vueConnexionScrutateur.show();
         } else {
             loginScrutateur = "bonsc";
             demarrerChoixReferendums();
