@@ -2,6 +2,7 @@ package fr.iut.referendum;
 
 import fr.iut.referendum.libs.MotDePasse;
 
+import java.math.BigInteger;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -110,10 +111,12 @@ public class ConnexionBD {
     Enregistrement dans la BD d'un nouveau référendum
     */
     public boolean creerReferendum(String nom, LocalDateTime dateFin) {
-        String query = "INSERT INTO Referendums (NOMREFERENDUM, DATEFIN) VALUES (?, ?)";
+        String query = "INSERT INTO Referendums (NOMREFERENDUM, DATEFIN, AGREGE, AGREGE2) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, nom);
             ps.setTimestamp(2, Timestamp.valueOf(dateFin));
+            ps.setString(3, "0");
+            ps.setString(4, "0");
             ps.executeUpdate();
         } catch (SQLIntegrityConstraintViolationException e) {
             System.out.println("Referendum déjà existant");
@@ -133,9 +136,13 @@ public class ConnexionBD {
                 System.out.println("Il n'y a pas de referendum");
                 return null;
             }
+            BigInteger[] agregeVotes = new BigInteger[2];
+            agregeVotes[0] = BigInteger.valueOf(Integer.parseInt(rs.getString("agrege")));
+            agregeVotes[1] = BigInteger.valueOf(Integer.parseInt(rs.getString("agrege2")));
             return new Referendum(rs.getInt("idReferendum"),
                     rs.getString("nomReferendum"),
-                    rs.getTimestamp("dateFin").toLocalDateTime());
+                    rs.getTimestamp("dateFin").toLocalDateTime(),
+                    agregeVotes);
         } catch (Exception e) {
             System.out.println("Problème dans la requête");
             return null;
@@ -148,10 +155,14 @@ public class ConnexionBD {
         try (Statement s = cn.createStatement();
              ResultSet rs = s.executeQuery(query)) {
             while (rs.next()) {
+                BigInteger[] agregeVotes = new BigInteger[2];
+                agregeVotes[0] = BigInteger.valueOf(Integer.parseInt(rs.getString("agrege")));
+                agregeVotes[1] = BigInteger.valueOf(Integer.parseInt(rs.getString("agrege2")));
                 Referendum referendum = new Referendum(
                         rs.getInt("idReferendum"),
                         rs.getString("nomReferendum"),
-                        rs.getTimestamp("dateFin").toLocalDateTime()
+                        rs.getTimestamp("dateFin").toLocalDateTime(),
+                        agregeVotes
                 );
                 referendums.add(referendum);
             }
@@ -160,6 +171,21 @@ public class ConnexionBD {
             return referendums;
         }
         return referendums;
+    }
+
+    public boolean changerAgregeReferendum(int idReferendum, BigInteger[] votesAgrege) {
+        String query = "UPDATE Referendum SET agrege = ?, agrege2 = ? WHERE loginReferendum = ?";
+        int res = 0;
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, votesAgrege[0].toString());
+            ps.setString(2, votesAgrege[1].toString());
+            ps.setInt(3, idReferendum);
+            res = ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Problème dans la requête");
+            return false;
+        }
+        return res > 0;
     }
 
     // scrutateurs

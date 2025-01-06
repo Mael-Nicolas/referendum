@@ -12,13 +12,16 @@ public class Referendum {
     private BigInteger[] votesAgrege;
     private BigInteger[] pk;
     private String resultat;
+    private final ConnexionBD connexionBD;
     Crypto crypto = new ElGamalCrypto();
 
-    public Referendum(int id, String nom, LocalDateTime dateFin) {
+    public Referendum(int id, String nom, LocalDateTime dateFin, BigInteger[] votesAgrege) {
         this.id = id;
         this.nom = nom;
         this.dateFin = dateFin;
         this.nbVotants = 0;
+        this.votesAgrege = votesAgrege;
+        connexionBD = new ConnexionBD();
     }
 
     public String getNom() {
@@ -116,11 +119,12 @@ public class Referendum {
     }
 
     public void agregeVote(BigInteger[] c) {
-        if (votesAgrege == null) {
+        if (votesAgrege[0].compareTo(BigInteger.ZERO) == 0) {
             votesAgrege = c;
         } else {
             votesAgrege = crypto.agrege(votesAgrege, c, pk);
         }
+        connexionBD.changerAgregeReferendum(id, votesAgrege);
     }
 
     public BigInteger[] getVotesAgrege() {
