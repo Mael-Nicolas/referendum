@@ -1,8 +1,6 @@
 package fr.iut.referendum.vues;
 
-import fr.iut.referendum.Client;
 import fr.iut.referendum.ConnexionBD;
-import fr.iut.referendum.Crypto;
 import fr.iut.referendum.ElGamalCrypto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
