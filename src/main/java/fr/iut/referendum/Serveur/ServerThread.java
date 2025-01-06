@@ -1,12 +1,11 @@
-package fr.iut.referendum;
+package fr.iut.referendum.Serveur;
 
-import javafx.util.converter.LocalDateTimeStringConverter;
+import fr.iut.referendum.ConnexionBD;
 
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ServerThread extends Thread {

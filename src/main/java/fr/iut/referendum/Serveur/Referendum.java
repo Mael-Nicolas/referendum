@@ -1,4 +1,7 @@
-package fr.iut.referendum;
+package fr.iut.referendum.Serveur;
+
+import fr.iut.referendum.Crypto.Crypto;
+import fr.iut.referendum.Crypto.ElGamalCrypto;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;

@@ -1,4 +1,6 @@
-package fr.iut.referendum;
+package fr.iut.referendum.Serveur;
+
+import fr.iut.referendum.ConnexionBD;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;

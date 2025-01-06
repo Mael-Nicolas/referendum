@@ -1,4 +1,4 @@
-package fr.iut.referendum;
+package fr.iut.referendum.Client;
 
 import fr.iut.referendum.vues.VueChoixReferendums;
 import fr.iut.referendum.vues.VueConnexion;

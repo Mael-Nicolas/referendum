@@ -1,4 +1,4 @@
-package fr.iut.referendum;
+package fr.iut.referendum.Crypto;
 
 import java.math.BigInteger;
 

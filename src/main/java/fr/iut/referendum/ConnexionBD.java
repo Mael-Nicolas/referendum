@@ -1,5 +1,6 @@
 package fr.iut.referendum;
 
+import fr.iut.referendum.Serveur.Referendum;
 import fr.iut.referendum.libs.MotDePasse;
 
 import java.sql.*;

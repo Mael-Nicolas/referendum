@@ -1,4 +1,4 @@
-package fr.iut.referendum;
+package fr.iut.referendum.Scrutateur;
 
 import fr.iut.referendum.vues.VueConnexion;
 import fr.iut.referendum.vues.VueScrutateur;
