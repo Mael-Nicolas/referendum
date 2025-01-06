@@ -16,7 +16,7 @@ public class VueCrudScrutateur extends BorderPane {
     @FXML
     private Label labelClient, statue;
     @FXML
-    private Button buttonReload, buttonCreerScrutateur;
+    private Button buttonReload, buttonCreerScrutateur, buttonModifScrutateur, buttonSuprScrutateur;
     @FXML
     private TextField usernameField;
     @FXML
@@ -58,7 +58,35 @@ public class VueCrudScrutateur extends BorderPane {
             creerScrutateur();
         });
 
+        buttonModifScrutateur.setOnMouseClicked(mouseEvent -> {
+            modifierScrutateur();
+        });
+
+        buttonSuprScrutateur.setOnMouseClicked(mouseEvent -> {
+            supprimerScrutateur();
+        });
+
         loadScrutateur();
+    }
+
+    private void supprimerScrutateur() {
+        if (listViewScrutateur.getSelectionModel().getSelectedItem() == null) {
+            statue.setText("Veuillez sélectionner un scrutateur");
+            return;
+        }
+        // connexionBD.supprimerScrutateur(listViewScrutateur.getSelectionModel().getSelectedItem());
+    }
+
+    private void modifierScrutateur() {
+        if (listViewScrutateur.getSelectionModel().getSelectedItem() == null) {
+            statue.setText("Veuillez sélectionner un scrutateur");
+            return;
+        }
+        if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
+            statue.setText("Veuillez remplir tous les champs");
+            return;
+        }
+        // connexionBD.modifierScrutateur(listViewScrutateur.getSelectionModel().getSelectedItem());
     }
 
     private void creerScrutateur() {

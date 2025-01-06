@@ -107,6 +107,7 @@ public class VueAdmin extends BorderPane {
             return;
         }
         writer.println("NEW_REFERENDUM");
+        // ajout du scrutateur ici
         writer.println(nomReferendum.getText());
         writer.println(datePickerFin.getValue().getYear());
         writer.println(datePickerFin.getValue().getMonthValue());
