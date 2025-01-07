@@ -15,7 +15,7 @@ public class Referendum {
     private final ConnexionBD connexionBD;
     Crypto crypto = new ElGamalCrypto();
 
-    public Referendum(int id, String nom, LocalDateTime dateFin, BigInteger[] votesAgrege) {
+    public Referendum(int id, String nom, LocalDateTime dateFin, BigInteger[] votesAgrege, String resultat) {
         this.id = id;
         this.nom = nom;
         this.dateFin = dateFin;

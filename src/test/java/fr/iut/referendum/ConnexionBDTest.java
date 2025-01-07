@@ -109,5 +109,11 @@ public class ConnexionBDTest {
         assertTrue(vrai);
     }
 
+    @Test
+    public void testSuppressionReferendum() {
+        boolean vrai = maConnexionBD.supprimerReferendum(8);
+        assertTrue(vrai);
+    }
+
 
 }
