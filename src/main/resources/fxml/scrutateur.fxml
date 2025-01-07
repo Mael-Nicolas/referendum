@@ -5,17 +5,17 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.Separator?>
-<fx:root prefHeight="500.0" prefWidth="600.0" type="BorderPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" >
+<fx:root prefHeight="496.0" prefWidth="766.0" type="BorderPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" >
     <top>
         <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
-            <Label fx:id="labelClient" text="." />
-            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="30.0" prefWidth="142.0" text="Faite un choix dans vos referendums" />
+            <Label fx:id="labelClient" />
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="30.0" prefWidth="272.0" text="Faite un choix dans vos referendums" />
         </VBox>
     </top>
     <center>
@@ -25,7 +25,7 @@
             </BorderPane.margin></ListView>
     </center>
     <bottom>
-        <VBox alignment="CENTER" spacing="5.0" BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER" prefWidth="583.0" spacing="5.0" BorderPane.alignment="CENTER">
             <Label fx:id="statue" alignment="CENTER" prefHeight="30.0" prefWidth="501.0" />
             <Label alignment="CENTER" text="Fichier Clé" />
             <Label fx:id="labelfichier" text="Fichier sélétionner : Aucun" />
@@ -47,9 +47,6 @@
                     <Button fx:id="buttonReload" text="Rafraîchir" />
                 </children>
              </HBox>
-             <BorderPane.margin>
-                <Insets />
-             </BorderPane.margin>
             <Separator prefWidth="200.0" />
             <HBox fx:id="hboxBas" alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
                 <children>
@@ -57,6 +54,9 @@
                     <Button fx:id="buttonML" mnemonicParsing="false" text="Mentions Légales" />
                 </children>
             </HBox>
+             <BorderPane.margin>
+                <Insets />
+             </BorderPane.margin>
         </VBox>
     </bottom>
 </fx:root>

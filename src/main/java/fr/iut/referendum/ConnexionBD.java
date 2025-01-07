@@ -398,7 +398,7 @@ public class ConnexionBD {
     Renvoi la liste des IDs des référendums dont s'occupe un scrutateur
      */
     public List<Referendum> getReferendumsScrutateur(String loginScrutateur) {
-        String query = "SELECT * FROM Referendums r JOIN Scrutateurs s ON s.loginScrutateur = r.loginScrutateur WHERE loginScrutateur = ?";
+        String query = "SELECT * FROM Referendums r JOIN Scrutateurs s ON s.loginScrutateur = r.loginScrutateur WHERE s.loginScrutateur = ?";
         List<Referendum> referendums = new ArrayList<>();
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, loginScrutateur);
@@ -408,6 +408,7 @@ public class ConnexionBD {
             }
         } catch (SQLException e) {
             System.out.println("Problème dans la requête");
+            System.out.println(e.getMessage());
             return referendums;
         }
         return referendums;

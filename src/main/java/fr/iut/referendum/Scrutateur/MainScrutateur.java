@@ -52,7 +52,7 @@ public class MainScrutateur extends Application {
             return;
         }
         configurationSocket();
-        vueScrutateur = new VueScrutateur("bonsc", writer, reader);
+        vueScrutateur = new VueScrutateur(loginScrutateur, writer, reader);
         Scene sceneVueScrutateur = new Scene(vueScrutateur);
         primaryStage.setScene(sceneVueScrutateur);
         primaryStage.setTitle("Choix Referendums");

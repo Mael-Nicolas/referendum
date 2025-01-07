@@ -199,13 +199,12 @@ public class ServerThread extends Thread {
     }
 
     private void get_Server_Info_Scrutateur(PrintWriter writer, BufferedReader reader) throws IOException {
-        //TODO
-//        String loginScrutateur = reader.readLine();
-//        List<Referendum> referendums = connexionBD.getReferendumsScrutateur(loginScrutateur);
-//        for (Referendum referendum : referendums) {
-//            writer.println(referendum.toString());
-//        }
-//        writer.println("fin");
+        String loginScrutateur = reader.readLine();
+        List<Referendum> referendums = connexionBD.getReferendumsScrutateur(loginScrutateur);
+        for (Referendum referendum : referendums) {
+            writer.println(referendum.toString());
+        }
+        writer.println("fin");
     }
 
     private void newReferendum(PrintWriter writer, BufferedReader reader) throws IOException {

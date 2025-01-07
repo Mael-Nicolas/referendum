@@ -258,19 +258,18 @@ public class VueScrutateur extends BorderPane {
     }
 
     private void loadReferendumsScrutateur() {
-        //TODO
-//        listViewReferendums.getItems().clear();
-//        try {
-//            writer.println("GET_SERVER_INFO_SCRUTATEUR");
-//            writer.println(login);
-//            String response;
-//            while (!(response = reader.readLine()).equals("fin")) {
-//                listViewReferendums.getItems().add(response);
-//            }
-//        } catch (Exception e) {
-//            statue.setText("Erreur de chargement des référendums");
-//            throw new RuntimeException(e);
-//        }
+        listViewReferendums.getItems().clear();
+        try {
+            writer.println("GET_SERVER_INFO_SCRUTATEUR");
+            writer.println(login);
+            String response;
+            while (!(response = reader.readLine()).equals("fin")) {
+                listViewReferendums.getItems().add(response);
+            }
+        } catch (Exception e) {
+            statue.setText("Erreur de chargement des référendums");
+            throw new RuntimeException(e);
+        }
     }
 
     private void resultatReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
