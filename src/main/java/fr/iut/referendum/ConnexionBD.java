@@ -3,6 +3,7 @@ package fr.iut.referendum;
 import fr.iut.referendum.Serveur.Referendum;
 import fr.iut.referendum.libs.MotDePasse;
 
+import java.math.BigInteger;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -70,6 +71,28 @@ public class ConnexionBD {
     }
 
     /*
+    Permet de vérifier si un employé est admin
+     */
+    public boolean estAdmin(String loginEmploye) {
+        String query = "SELECT estAdmin FROM Employes WHERE loginEmploye = ?";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, loginEmploye);
+            rs = ps.executeQuery();
+            if (!rs.next()) {
+                System.out.println("Il n'y a pas d'utilisateur de login " + loginEmploye);
+                return false;
+            }
+            if (rs.getInt("estAdmin") == 0) {
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("Problème dans la requête");
+            return false;
+        }
+        return true;
+    }
+
+    /*
     Permet de créer un nouveau employé dans la BD sans doublons
     */
     public boolean creerEmploye(String loginEmploye, String mdp) {
@@ -86,6 +109,57 @@ public class ConnexionBD {
             return false;
         }
         return true;
+    }
+
+    public boolean supprimerEmploye(String loginEmploye) {
+        String query = "DELETE FROM Employes WHERE loginEmploye = ?";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, loginEmploye);
+            ps.executeUpdate();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println("Erreur BD");
+            return false;
+        } catch (Exception e) {
+            System.out.println("Suppression impossible");
+            return false;
+        }
+        return true;
+    }
+
+    /*
+    Permet de créer un nouveau employé dans la BD sans doublons
+    */
+    public boolean creerAdmin(String loginEmploye, String mdp) {
+        String query = "INSERT INTO Employes VALUES (?, ?, 1)";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, loginEmploye);
+            ps.setString(2, MotDePasse.hacher(mdp));
+            ps.executeUpdate();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println("Employé déjà existant");
+            return false;
+        } catch (Exception e) {
+            System.out.println("Création impossible");
+            return false;
+        }
+        return true;
+    }
+
+    /*
+    Permet de faire un utilisateur en admin
+     */
+    public boolean passerAdmin(String loginEmploye) {
+        String query = "UPDATE Employes SET estAdmin = 1 WHERE loginEmploye = ?";
+        int res = 0;
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, loginEmploye);
+            res = ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Problème dans la requête");
+            return false;
+        }
+        return res > 0;
     }
 
     /*
@@ -111,7 +185,7 @@ public class ConnexionBD {
     Enregistrement dans la BD d'un nouveau référendum
     */
     public boolean creerReferendum(String nom, LocalDateTime dateFin) {
-        String query = "INSERT INTO Referendums (NOMREFERENDUM, DATEFIN) VALUES (?, ?)";
+        String query = "INSERT INTO Referendums (NOMREFERENDUM, DATEFIN, AGREGE, AGREGE2, RESULTAT) VALUES (?, ?, '0', '0', -1)";
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, nom);
             ps.setTimestamp(2, Timestamp.valueOf(dateFin));
@@ -134,9 +208,24 @@ public class ConnexionBD {
                 System.out.println("Il n'y a pas de referendum");
                 return null;
             }
+            BigInteger[] agregeVotes = new BigInteger[2];
+            agregeVotes[0] = BigInteger.valueOf(Integer.parseInt(rs.getString("agrege")));
+            agregeVotes[1] = BigInteger.valueOf(Integer.parseInt(rs.getString("agrege2")));
+            String resultat = "";
+            if (rs.getInt("resultat") == 0) {
+                resultat = "Non";
+            }
+            else if (rs.getInt("resultat") == 1) {
+                resultat = "Oui";
+            }
+            else if (rs.getInt("resultat") == 2) {
+                resultat = "Egalité";
+            }
             return new Referendum(rs.getInt("idReferendum"),
                     rs.getString("nomReferendum"),
-                    rs.getTimestamp("dateFin").toLocalDateTime());
+                    rs.getTimestamp("dateFin").toLocalDateTime(),
+                    agregeVotes,
+                    resultat);
         } catch (Exception e) {
             System.out.println("Problème dans la requête");
             return null;
@@ -149,10 +238,22 @@ public class ConnexionBD {
         try (Statement s = cn.createStatement();
              ResultSet rs = s.executeQuery(query)) {
             while (rs.next()) {
+                BigInteger[] agregeVotes = new BigInteger[2];
+                agregeVotes[0] = BigInteger.valueOf(Integer.parseInt(rs.getString("agrege")));
+                agregeVotes[1] = BigInteger.valueOf(Integer.parseInt(rs.getString("agrege2")));
+                String resultat = "";
+                if (rs.getInt("resultat") == 0) {
+                    resultat = "Non";
+                }
+                else if (rs.getInt("resultat") == 1) {
+                    resultat = "Oui";
+                }
                 Referendum referendum = new Referendum(
                         rs.getInt("idReferendum"),
                         rs.getString("nomReferendum"),
-                        rs.getTimestamp("dateFin").toLocalDateTime()
+                        rs.getTimestamp("dateFin").toLocalDateTime(),
+                        agregeVotes,
+                        resultat
                 );
                 referendums.add(referendum);
             }
@@ -161,6 +262,133 @@ public class ConnexionBD {
             return referendums;
         }
         return referendums;
+    }
+
+    public boolean supprimerReferendum(int idReferendum) {
+        String query = "DELETE FROM Referendums WHERE idReferendum = ?";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setInt(1, idReferendum);
+            ps.executeUpdate();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println("Referendum non existant");
+            return false;
+        } catch (Exception e) {
+            System.out.println("Suppression impossible");
+            return false;
+        }
+        return true;
+    }
+
+
+    public boolean changerAgregeReferendum(int idReferendum, BigInteger[] votesAgrege) {
+        String query = "UPDATE Referendum SET agrege = ?, agrege2 = ? WHERE loginReferendum = ?";
+        int res = 0;
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, votesAgrege[0].toString());
+            ps.setString(2, votesAgrege[1].toString());
+            ps.setInt(3, idReferendum);
+            res = ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Problème dans la requête");
+            return false;
+        }
+        return res > 0;
+    }
+
+    // scrutateurs
+
+    /*
+    Renvoi la liste des IDs des référendums dont s'occupe un scrutateur
+     */
+    public List<String> getReferendumsScrutateur(String loginScrutateur) {
+        String query = "SELECT idReferendums FROM Scrutateur WHERE loginScrutateur = ?";
+        List<String> referendums = new ArrayList<>();
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, loginScrutateur);
+            ResultSet rs = ps.executeQuery(query);
+            while (rs.next()) {
+                referendums.add(rs.getString("idReferendum"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Problème dans la requête");
+            return referendums;
+        }
+        return referendums;
+    }
+
+    /*
+    Permet de créer un nouveau scrutateur dans la BD sans doublons
+    */
+    public boolean creerScrutateur(String loginScrutateur, String mdp) {
+        String query = "INSERT INTO Scrutateur VALUES (?, ?)";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, loginScrutateur);
+            ps.setString(2, MotDePasse.hacher(mdp));
+            ps.executeUpdate();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println("Scrutateur déjà existant");
+            return false;
+        } catch (Exception e) {
+            System.out.println("Création impossible");
+            return false;
+        }
+        return true;
+    }
+
+    /*
+    Renvoi vrai si le login et mdp en paramètres correspondent à un scrutateur dans la BD
+    */
+    public boolean scrutateurConnexion(String login, String mdp) {
+        String query = "SELECT * FROM Scrutateurs WHERE loginScrutateur = ?";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, login);
+            rs = ps.executeQuery();
+            if (!rs.next()) {
+                System.out.println("Nom du scrutateur inconnu");
+                return false;
+            }
+            if (!MotDePasse.verifierMDP(mdp, rs.getString("mdpScrutateur"))) {
+                System.out.println("Mdp du scrutateur incorrect");
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("Connexion impossible");
+            return false;
+        }
+        return true;
+    }
+
+    /*
+    Récupérer les logins des scrutateurs existants
+     */
+    public List<String> getScrutateurs() {
+        String query = "SELECT loginScrutateur FROM Scrutateur ORDER BY loginScrutateur";
+        List<String> scrutateurs = new ArrayList<>();
+        try (Statement s = cn.createStatement();
+             ResultSet rs = s.executeQuery(query)) {
+            while (rs.next()) {
+                scrutateurs.add(rs.getString("loginScrutateur"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Problème dans la requête");
+            return scrutateurs;
+        }
+        return scrutateurs;
+    }
+
+    public boolean supprimerScrutateur(String loginScrutateur) {
+        String query = "DELETE FROM Scrutateur WHERE loginScrutateur = ?";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, loginScrutateur);
+            ps.executeUpdate();
+        } catch (SQLIntegrityConstraintViolationException e) {
+            System.out.println("Erreur BD");
+            return false;
+        } catch (Exception e) {
+            System.out.println("Suppression impossible");
+            return false;
+        }
+        return true;
     }
 
     public void deconnexion() {

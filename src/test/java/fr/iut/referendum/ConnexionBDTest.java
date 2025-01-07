@@ -84,4 +84,36 @@ public class ConnexionBDTest {
         boolean faux = maConnexionBD.voter("nicolasm", 999);
         assertFalse(faux);
     }
+
+    @Test
+    public void testAjoutAdminExistant() {
+        boolean faux = maConnexionBD.creerAdmin("ben01", "12345");
+        assertFalse(faux);
+    }
+
+    @Test
+    public void testPasserAdminDejaAdmin() {
+        boolean vrai = maConnexionBD.passerAdmin("rivasr");
+        assertTrue(vrai);
+    }
+
+    @Test
+    public void testEstPasAdmin() {
+        boolean faux = maConnexionBD.estAdmin("Ben10");
+        assertFalse(faux);
+    }
+
+    @Test
+    public void testEstAdmin() {
+        boolean vrai = maConnexionBD.estAdmin("rivasr");
+        assertTrue(vrai);
+    }
+
+    @Test
+    public void testSuppressionReferendum() {
+        boolean vrai = maConnexionBD.supprimerReferendum(8);
+        assertTrue(vrai);
+    }
+
+
 }
