@@ -83,6 +83,8 @@ public class VueConnexion extends Stage {
                 loginStatusLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
             }
             else {
+                usernameField.clear();
+                passwordField.clear();
                 loginStatusLabel.setText("Compte créé avec succès.");
             }
         }

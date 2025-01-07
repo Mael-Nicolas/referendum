@@ -16,7 +16,7 @@ public class VueCrudScrutateur extends BorderPane {
     @FXML
     private Label labelClient, statue;
     @FXML
-    private Button buttonReload, buttonCreerScrutateur, buttonModifScrutateur, buttonSuprScrutateur;
+    private Button buttonReload, buttonCreerScrutateur, buttonSuprScrutateur;
     @FXML
     private TextField usernameField;
     @FXML
@@ -58,10 +58,6 @@ public class VueCrudScrutateur extends BorderPane {
             creerScrutateur();
         });
 
-        buttonModifScrutateur.setOnMouseClicked(mouseEvent -> {
-            modifierScrutateur();
-        });
-
         buttonSuprScrutateur.setOnMouseClicked(mouseEvent -> {
             supprimerScrutateur();
         });
@@ -81,25 +77,6 @@ public class VueCrudScrutateur extends BorderPane {
         statue.setText("Scrutateur supprimé");
     }
 
-    private void modifierScrutateur() {
-        if (listViewScrutateur.getSelectionModel().getSelectedItem() == null) {
-            statue.setText("Veuillez sélectionner un scrutateur");
-            return;
-        }
-        if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
-            statue.setText("Veuillez remplir tous les champs");
-            return;
-        }
-        String loginScrutateur = listViewScrutateur.getSelectionModel().getSelectedItem();
-        /*
-        A faire si on a le temps
-        if (!connexionBD.modifierScrutateur(loginScrutateur, usernameField.getText(), passwordField.getText()))
-            statue.setText("Erreur de modification du scrutateur");
-        loadScrutateur();
-        statue.setText("Scrutateur modifié");
-         */
-    }
-
     private void creerScrutateur() {
         if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
             statue.setText("Veuillez remplir tous les champs");
@@ -108,6 +85,8 @@ public class VueCrudScrutateur extends BorderPane {
         if(!connexionBD.creerScrutateur(usernameField.getText(), passwordField.getText()))
             statue.setText("Erreur de création du scrutateur");
         loadScrutateur();
+        usernameField.clear();
+        passwordField.clear();
         statue.setText("Scrutateur créé");
     }
 

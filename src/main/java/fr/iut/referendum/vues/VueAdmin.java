@@ -135,6 +135,9 @@ public class VueAdmin extends BorderPane {
         writer.println(heure[1]);
         statue.setText(reader.readLine());
         loadReferendums();
+        nomReferendum.clear();
+        datePickerFin.getEditor().clear();
+        heureFin.clear();
     }
 
     private void loadReferendums() {
