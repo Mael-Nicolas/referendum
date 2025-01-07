@@ -106,12 +106,10 @@ public class VueAdmin extends BorderPane {
             statue.setText("Veuillez remplir tous les champs");
             return;
         }
-        writer.println("NEW_REFERENDUM");
-        // ajout du scrutateur ici
-        writer.println(nomReferendum.getText());
-        writer.println(datePickerFin.getValue().getYear());
-        writer.println(datePickerFin.getValue().getMonthValue());
-        writer.println(datePickerFin.getValue().getDayOfMonth());
+        if (listViewScrutateur.getSelectionModel().getSelectedItem() == null) {
+            statue.setText("Veuillez sélectionner un scrutateur");
+            return;
+        }
         String[] heure = heureFin.getText().split(":");
         if (!heure[0].matches("[0-9]+") || Integer.parseInt(heure[0]) < 0 || Integer.parseInt(heure[0]) > 23) {
             statue.setText("Heure invalide");
@@ -121,6 +119,12 @@ public class VueAdmin extends BorderPane {
             statue.setText("Minute invalide");
             return;
         }
+        writer.println("NEW_REFERENDUM");
+        writer.println(nomReferendum.getText());
+        writer.println(listViewScrutateur.getSelectionModel().getSelectedItem());
+        writer.println(datePickerFin.getValue().getYear());
+        writer.println(datePickerFin.getValue().getMonthValue());
+        writer.println(datePickerFin.getValue().getDayOfMonth());
         writer.println(heure[0]);
         writer.println(heure[1]);
         statue.setText(reader.readLine());

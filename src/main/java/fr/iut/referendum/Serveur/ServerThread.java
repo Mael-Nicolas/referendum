@@ -197,19 +197,14 @@ public class ServerThread extends Thread {
 
     private void New_Referendum(BufferedReader reader, PrintWriter writer) throws IOException {
         String nom = reader.readLine();
+        String scrutateur = reader.readLine();
         LocalDateTime date = creeDate(reader);
-        Referendum referendum;
 
-        /* A faire Cyprien
-
-        if (connexionBD.creerReferendum(nom, date) && (referendum = connexionBD.getDernierReferendum()) != null) {
-            System.out.println("Referendum créé : " + referendum);
+        if (connexionBD.creerReferendum(nom, date, scrutateur)) {
             writer.println("Referendum créé");
         } else {
             writer.println("Erreur");
         }
-
-         */
     }
 
     private LocalDateTime creeDate(BufferedReader reader) throws IOException {

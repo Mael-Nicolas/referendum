@@ -186,7 +186,7 @@ public class ConnexionBD {
     Enregistrement dans la BD d'un nouveau référendum
     */
     public boolean creerReferendum(String nom, LocalDateTime dateFin, String loginScrutateur) {
-        String query = "INSERT INTO Referendums (NOMREFERENDUM, DATEFIN, LOGINSCRUTATEUR, AGREGE, AGREGE2, RESULTAT, Q, G, H) VALUES (?, ?, ?, '0', '0', 'Pas de résultat', '0', '0', '0')";
+        String query = "INSERT INTO Referendums (NOMREFERENDUM, DATEFIN, LOGINSCRUTATEUR, AGREGE, AGREGE2, RESULTAT, P, G, H) VALUES (?, ?, ?, '0', '0', 'Pas de résultat', '0', '0', '0')";
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, nom);
             ps.setTimestamp(2, Timestamp.valueOf(dateFin));
@@ -242,6 +242,7 @@ public class ConnexionBD {
                 referendums.add(mapResultSetToReferendum(rs));
             }
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             System.out.println("Problème dans la requête");
             return referendums;
         }
@@ -260,12 +261,12 @@ public class ConnexionBD {
         agregeVotes[1] = new BigInteger(rs.getString("agrege2"));
 
         // Récupération de la clé publique
-        if ("0".equals(rs.getString("Q"))) {
+        if ("0".equals(rs.getString("P"))) {
             pk[0] = BigInteger.ZERO;
             pk[1] = BigInteger.ZERO;
             pk[2] = BigInteger.ZERO;
         } else {
-            pk[0] = new BigInteger(rs.getString("Q"));
+            pk[0] = new BigInteger(rs.getString("P"));
             pk[1] = new BigInteger(rs.getString("G"));
             pk[2] = new BigInteger(rs.getString("H"));
         }
@@ -314,7 +315,7 @@ public class ConnexionBD {
     }
 
     public void changerClePubliqueReferendum(int idReferendum, BigInteger[] pk) {
-        String query = "UPDATE Referendums SET Q = ?, G = ?, H = ? WHERE loginReferendum = ?";
+        String query = "UPDATE Referendums SET P = ?, G = ?, H = ? WHERE loginReferendum = ?";
         int res = 0;
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, pk[0].toString());
