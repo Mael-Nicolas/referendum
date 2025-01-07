@@ -121,6 +121,7 @@ public class ConnexionBD {
             System.out.println("Employé déjà existant");
             return false;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             System.out.println("Création impossible");
             return false;
         }
@@ -136,6 +137,7 @@ public class ConnexionBD {
             System.out.println("Erreur BD");
             return false;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             System.out.println("Suppression impossible");
             return false;
         }
@@ -151,7 +153,7 @@ public class ConnexionBD {
         try (Statement s = cn.createStatement();
              ResultSet rs = s.executeQuery(query)) {
             while (rs.next()) {
-                employes.add(rs.getString("loginEmployes"));
+                employes.add(rs.getString("loginEmploye"));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
