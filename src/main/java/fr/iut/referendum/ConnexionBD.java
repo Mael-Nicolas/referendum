@@ -186,7 +186,7 @@ public class ConnexionBD {
     Enregistrement dans la BD d'un nouveau référendum
     */
     public boolean creerReferendum(String nom, LocalDateTime dateFin, String loginScrutateur) {
-        String query = "INSERT INTO Referendums (NOMREFERENDUM, DATEFIN, LOGINSCRUTATEUR, AGREGE, AGREGE2, RESULTAT, Q, G, H) VALUES (?, ?, ?, '0', '0', -1, '0', '0', '0')";
+        String query = "INSERT INTO Referendums (NOMREFERENDUM, DATEFIN, LOGINSCRUTATEUR, AGREGE, AGREGE2, RESULTAT, Q, G, H) VALUES (?, ?, ?, '0', '0', 'Pas de résultat', '0', '0', '0')";
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, nom);
             ps.setTimestamp(2, Timestamp.valueOf(dateFin));
@@ -259,15 +259,6 @@ public class ConnexionBD {
         agregeVotes[0] = new BigInteger(rs.getString("agrege"));
         agregeVotes[1] = new BigInteger(rs.getString("agrege2"));
 
-        // Récupération du résultat
-        String resultat;
-        switch (rs.getInt("resultat")) {
-            case 0 -> resultat = "Non";
-            case 1 -> resultat = "Oui";
-            case 2 -> resultat = "Égalité";
-            default -> resultat = "Inconnu";
-        }
-
         // Récupération de la clé publique
         if ("0".equals(rs.getString("Q"))) {
             pk[0] = BigInteger.ZERO;
@@ -285,7 +276,7 @@ public class ConnexionBD {
                 rs.getString("nomReferendum"),
                 rs.getTimestamp("dateFin").toLocalDateTime(),
                 agregeVotes,
-                resultat,
+                rs.getString("resultat"),
                 pk
         );
     }
@@ -320,6 +311,32 @@ public class ConnexionBD {
             return false;
         }
         return res > 0;
+    }
+
+    public void changerClePubliqueReferendum(int idReferendum, BigInteger[] pk) {
+        String query = "UPDATE Referendums SET Q = ?, G = ?, H = ? WHERE loginReferendum = ?";
+        int res = 0;
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setString(1, pk[0].toString());
+            ps.setString(2, pk[1].toString());
+            ps.setString(3, pk[2].toString());
+            ps.setInt(4, idReferendum);
+            res = ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Problème dans la requête");
+        }
+    }
+
+    public void changerResultatReferendum(int id, String resultat) {
+        String query = "UPDATE Referendums SET Resultat = ? WHERE loginReferendum = ?";
+        int res = 0;
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setInt(1, id);
+            ps.setString(2, resultat);
+            res = ps.executeUpdate();
+        } catch (Exception e) {
+            System.out.println("Problème dans la requête");
+        }
     }
 
     // scrutateurs
@@ -433,11 +450,4 @@ public class ConnexionBD {
         }
     }
 
-    public void changerClePubliqueReferendum(int id, BigInteger[] pk) {
-
-    }
-
-    public void changerResultatReferendum(int id, String resultat) {
-
-    }
 }
