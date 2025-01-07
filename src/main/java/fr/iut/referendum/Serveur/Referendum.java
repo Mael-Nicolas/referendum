@@ -1,5 +1,6 @@
 package fr.iut.referendum.Serveur;
 
+import fr.iut.referendum.ConnexionBD;
 import fr.iut.referendum.Crypto.Crypto;
 import fr.iut.referendum.Crypto.ElGamalCrypto;
 
@@ -25,6 +26,7 @@ public class Referendum {
         this.nbVotants = 0;
         this.votesAgrege = votesAgrege;
         connexionBD = new ConnexionBD();
+        this.resultat = resultat;
     }
 
     public String getNom() {
