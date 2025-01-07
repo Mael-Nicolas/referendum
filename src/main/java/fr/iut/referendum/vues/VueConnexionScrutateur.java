@@ -25,29 +25,28 @@ public class VueConnexionScrutateur extends Stage {
     @FXML
     private Label loginStatusLabel;
     @FXML
-    private Button buttonCreer, buttonConnecter;
+    private Button buttonConnecter;
 
     private ConnexionBD connexionBD;
 
     public VueConnexionScrutateur() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/connexionClient.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/connexionScrutateur.fxml"));
             loader.setController(this);
             Scene scene = new Scene(loader.load());
             this.setScene(scene);
-            this.setTitle("Connexion Client");
+            this.setTitle("Connexion Scrutateur");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         buttonConnecter.setOnAction(event -> handleLogin());
-        buttonCreer.setOnAction(event -> handleCreateAccount());
 
         connexionBD = new ConnexionBD();
     }
 
-    public void setLogin(String client) {
-        this.loginProperty.set(client);
+    public void setLogin(String scrutateur) {
+        this.loginProperty.set(scrutateur);
     }
 
     public ObjectProperty<String> loginProperty() {
@@ -62,28 +61,12 @@ public class VueConnexionScrutateur extends Stage {
             loginStatusLabel.setText("Veuillez remplir tous les champs.");
         } else {
             // Logic to authenticate the user
-            if (!connexionBD.employeConnexion(username, password)) {
+            if (!connexionBD.scrutateurConnexion(username, password)) {
                 loginStatusLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
             }
             else {
                 setLogin(username);
                 this.close();
-            }
-        }
-    }
-
-    @FXML
-    private void handleCreateAccount() {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
-        if (username.isEmpty() || password.isEmpty()) {
-            loginStatusLabel.setText("Veuillez remplir tous les champs.");
-        } else {
-            if (!connexionBD.creerEmploye(username, password)) {
-                loginStatusLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
-            }
-            else {
-                loginStatusLabel.setText("Compte créé avec succès.");
             }
         }
     }

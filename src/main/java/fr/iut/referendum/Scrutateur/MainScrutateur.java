@@ -1,6 +1,5 @@
 package fr.iut.referendum.Scrutateur;
 
-import fr.iut.referendum.vues.VueConnexion;
 import fr.iut.referendum.vues.VueConnexionScrutateur;
 import fr.iut.referendum.vues.VueScrutateur;
 import javafx.application.Application;
@@ -38,17 +37,17 @@ public class MainScrutateur extends Application {
             vueConnexionScrutateur.loginProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null) {
                     loginScrutateur = newValue;
-                    demarrerChoixReferendums();
+                    demarrerScrutateur();
                 }
             });
             vueConnexionScrutateur.show();
         } else {
             loginScrutateur = "bonsc";
-            demarrerChoixReferendums();
+            demarrerScrutateur();
         }
     }
 
-    private void demarrerChoixReferendums() {
+    private void demarrerScrutateur() {
         if (loginScrutateur == null) {
             return;
         }
