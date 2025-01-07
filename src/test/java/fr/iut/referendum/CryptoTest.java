@@ -1,7 +1,6 @@
 package fr.iut.referendum;
 
 import fr.iut.referendum.Crypto.Crypto;
-import fr.iut.referendum.Crypto.ElGamalCrypto;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;

@@ -1,8 +1,7 @@
 package fr.iut.referendum.Serveur;
 
 import fr.iut.referendum.ConnexionBD;
-import fr.iut.referendum.Crypto.Crypto;
-import fr.iut.referendum.Crypto.ElGamalCrypto;
+import fr.iut.referendum.Crypto;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -17,7 +16,6 @@ public class Referendum {
     private BigInteger[] pk;
     private String resultat;
     private final ConnexionBD connexionBD;
-    Crypto crypto = new ElGamalCrypto();
 
     public Referendum(int id, String nom, LocalDateTime dateFin, BigInteger[] votesAgrege, String resultat, BigInteger[] pk) {
         this.id = id;
@@ -129,7 +127,7 @@ public class Referendum {
         if (votesAgrege[0].compareTo(BigInteger.ZERO) == 0) {
             votesAgrege = c;
         } else {
-            votesAgrege = crypto.agrege(votesAgrege, c, pk);
+            votesAgrege = Crypto.agrege(votesAgrege, c, pk);
         }
         connexionBD.changerAgregeReferendum(id, votesAgrege);
     }

@@ -1,9 +1,7 @@
 package fr.iut.referendum.vues;
 
 import fr.iut.referendum.*;
-import fr.iut.referendum.Crypto.Crypto;
-import fr.iut.referendum.Crypto.ElGamalCrypto;
-import fr.iut.referendum.Serveur.Referendum;
+import fr.iut.referendum.Crypto;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -16,7 +14,6 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.math.BigInteger;
 import java.util.Base64;
-import java.util.List;
 import java.util.Scanner;
 
 public class VueScrutateur extends BorderPane {
@@ -217,8 +214,7 @@ public class VueScrutateur extends BorderPane {
                 statue.setText("Le mot de passe doit avoir exactement 16 caractères.");
                 return;
             }
-            ElGamalCrypto crypto = new ElGamalCrypto();
-            BigInteger[] tab = crypto.genkey();
+            BigInteger[] tab = Crypto.genkey();
             pk = new BigInteger[]{tab[0], tab[1], tab[2]};
             sk = tab[3];
 
@@ -312,8 +308,7 @@ public class VueScrutateur extends BorderPane {
     public String dechiffrer(BigInteger[] agrege, int nbVotants) {
         statue.setText("Début du déchiffrement");
 
-        Crypto crypto = new ElGamalCrypto();
-        BigInteger resultat = crypto.decrypt(agrege, pk, sk, nbVotants);
+        BigInteger resultat = Crypto.decrypt(agrege, pk, sk, nbVotants);
 
         long nbVotantsDiv2 = nbVotants / 2;
         if (resultat == null) {
