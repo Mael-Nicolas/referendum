@@ -128,6 +128,25 @@ public class ConnexionBD {
     }
 
     /*
+    Récupérer les logins des employes existants
+     */
+    public List<String> getEmployes() {
+        String query = "SELECT loginEmploye FROM Employes ORDER BY loginEmploye";
+        List<String> employes = new ArrayList<>();
+        try (Statement s = cn.createStatement();
+             ResultSet rs = s.executeQuery(query)) {
+            while (rs.next()) {
+                employes.add(rs.getString("loginEmployes"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Problème dans la requête");
+            return employes;
+        }
+        return employes;
+    }
+
+    /*
     Permet de créer un nouveau employé dans la BD sans doublons
     */
     public boolean creerAdmin(String loginEmploye, String mdp) {
