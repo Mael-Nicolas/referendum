@@ -387,7 +387,7 @@ public class ConnexionBD {
         List<Referendum> referendums = new ArrayList<>();
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, loginScrutateur);
-            ResultSet rs = ps.executeQuery(query);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 referendums.add(mapResultSetToReferendum(rs));
             }
