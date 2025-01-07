@@ -115,5 +115,12 @@ public class ConnexionBDTest {
         assertTrue(vrai);
     }
 
+    @Test
+    public void testEtat() {
+        System.out.println(maConnexionBD.estOuvert(15));
+        maConnexionBD.changerEtat(15, 1);
+        System.out.println(maConnexionBD.estOuvert(15));
+    }
+
 
 }

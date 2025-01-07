@@ -218,7 +218,7 @@ public class ConnexionBD {
     }
 
     public Referendum getReferendum(int idReferendum) {
-        String query = "SELECT * FROM Referendums WHERE idReferendum = ?)";
+        String query = "SELECT * FROM Referendums WHERE idReferendum = ?";
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setInt(1, idReferendum);
             rs = ps.executeQuery();
@@ -230,6 +230,42 @@ public class ConnexionBD {
         } catch (Exception e) {
             System.out.println("Problème dans la requête");
             return null;
+        }
+    }
+
+    /*
+    Vérifier si un référendum est ouvert
+     */
+    public boolean estOuvert(int idReferendum) {
+        String query = "SELECT referendumOuvert FROM Referendums WHERE idReferendum = ?";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setInt(1, idReferendum);
+            rs = ps.executeQuery();
+            if (!rs.next()) {
+                System.out.println("Il n'y a pas de referendum");
+                return false;
+            }
+            return rs.getInt("referendumOuvert") == 1;
+        } catch (Exception e) {
+            System.out.println("Problème dans la requête");
+            return false;
+        }
+    }
+
+    /*
+    Ouvrir (1) ou fermer (0) un referendum
+     */
+    public void changerEtat(int idReferendum, int etat) {
+        String query = "UPDATE Referendums SET referendumOuvert = ? WHERE idReferendum = ?";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setInt(1, etat);
+            ps.setInt(2, idReferendum);
+            ps.executeUpdate();
+            if (!rs.next()) {
+                System.out.println("Il n'y a pas de referendum");
+            }
+        } catch (Exception e) {
+            System.out.println("Problème dans la requête");
         }
     }
 
@@ -323,6 +359,7 @@ public class ConnexionBD {
             ps.setString(3, pk[2].toString());
             ps.setInt(4, idReferendum);
             res = ps.executeUpdate();
+            changerEtat(idReferendum, 1);    // ouvrir le référendum quand il reçoit une clé
         } catch (Exception e) {
             System.out.println("Problème dans la requête");
         }

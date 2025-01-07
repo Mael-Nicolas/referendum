@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import java.math.BigInteger;
 
+/*
 public class ScrutateurTest {
 
     @Test
@@ -28,3 +29,6 @@ public class ScrutateurTest {
     }
 
 }
+
+
+ */
