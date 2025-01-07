@@ -18,7 +18,7 @@ public class VueAdmin extends BorderPane {
     @FXML
     private Label labelClient, statue;
     @FXML
-    private Button buttonCreerReferendum, buttonSuprReferendum, buttonReload, buttonGererScrutateur;
+    private Button buttonCreerReferendum, buttonSuprReferendum, buttonReload, buttonGererScrutateur, buttonGererClient;
     @FXML
     private TextField nomReferendum, heureFin;
     @FXML
@@ -80,6 +80,14 @@ public class VueAdmin extends BorderPane {
             stage.setTitle("Gestion des scrutateurs");
             stage.show();
 
+        });
+
+        buttonGererClient.setOnMouseClicked(mouseEvent -> {
+            Scene scene = new Scene(new VueCrudClient(login, writer, reader));
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("Gestion des clients");
+            stage.show();
         });
 
         loadReferendums();
