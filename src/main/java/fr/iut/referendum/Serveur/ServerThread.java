@@ -6,6 +6,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 public class ServerThread extends Thread {
@@ -34,7 +35,7 @@ public class ServerThread extends Thread {
                         System.out.println("Le client " + socket.getInetAddress() + " s'est déconnecté.");
                         break;
                     }
-                    System.err.println("Erreur lors de l'exécution d'une commande : " + e.getMessage() /* + "\n" + Arrays.toString(e.getStackTrace()) */);
+                    System.err.println("Erreur lors de l'exécution d'une commande : " + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
                 }
             }
 
@@ -74,6 +75,9 @@ public class ServerThread extends Thread {
             case "SUPPR_REFERENDUM":
                 supr_referendum(writer, reader);
                 break;
+            case "LIST_SCRUTATEUR":
+                list_scrutateur(writer, reader);
+                break;
             case "EXIT":
                 System.out.println("Le client " + socket.getInetAddress() + " s'est déconnecté.");
                 writer.println("1");
@@ -83,6 +87,14 @@ public class ServerThread extends Thread {
                 writer.println("Commande inconnue");
                 break;
         }
+    }
+
+    private void list_scrutateur(PrintWriter writer, BufferedReader reader) {
+        List<String> scrutateurs = connexionBD.getScrutateurs();
+        for (String scrutateur : scrutateurs) {
+            writer.println(scrutateur);
+        }
+        writer.println("fin");
     }
 
     private void supr_referendum(PrintWriter writer, BufferedReader reader) throws IOException {

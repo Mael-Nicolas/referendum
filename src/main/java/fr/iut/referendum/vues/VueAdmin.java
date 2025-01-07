@@ -143,6 +143,15 @@ public class VueAdmin extends BorderPane {
 
     private void loadScrutateur() {
         listViewScrutateur.getItems().clear();
-        // listViewScrutateur.getItems().addAll(connexionBD.getScrutateurs());
+        try {
+            writer.println("LIST_SCRUTATEUR");
+            String response;
+            while (!(response = reader.readLine()).equals("fin")) {
+                listViewScrutateur.getItems().add(response);
+            }
+        } catch (Exception e) {
+            statue.setText("Erreur de chargement des référendums");
+            throw new RuntimeException(e);
+        }
     }
 }
