@@ -16,7 +16,7 @@ public class ServerThread extends Thread {
 
     public ServerThread(Socket socket, Serveur serveur) {
         this.socket = socket;
-        this.connexionBD = new ConnexionBD();
+        this.connexionBD = ConnexionBD.getInstance();
         this.serveur = serveur;
     }
 
@@ -55,16 +55,19 @@ public class ServerThread extends Thread {
     private void Command(String command, BufferedReader reader, PrintWriter writer) throws IOException {
         switch (command) {
             case "GET_SERVER_INFO":
-                Get_Server_Info(writer);
+                getServerInfo(writer);
+                break;
+            case "GET_SERVER_INFO_SCRUTATEUR":
+                get_Server_Info_Scrutateur(writer, reader);
                 break;
             case "NEW_REFERENDUM":
-                New_Referendum(reader, writer);
+                newReferendum(writer, reader);
                 break;
             case "VOTER_REFERENDUM":
-                Voter_Referendum(writer, reader);
+                voter_Referendum(writer, reader);
                 break;
             case "RESULTAT_REFERENDUM":
-                Resultat_Referendum(writer, reader);
+                resultat_Referendum(writer, reader);
                 break;
             case "CLE_PUBLIQUE_REFERENDUM":
                 cle_publique_referendum(writer, reader);
@@ -143,7 +146,7 @@ public class ServerThread extends Thread {
         writer.println("Clé publique enregistrée");
     }
 
-    private void Resultat_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {
+    private void resultat_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {
 
         int idReferendum = Integer.parseInt(reader.readLine());
         Referendum referendum = getReferendum(idReferendum);
@@ -187,7 +190,7 @@ public class ServerThread extends Thread {
         writer.println("Resultat du referendum");
     }
 
-    private void Get_Server_Info(PrintWriter writer) {
+    private void getServerInfo(PrintWriter writer) {
         List<Referendum> referendums = connexionBD.getReferendums();
         for (Referendum referendum : referendums) {
             writer.println(referendum.toString());
@@ -195,7 +198,16 @@ public class ServerThread extends Thread {
         writer.println("fin");
     }
 
-    private void New_Referendum(BufferedReader reader, PrintWriter writer) throws IOException {
+    private void get_Server_Info_Scrutateur(PrintWriter writer, BufferedReader reader) throws IOException {
+        String loginScrutateur = reader.readLine();
+        List<Referendum> referendums = connexionBD.getReferendumsScrutateur(loginScrutateur);
+        for (Referendum referendum : referendums) {
+            writer.println(referendum.toString());
+        }
+        writer.println("fin");
+    }
+
+    private void newReferendum(PrintWriter writer, BufferedReader reader) throws IOException {
         String nom = reader.readLine();
         String scrutateur = reader.readLine();
         LocalDateTime date = creeDate(reader);
@@ -216,7 +228,7 @@ public class ServerThread extends Thread {
         return LocalDateTime.of(annee, mois, jour, heure, minute);
     }
 
-    private void Voter_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {
+    private void voter_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {
         int idReferendum = Integer.parseInt(reader.readLine());
         Referendum referendum = getReferendum(idReferendum);
 
@@ -250,7 +262,7 @@ public class ServerThread extends Thread {
     }
 
     public Referendum getReferendum(int id) {
-        List<Referendum> referendums = new ConnexionBD().getReferendums();
+        List<Referendum> referendums = connexionBD.getReferendums();
         for (Referendum referendum : referendums) {
             if (referendum.getId() == id) {
                 return referendum;

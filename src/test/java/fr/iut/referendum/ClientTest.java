@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 import java.math.BigInteger;
 import java.util.Scanner;
-/*
+
 public class ClientTest {
 
     // Test de la création d'un client
@@ -42,6 +42,3 @@ public class ClientTest {
         assertTrue(output.contains("GET_SERVER_INFO"), "La requête 'GET_SERVER_INFO' doit être envoyée");
     }
 }
-
-
- */

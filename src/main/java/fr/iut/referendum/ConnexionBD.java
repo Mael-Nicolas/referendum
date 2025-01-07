@@ -8,9 +8,10 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ConnexionBD {
+
+    private static volatile ConnexionBD instance;
 
     private String mdp = "07042004";
     private String url = "jdbc:oracle:thin:@162.38.222.149:1521:iut";
@@ -19,12 +20,26 @@ public class ConnexionBD {
     private Connection cn;
     private ResultSet rs;
 
-    public ConnexionBD() {
+    private ConnexionBD() {
         try {
             cn = DriverManager.getConnection(url, login, mdp);
         } catch (Exception e) {
             throw new RuntimeException("Pas de connexion");
         }
+    }
+
+    /*
+    Singleton pour la connexion à la BD (avec une gestion des problèmes de thread)
+     */
+    public static ConnexionBD getInstance() {
+        if (instance == null) {
+            synchronized (ConnexionBD.class) {
+                if (instance == null) {
+                    instance = new ConnexionBD();
+                }
+                }
+        }
+        return instance;
     }
 
     /*
@@ -402,7 +417,7 @@ public class ConnexionBD {
     Renvoi la liste des IDs des référendums dont s'occupe un scrutateur
      */
     public List<Referendum> getReferendumsScrutateur(String loginScrutateur) {
-        String query = "SELECT * FROM Referendums r JOIN Scrutateurs s ON s.loginScrutateur = r.loginScrutateur WHERE loginScrutateur = ?";
+        String query = "SELECT * FROM Referendums r JOIN Scrutateurs s ON s.loginScrutateur = r.loginScrutateur WHERE s.loginScrutateur = ?";
         List<Referendum> referendums = new ArrayList<>();
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, loginScrutateur);
@@ -412,6 +427,7 @@ public class ConnexionBD {
             }
         } catch (SQLException e) {
             System.out.println("Problème dans la requête");
+            System.out.println(e.getMessage());
             return referendums;
         }
         return referendums;

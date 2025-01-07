@@ -1,7 +1,7 @@
 package fr.iut.referendum.vues;
 
 import fr.iut.referendum.ConnexionBD;
-import fr.iut.referendum.Crypto.ElGamalCrypto;
+import fr.iut.referendum.Crypto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -40,7 +40,7 @@ public class VueChoixReferendums extends BorderPane {
         this.login = login;
         this.reader = reader;
         this.writer = writer;
-        connexionBD = new ConnexionBD();
+        connexionBD = ConnexionBD.getInstance();
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/choixReferendums.fxml"));
@@ -195,8 +195,7 @@ public class VueChoixReferendums extends BorderPane {
             // choix vote
             BigInteger choixint = choix ? BigInteger.ONE : BigInteger.ZERO;
             // cryptage
-            ElGamalCrypto crypto = new ElGamalCrypto();
-            BigInteger[] choixCrypter = crypto.encrypt(choixint, pk);
+            BigInteger[] choixCrypter = Crypto.encrypt(choixint, pk);
 
             writer.println(choixCrypter[0]);
             writer.println(choixCrypter[1]);

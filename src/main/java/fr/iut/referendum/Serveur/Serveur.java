@@ -1,14 +1,11 @@
 package fr.iut.referendum.Serveur;
 
-import fr.iut.referendum.ConnexionBD;
-
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 import java.security.*;
 import java.security.cert.CertificateException;
-import java.util.List;
 import java.io.*;
 import java.net.*;
 

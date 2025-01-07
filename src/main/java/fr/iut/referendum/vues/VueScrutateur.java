@@ -1,12 +1,13 @@
 package fr.iut.referendum.vues;
 
 import fr.iut.referendum.*;
-import fr.iut.referendum.Crypto.Crypto;
-import fr.iut.referendum.Crypto.ElGamalCrypto;
+import fr.iut.referendum.Crypto;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -22,7 +23,7 @@ public class VueScrutateur extends BorderPane {
     @FXML
     private Label labelClient,statue,labelfichier;
     @FXML
-    private Button buttonNewFile, buttonEnvoyer, buttonResultat, buttonReload, buttonLoadFile;
+    private Button buttonNewFile, buttonEnvoyer, buttonResultat, buttonReload, buttonLoadFile, buttonCGU, buttonML;
     @FXML
     private TextField nomfichier;
     @FXML
@@ -41,7 +42,7 @@ public class VueScrutateur extends BorderPane {
         this.login = login;
         this.reader = reader;
         this.writer = writer;
-        connexionBD = new ConnexionBD();
+        connexionBD = ConnexionBD.getInstance();
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/scrutateur.fxml"));
@@ -55,13 +56,13 @@ public class VueScrutateur extends BorderPane {
         labelClient.setText("Scrutateur : " + login);
         labelfichier.setText("Fichier sélétionner : Aucun");
 
-        loadReferendums();
+        loadReferendumsScrutateur();
         creerBindings();
     }
 
     private void creerBindings() {
         buttonReload.setOnMouseClicked(mouseEvent -> {
-            loadReferendums();
+            loadReferendumsScrutateur();
         } );
         
         buttonEnvoyer.setOnMouseClicked(mouseEvent -> {
@@ -87,6 +88,49 @@ public class VueScrutateur extends BorderPane {
                 throw new RuntimeException(e);
             }
         });
+
+        buttonCGU.setOnMouseClicked(mouseEvent -> {
+            loadCGU();
+        });
+        buttonML.setOnMouseClicked(mouseEvent -> {
+            loadML();
+        });
+    }
+
+    private static void loadCGU() {
+        StringBuilder text = new StringBuilder();
+        File file = new File("src/main/Légal/CGU.txt");
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                text.append(scanner.nextLine()).append("\n");
+            }
+        } catch (FileNotFoundException e) {
+            text = new StringBuilder("Erreur de chargement des CGU");
+        }
+
+        Scene scene = new Scene(new VueText(text.toString(), "Conditions générales d'utilisation"));
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("CGU");
+        stage.show();
+    }
+
+    private static void loadML() {
+        StringBuilder text = new StringBuilder();
+        File file = new File("src/main/Légal/ML.txt");
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                text.append(scanner.nextLine()).append("\n");
+            }
+        } catch (FileNotFoundException e) {
+            text = new StringBuilder("Erreur de chargement des mentions légales");
+        }
+
+        Scene scene = new Scene(new VueText(text.toString(), "Mentions légales"));
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("Mentions légales");
+        stage.show();
     }
 
     private void loadFile() {
@@ -170,8 +214,7 @@ public class VueScrutateur extends BorderPane {
                 statue.setText("Le mot de passe doit avoir exactement 16 caractères.");
                 return;
             }
-            ElGamalCrypto crypto = new ElGamalCrypto();
-            BigInteger[] tab = crypto.genkey();
+            BigInteger[] tab = Crypto.genkey();
             pk = new BigInteger[]{tab[0], tab[1], tab[2]};
             sk = tab[3];
 
@@ -210,10 +253,11 @@ public class VueScrutateur extends BorderPane {
         }
     }
 
-    private void loadReferendums() {
+    private void loadReferendumsScrutateur() {
         listViewReferendums.getItems().clear();
         try {
-            writer.println("GET_SERVER_INFO");
+            writer.println("GET_SERVER_INFO_SCRUTATEUR");
+            writer.println(login);
             String response;
             while (!(response = reader.readLine()).equals("fin")) {
                 listViewReferendums.getItems().add(response);
@@ -264,8 +308,7 @@ public class VueScrutateur extends BorderPane {
     public String dechiffrer(BigInteger[] agrege, int nbVotants) {
         statue.setText("Début du déchiffrement");
 
-        Crypto crypto = new ElGamalCrypto();
-        BigInteger resultat = crypto.decrypt(agrege, pk, sk, nbVotants);
+        BigInteger resultat = Crypto.decrypt(agrege, pk, sk, nbVotants);
 
         long nbVotantsDiv2 = nbVotants / 2;
         if (resultat == null) {

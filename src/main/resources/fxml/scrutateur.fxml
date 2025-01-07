@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<fx:root prefHeight="500.0" prefWidth="600.0" type="BorderPane" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="496.0" prefWidth="766.0" type="BorderPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" >
     <top>
         <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
-            <Label fx:id="labelClient" text="." />
-            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="30.0" prefWidth="142.0" text="Faite un choix" />
+            <Label fx:id="labelClient" />
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="30.0" prefWidth="272.0" text="Faite un choix dans vos referendums" />
         </VBox>
     </top>
     <center>
@@ -18,31 +25,38 @@
             </BorderPane.margin></ListView>
     </center>
     <bottom>
-        <VBox alignment="CENTER" spacing="5.0" BorderPane.alignment="CENTER">
-            <Label fx:id="statue" alignment="CENTER" prefHeight="30.0" prefWidth="501.0" text="." />
+        <VBox alignment="CENTER" prefWidth="583.0" spacing="5.0" BorderPane.alignment="CENTER">
+            <Label fx:id="statue" alignment="CENTER" prefHeight="30.0" prefWidth="501.0" />
             <Label alignment="CENTER" text="Fichier Clé" />
             <Label fx:id="labelfichier" text="Fichier sélétionner : Aucun" />
             <TextField fx:id="nomfichier" alignment="CENTER" promptText="Nom du fichier avec .txt">
             <VBox.margin>
                <Insets left="200.0" right="200.0" />
             </VBox.margin></TextField>
-         <PasswordField fx:id="mdpfichier" alignment="CENTER" promptText="Mot de passe">
-            <VBox.margin>
-               <Insets left="200.0" right="200.0" />
-            </VBox.margin>
-         </PasswordField>
-         <HBox alignment="CENTER" prefHeight="40.0" prefWidth="50.0" spacing="10.0">
-            <children>
-                <Button fx:id="buttonNewFile" text="Créer Clé Référendum" />
-                <Button fx:id="buttonLoadFile" text="Ouvrir Clé" />
-                <Button fx:id="buttonEnvoyer" text="Envoyé Clé Référendum" />
-                <Button fx:id="buttonResultat" text="Résultat Référendum" />
-                <Button fx:id="buttonReload" text="Rafraîchir" />
-            </children>
-         </HBox>
-         <BorderPane.margin>
-            <Insets />
-         </BorderPane.margin>
+             <PasswordField fx:id="mdpfichier" alignment="CENTER" promptText="Mot de passe">
+                <VBox.margin>
+                   <Insets left="200.0" right="200.0" />
+                </VBox.margin>
+             </PasswordField>
+             <HBox alignment="CENTER" prefHeight="40.0" prefWidth="50.0" spacing="10.0">
+                <children>
+                    <Button fx:id="buttonNewFile" text="Créer Clé Référendum" />
+                    <Button fx:id="buttonLoadFile" text="Ouvrir Clé" />
+                    <Button fx:id="buttonEnvoyer" text="Envoyé Clé Référendum" />
+                    <Button fx:id="buttonResultat" text="Résultat Référendum" />
+                    <Button fx:id="buttonReload" text="Rafraîchir" />
+                </children>
+             </HBox>
+            <Separator prefWidth="200.0" />
+            <HBox fx:id="hboxBas" alignment="CENTER_RIGHT" prefHeight="30.0" prefWidth="200.0" spacing="10.0">
+                <children>
+                    <Button fx:id="buttonCGU" mnemonicParsing="false" text="CGU" />
+                    <Button fx:id="buttonML" mnemonicParsing="false" text="Mentions Légales" />
+                </children>
+            </HBox>
+             <BorderPane.margin>
+                <Insets />
+             </BorderPane.margin>
         </VBox>
     </bottom>
 </fx:root>
