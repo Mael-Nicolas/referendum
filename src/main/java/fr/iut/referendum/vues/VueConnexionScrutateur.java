@@ -42,7 +42,7 @@ public class VueConnexionScrutateur extends Stage {
 
         buttonConnecter.setOnAction(event -> handleLogin());
 
-        connexionBD = new ConnexionBD();
+        connexionBD = ConnexionBD.getInstance();
     }
 
     public void setLogin(String scrutateur) {

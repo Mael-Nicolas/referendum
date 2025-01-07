@@ -43,7 +43,7 @@ public class VueConnexion extends Stage {
         buttonConnecter.setOnAction(event -> handleLogin());
         buttonCreer.setOnAction(event -> handleCreateAccount());
 
-        connexionBD = new ConnexionBD();
+        connexionBD = ConnexionBD.getInstance();
     }
 
     public void setLogin(String client) {

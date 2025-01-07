@@ -40,7 +40,7 @@ public class VueChoixReferendums extends BorderPane {
         this.login = login;
         this.reader = reader;
         this.writer = writer;
-        connexionBD = new ConnexionBD();
+        connexionBD = ConnexionBD.getInstance();
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/choixReferendums.fxml"));

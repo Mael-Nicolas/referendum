@@ -25,7 +25,7 @@ public class Referendum {
         this.dateFin = dateFin;
         this.nbVotants = 0;
         this.votesAgrege = votesAgrege;
-        connexionBD = new ConnexionBD();
+        connexionBD = ConnexionBD.getInstance();
         this.resultat = resultat;
         this.pk = pk;
     }

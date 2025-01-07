@@ -16,7 +16,7 @@ public class ServerThread extends Thread {
 
     public ServerThread(Socket socket, Serveur serveur) {
         this.socket = socket;
-        this.connexionBD = new ConnexionBD();
+        this.connexionBD = ConnexionBD.getInstance();
         this.serveur = serveur;
     }
 
@@ -263,7 +263,7 @@ public class ServerThread extends Thread {
     }
 
     public Referendum getReferendum(int id) {
-        List<Referendum> referendums = new ConnexionBD().getReferendums();
+        List<Referendum> referendums = connexionBD.getReferendums();
         for (Referendum referendum : referendums) {
             if (referendum.getId() == id) {
                 return referendum;
