@@ -47,6 +47,7 @@ public class Referendum {
 
     public void setResultat(String resultat) {
         this.resultat = resultat;
+        connexionBD.changerResultatReferendum(id, resultat);
     }
 
     public String dateFinAffichage() {
@@ -138,6 +139,7 @@ public class Referendum {
 
     public void setPk(BigInteger[] pk) {
         this.pk = pk;
+        connexionBD.changerClePubliqueReferendum(id, pk);
     }
 
     public int getNbVotants() {
