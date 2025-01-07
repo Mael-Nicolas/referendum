@@ -81,6 +81,9 @@ public class ServerThread extends Thread {
             case "LIST_SCRUTATEUR":
                 list_scrutateur(writer, reader);
                 break;
+            case "LIST_CLIENTS":
+                list_client(writer, reader);
+                break;
             case "EXIT":
                 System.out.println("Le client " + socket.getInetAddress() + " s'est déconnecté.");
                 writer.println("1");
@@ -90,6 +93,14 @@ public class ServerThread extends Thread {
                 writer.println("Commande inconnue");
                 break;
         }
+    }
+
+    private void list_client(PrintWriter writer, BufferedReader reader) {
+        List<String> clients = connexionBD.getEmployes();
+        for (String client : clients) {
+            writer.println(client);
+        }
+        writer.println("fin");
     }
 
     private void list_scrutateur(PrintWriter writer, BufferedReader reader) {
