@@ -72,8 +72,9 @@ public class VueChoixReferendums extends BorderPane {
                 stage.setScene(scene);
                 stage.setTitle("Section Administrateur");
                 stage.show();
+                Stage currentStage = (Stage) buttonAdmin.getScene().getWindow();
+                currentStage.close();
             });
-
         }
     }
 

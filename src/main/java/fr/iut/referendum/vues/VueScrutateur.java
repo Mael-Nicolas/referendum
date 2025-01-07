@@ -90,14 +90,14 @@ public class VueScrutateur extends BorderPane {
         });
 
         buttonCGU.setOnMouseClicked(mouseEvent -> {
-            loadCGU();
+            vueCGU();
         });
         buttonML.setOnMouseClicked(mouseEvent -> {
-            loadML();
+            vueML();
         });
     }
 
-    private static void loadCGU() {
+    private void vueCGU() {
         StringBuilder text = new StringBuilder();
         File file = new File("src/main/Légal/CGU.txt");
         try (Scanner scanner = new Scanner(file)) {
@@ -113,9 +113,11 @@ public class VueScrutateur extends BorderPane {
         stage.setScene(scene);
         stage.setTitle("CGU");
         stage.show();
+        Stage currentStage = (Stage) buttonCGU.getScene().getWindow();
+        currentStage.close();
     }
 
-    private static void loadML() {
+    private void vueML() {
         StringBuilder text = new StringBuilder();
         File file = new File("src/main/Légal/ML.txt");
         try (Scanner scanner = new Scanner(file)) {
@@ -131,6 +133,8 @@ public class VueScrutateur extends BorderPane {
         stage.setScene(scene);
         stage.setTitle("Mentions légales");
         stage.show();
+        Stage currentStage = (Stage) buttonML.getScene().getWindow();
+        currentStage.close();
     }
 
     private void loadFile() {

@@ -74,24 +74,35 @@ public class VueAdmin extends BorderPane {
         });
 
         buttonGererScrutateur.setOnMouseClicked(mouseEvent -> {
-            Scene scene = new Scene(new VueCrudScrutateur(login, writer, reader));
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.setTitle("Gestion des scrutateurs");
-            stage.show();
-
+            vueCrudScrutateur();
         });
 
         buttonGererClient.setOnMouseClicked(mouseEvent -> {
-            Scene scene = new Scene(new VueCrudClient(login, writer, reader));
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.setTitle("Gestion des clients");
-            stage.show();
+            vueCrudClient();
         });
 
         loadReferendums();
         loadScrutateur();
+    }
+
+    private void vueCrudClient() {
+        Scene scene = new Scene(new VueCrudClient(login, writer, reader));
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("Gestion des clients");
+        stage.show();
+        Stage currentStage = (Stage) buttonGererScrutateur.getScene().getWindow();
+        currentStage.close();
+    }
+
+    private void vueCrudScrutateur() {
+        Scene scene = new Scene(new VueCrudScrutateur(login, writer, reader));
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("Gestion des scrutateurs");
+        stage.show();
+        Stage currentStage = (Stage) buttonGererClient.getScene().getWindow();
+        currentStage.close();
     }
 
     private void supprimerReferendum() throws IOException {
