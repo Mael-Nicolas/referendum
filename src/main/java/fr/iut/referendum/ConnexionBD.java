@@ -281,7 +281,7 @@ public class ConnexionBD {
 
 
     public boolean changerAgregeReferendum(int idReferendum, BigInteger[] votesAgrege) {
-        String query = "UPDATE Referendum SET agrege = ?, agrege2 = ? WHERE loginReferendum = ?";
+        String query = "UPDATE Referendums SET agrege = ?, agrege2 = ? WHERE loginReferendum = ?";
         int res = 0;
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, votesAgrege[0].toString());
@@ -301,7 +301,7 @@ public class ConnexionBD {
     Renvoi la liste des IDs des référendums dont s'occupe un scrutateur
      */
     public List<String> getReferendumsScrutateur(String loginScrutateur) {
-        String query = "SELECT idReferendums FROM Scrutateur WHERE loginScrutateur = ?";
+        String query = "SELECT idReferendums FROM Scrutateurs WHERE loginScrutateur = ?";
         List<String> referendums = new ArrayList<>();
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, loginScrutateur);
@@ -320,7 +320,7 @@ public class ConnexionBD {
     Permet de créer un nouveau scrutateur dans la BD sans doublons
     */
     public boolean creerScrutateur(String loginScrutateur, String mdp) {
-        String query = "INSERT INTO Scrutateur VALUES (?, ?)";
+        String query = "INSERT INTO Scrutateurs (loginScrutateur, mdpScrutateur) VALUES  (?, ?)";
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, loginScrutateur);
             ps.setString(2, MotDePasse.hacher(mdp));
@@ -329,6 +329,7 @@ public class ConnexionBD {
             System.out.println("Scrutateur déjà existant");
             return false;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             System.out.println("Création impossible");
             return false;
         }
@@ -362,7 +363,7 @@ public class ConnexionBD {
     Récupérer les logins des scrutateurs existants
      */
     public List<String> getScrutateurs() {
-        String query = "SELECT loginScrutateur FROM Scrutateur ORDER BY loginScrutateur";
+        String query = "SELECT loginScrutateur FROM Scrutateurs ORDER BY loginScrutateur";
         List<String> scrutateurs = new ArrayList<>();
         try (Statement s = cn.createStatement();
              ResultSet rs = s.executeQuery(query)) {
@@ -370,6 +371,7 @@ public class ConnexionBD {
                 scrutateurs.add(rs.getString("loginScrutateur"));
             }
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             System.out.println("Problème dans la requête");
             return scrutateurs;
         }
@@ -377,7 +379,7 @@ public class ConnexionBD {
     }
 
     public boolean supprimerScrutateur(String loginScrutateur) {
-        String query = "DELETE FROM Scrutateur WHERE loginScrutateur = ?";
+        String query = "DELETE FROM Scrutateurs WHERE loginScrutateur = ?";
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, loginScrutateur);
             ps.executeUpdate();
@@ -404,4 +406,11 @@ public class ConnexionBD {
         }
     }
 
+    public void changerClePubliqueReferendum(int id, BigInteger[] pk) {
+
+    }
+
+    public void changerResultatReferendum(int id, String resultat) {
+
+    }
 }
