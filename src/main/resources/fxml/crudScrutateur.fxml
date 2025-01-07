@@ -34,9 +34,9 @@
             <HBox alignment="CENTER" prefHeight="60.0" prefWidth="600.0" spacing="15.0">
                 <children>
                     <Button fx:id="buttonCreerScrutateur" text="Créer un Scrutateur" />
-                    <Button fx:id="buttonReload" text="Rafraîchir" />
                     <Button fx:id="buttonModifScrutateur" text="Modifier" />
                     <Button fx:id="buttonSuprScrutateur" text="Supprimer" />
+                    <Button fx:id="buttonReload" text="Rafraîchir" />
                 </children>
             </HBox>
         </VBox>

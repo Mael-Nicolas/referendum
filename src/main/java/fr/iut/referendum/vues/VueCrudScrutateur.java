@@ -75,7 +75,10 @@ public class VueCrudScrutateur extends BorderPane {
             return;
         }
         String loginScrutateur = listViewScrutateur.getSelectionModel().getSelectedItem();
-        // connexionBD.supprimerScrutateur(loginScrutateur);
+        if(!connexionBD.supprimerScrutateur(loginScrutateur))
+            statue.setText("Erreur de suppression du scrutateur");
+        loadScrutateur();
+        statue.setText("Scrutateur supprimé");
     }
 
     private void modifierScrutateur() {
@@ -88,7 +91,13 @@ public class VueCrudScrutateur extends BorderPane {
             return;
         }
         String loginScrutateur = listViewScrutateur.getSelectionModel().getSelectedItem();
-        // connexionBD.modifierScrutateur(loginScrutateur, usernameField.getText(), passwordField.getText());
+        /*
+        A faire si on a le temps
+        if (!connexionBD.modifierScrutateur(loginScrutateur, usernameField.getText(), passwordField.getText()))
+            statue.setText("Erreur de modification du scrutateur");
+        loadScrutateur();
+        statue.setText("Scrutateur modifié");
+         */
     }
 
     private void creerScrutateur() {
@@ -96,12 +105,23 @@ public class VueCrudScrutateur extends BorderPane {
             statue.setText("Veuillez remplir tous les champs");
             return;
         }
-        // connexionBD.creerScrutateur(usernameField.getText(), passwordField.getText());
+        if(!connexionBD.creerScrutateur(usernameField.getText(), passwordField.getText()))
+            statue.setText("Erreur de création du scrutateur");
+        loadScrutateur();
         statue.setText("Scrutateur créé");
     }
 
     private void loadScrutateur() {
         listViewScrutateur.getItems().clear();
-        // listViewScrutateur.getItems().addAll(connexionBD.getScrutateurs());
+        try {
+            writer.println("LIST_SCRUTATEUR");
+            String response;
+            while (!(response = reader.readLine()).equals("fin")) {
+                listViewScrutateur.getItems().add(response);
+            }
+        } catch (Exception e) {
+            statue.setText("Erreur de chargement des référendums");
+            throw new RuntimeException(e);
+        }
     }
 }
