@@ -8,6 +8,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ConnexionBD {
 
@@ -184,11 +185,12 @@ public class ConnexionBD {
     /*
     Enregistrement dans la BD d'un nouveau référendum
     */
-    public boolean creerReferendum(String nom, LocalDateTime dateFin) {
-        String query = "INSERT INTO Referendums (NOMREFERENDUM, DATEFIN, AGREGE, AGREGE2, RESULTAT) VALUES (?, ?, '0', '0', -1)";
+    public boolean creerReferendum(String nom, LocalDateTime dateFin, String loginScrutateur) {
+        String query = "INSERT INTO Referendums (NOMREFERENDUM, DATEFIN, LOGINSCRUTATEUR, AGREGE, AGREGE2, RESULTAT, Q, G, H) VALUES (?, ?, ?, '0', '0', -1, '0', '0', '0')";
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, nom);
             ps.setTimestamp(2, Timestamp.valueOf(dateFin));
+            ps.setString(3, loginScrutateur);
             ps.executeUpdate();
         } catch (SQLIntegrityConstraintViolationException e) {
             System.out.println("Referendum déjà existant");
@@ -208,24 +210,23 @@ public class ConnexionBD {
                 System.out.println("Il n'y a pas de referendum");
                 return null;
             }
-            BigInteger[] agregeVotes = new BigInteger[2];
-            agregeVotes[0] = BigInteger.valueOf(Integer.parseInt(rs.getString("agrege")));
-            agregeVotes[1] = BigInteger.valueOf(Integer.parseInt(rs.getString("agrege2")));
-            String resultat = "";
-            if (rs.getInt("resultat") == 0) {
-                resultat = "Non";
+            return mapResultSetToReferendum(rs);
+        } catch (Exception e) {
+            System.out.println("Problème dans la requête");
+            return null;
+        }
+    }
+
+    public Referendum getReferendum(int idReferendum) {
+        String query = "SELECT * FROM Referendums WHERE idReferendum = ?)";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setInt(1, idReferendum);
+            rs = ps.executeQuery();
+            if (!rs.next()) {
+                System.out.println("Il n'y a pas de referendum");
+                return null;
             }
-            else if (rs.getInt("resultat") == 1) {
-                resultat = "Oui";
-            }
-            else if (rs.getInt("resultat") == 2) {
-                resultat = "Egalité";
-            }
-            return new Referendum(rs.getInt("idReferendum"),
-                    rs.getString("nomReferendum"),
-                    rs.getTimestamp("dateFin").toLocalDateTime(),
-                    agregeVotes,
-                    resultat);
+            return mapResultSetToReferendum(rs);
         } catch (Exception e) {
             System.out.println("Problème dans la requête");
             return null;
@@ -238,24 +239,7 @@ public class ConnexionBD {
         try (Statement s = cn.createStatement();
              ResultSet rs = s.executeQuery(query)) {
             while (rs.next()) {
-                BigInteger[] agregeVotes = new BigInteger[2];
-                agregeVotes[0] = BigInteger.valueOf(Integer.parseInt(rs.getString("agrege")));
-                agregeVotes[1] = BigInteger.valueOf(Integer.parseInt(rs.getString("agrege2")));
-                String resultat = "";
-                if (rs.getInt("resultat") == 0) {
-                    resultat = "Non";
-                }
-                else if (rs.getInt("resultat") == 1) {
-                    resultat = "Oui";
-                }
-                Referendum referendum = new Referendum(
-                        rs.getInt("idReferendum"),
-                        rs.getString("nomReferendum"),
-                        rs.getTimestamp("dateFin").toLocalDateTime(),
-                        agregeVotes,
-                        resultat
-                );
-                referendums.add(referendum);
+                referendums.add(mapResultSetToReferendum(rs));
             }
         } catch (SQLException e) {
             System.out.println("Problème dans la requête");
@@ -263,6 +247,49 @@ public class ConnexionBD {
         }
         return referendums;
     }
+
+    /*
+    Pour éviter la duplication de code
+     */
+    private Referendum mapResultSetToReferendum(ResultSet rs) throws SQLException {
+        BigInteger[] pk = new BigInteger[3];
+        BigInteger[] agregeVotes = new BigInteger[2];
+
+        // Récupération des votes agrégés
+        agregeVotes[0] = new BigInteger(rs.getString("agrege"));
+        agregeVotes[1] = new BigInteger(rs.getString("agrege2"));
+
+        // Récupération du résultat
+        String resultat;
+        switch (rs.getInt("resultat")) {
+            case 0 -> resultat = "Non";
+            case 1 -> resultat = "Oui";
+            case 2 -> resultat = "Égalité";
+            default -> resultat = "Inconnu";
+        }
+
+        // Récupération de la clé publique
+        if ("0".equals(rs.getString("Q"))) {
+            pk[0] = BigInteger.ZERO;
+            pk[1] = BigInteger.ZERO;
+            pk[2] = BigInteger.ZERO;
+        } else {
+            pk[0] = new BigInteger(rs.getString("Q"));
+            pk[1] = new BigInteger(rs.getString("G"));
+            pk[2] = new BigInteger(rs.getString("H"));
+        }
+
+        // Création de l'objet Referendum
+        return new Referendum(
+                rs.getInt("idReferendum"),
+                rs.getString("nomReferendum"),
+                rs.getTimestamp("dateFin").toLocalDateTime(),
+                agregeVotes,
+                resultat,
+                pk
+        );
+    }
+
 
     public boolean supprimerReferendum(int idReferendum) {
         String query = "DELETE FROM Referendums WHERE idReferendum = ?";
