@@ -29,10 +29,9 @@
             <Label fx:id="statue" alignment="CENTER" prefHeight="30.0" prefWidth="501.0" />
             <Label alignment="CENTER" text="Fichier Clé" />
             <Label fx:id="labelfichier" text="Fichier sélétionner : Aucun" />
-            <TextField fx:id="nomfichier" alignment="CENTER" promptText="Nom du fichier avec .txt">
             <VBox.margin>
                <Insets left="200.0" right="200.0" />
-            </VBox.margin></TextField>
+            </VBox.margin>
              <PasswordField fx:id="mdpfichier" alignment="CENTER" promptText="Mot de passe">
                 <VBox.margin>
                    <Insets left="200.0" right="200.0" />
