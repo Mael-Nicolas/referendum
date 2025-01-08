@@ -539,7 +539,4 @@ public class ConnexionBD {
         }
     }
 
-    public int getNbVotantsReferendum(int id) {
-        return -1;
-    }
 }
