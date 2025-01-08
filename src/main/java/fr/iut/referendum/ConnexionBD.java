@@ -80,6 +80,7 @@ public class ConnexionBD {
                 return false;
             }
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             System.out.println("Problème dans la requête 1");
             return false;
         }
@@ -212,6 +213,7 @@ public class ConnexionBD {
             System.out.println("Clés non existantes dans les tables d'origines ou couple déjà existant : " + e.getMessage());
             return false;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             System.out.println("Problème dans l'ajout d'un vote");
             return false;
         }
@@ -370,7 +372,7 @@ public class ConnexionBD {
 
 
     public boolean changerAgregeReferendum(int idReferendum, BigInteger[] votesAgrege) {
-        String query = "UPDATE Referendums SET agrege = ?, agrege2 = ? WHERE loginReferendum = ?";
+        String query = "UPDATE Referendums SET agrege = ?, agrege2 = ? WHERE idReferendum = ?";
         int res = 0;
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, votesAgrege[0].toString());
@@ -378,6 +380,7 @@ public class ConnexionBD {
             ps.setInt(3, idReferendum);
             res = ps.executeUpdate();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             System.out.println("Problème dans la requête 10");
             return false;
         }
