@@ -1,6 +1,5 @@
 package fr.iut.referendum.vues;
 
-import fr.iut.referendum.libs.ConnexionBD;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -30,13 +29,10 @@ public class VueCrudClient extends BorderPane {
     private BufferedReader reader;
     private PrintWriter writer;
 
-    private ConnexionBD connexionBD;
-
     public VueCrudClient(String login, PrintWriter writer, BufferedReader reader) {
         this.login = login;
         this.reader = reader;
         this.writer = writer;
-        connexionBD = ConnexionBD.getInstance();
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/crudClient.fxml"));
@@ -94,9 +90,15 @@ public class VueCrudClient extends BorderPane {
             return;
         }
         String loginClient = listViewClient.getSelectionModel().getSelectedItem();
-        if(!connexionBD.passerAdmin(loginClient)) {
-            statue.setText("Erreur lors du passage en admin");
-            return;
+        writer.println("PASSER_ADMIN");
+        writer.println(loginClient);
+        try {
+            if(!reader.readLine().equals("Client passé en admin")) {
+                statue.setText("Erreur lors du passage en admin");
+                return;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         loadClient();
         statue.setText("Client passé en admin");
@@ -108,9 +110,15 @@ public class VueCrudClient extends BorderPane {
             return;
         }
         String loginClient = listViewClient.getSelectionModel().getSelectedItem();
-        if(!connexionBD.supprimerEmploye(loginClient)) {
-            statue.setText("Erreur de suppression du client");
-            return;
+        writer.println("SUPPRIMER_CLIENT");
+        writer.println(loginClient);
+        try {
+            if(!reader.readLine().equals("Client supprimé")) {
+                statue.setText("Erreur de suppression du client");
+                return;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         loadClient();
         statue.setText("Client supprimé");
@@ -122,14 +130,28 @@ public class VueCrudClient extends BorderPane {
             return;
         }
         if (estAdmin.isSelected()) {
-            if (!connexionBD.creerAdmin(usernameField.getText(), passwordField.getText())) {
-                statue.setText("Erreur de création du client admin");
-                return;
+            writer.println("CREATION_ADMIN");
+            writer.println(usernameField.getText());
+            writer.println(passwordField.getText());
+            try {
+                if (!reader.readLine().equals("Admin créé")) {
+                    statue.setText("Erreur de création du client admin");
+                    return;
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         } else {
-            if (!connexionBD.creerEmploye(usernameField.getText(), passwordField.getText())) {
-                statue.setText("Erreur de création du client");
-                return;
+            writer.println("CREATION_CLIENT");
+            writer.println(usernameField.getText());
+            writer.println(passwordField.getText());
+            try {
+                if (!reader.readLine().equals("Client créé")) {
+                    statue.setText("Erreur de création du client");
+                    return;
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
         usernameField.clear();

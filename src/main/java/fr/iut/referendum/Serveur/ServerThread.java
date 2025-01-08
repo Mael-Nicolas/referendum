@@ -55,6 +55,15 @@ public class ServerThread extends Thread {
 
     private void Command(String command, BufferedReader reader, PrintWriter writer) throws IOException {
         switch (command) {
+            case "PASSER_ADMIN":
+                passerAdmin(writer, reader);
+                break;
+            case "CREATION_ADMIN":
+                creationAdmin(writer, reader);
+                break;
+            case "SUPPRIMER_CLIENT":
+                suppressionClient(writer, reader);
+                break;
             case "SUPPRIMER_SCRUTATEUR":
                 suppressionScrutateur(writer, reader);
                 break;
@@ -133,6 +142,34 @@ public class ServerThread extends Thread {
             writer.println(scrutateur);
         }
         writer.println("fin");
+    }
+
+    private void passerAdmin(PrintWriter writer, BufferedReader reader) throws IOException {
+        String loginClient = reader.readLine();
+        if (!connexionBD.passerAdmin(loginClient)) {
+            writer.println("Erreur");
+            return;
+        }
+        writer.println("Client passé en admin");
+    }
+
+    private void suppressionClient(PrintWriter writer, BufferedReader reader) throws IOException {
+        String login = reader.readLine();
+        if (connexionBD.supprimerEmploye(login)) {
+            writer.println("Client supprimé");
+        } else {
+            writer.println("Erreur");
+        }
+    }
+
+    private void creationAdmin(PrintWriter writer, BufferedReader reader) throws IOException {
+        String login = reader.readLine();
+        String password = reader.readLine();
+        if (connexionBD.creerAdmin(login, password)) {
+            writer.println("Admin créé");
+        } else {
+            writer.println("Erreur");
+        }
     }
 
     private void connexionScrutateur(PrintWriter writer, BufferedReader reader) throws IOException {
