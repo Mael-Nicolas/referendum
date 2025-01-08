@@ -21,7 +21,7 @@
             <VBox alignment="CENTER" prefHeight="30.0" prefWidth="200.0" spacing="20.0">
                 <children>
                     <Label fx:id="label" alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="185.0" text="Test" />
-                    <Label alignment="CENTER" prefHeight="18.0" prefWidth="99.0" text="Référendums :"/>
+                    <Label alignment="CENTER" prefHeight="18.0" prefWidth="99.0" text="Référendums :" />
                 </children>
             </VBox>
         </VBox>
@@ -48,13 +48,13 @@
                     <Label fx:id="statue" alignment="CENTER" prefHeight="30.0" prefWidth="501.0" />
                 </children>
             </HBox>
-            <VBox alignment="CENTER" maxWidth="200.0" prefWidth="200.0" spacing="5.0">
+            <VBox alignment="CENTER" maxWidth="447.0" prefHeight="134.0" prefWidth="447.0" spacing="5.0">
                 <children>
                     <Label text="Nom :" />
-                    <TextField fx:id="nomReferendum" alignment="CENTER" prefWidth="80.0" promptText="exemple" />
-                    <DatePicker fx:id="datePickerFin" />
+                    <TextField fx:id="nomReferendum" alignment="CENTER" prefHeight="26.0" prefWidth="231.0" promptText="exemple" />
+                    <DatePicker fx:id="datePickerFin" prefHeight="26.0" prefWidth="184.0" />
                     <Label text="Heure :" />
-                    <TextField fx:id="heureFin" alignment="CENTER" prefWidth="80.0" promptText="HH:mm" />
+                    <TextField fx:id="heureFin" alignment="CENTER" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="176.0" promptText="HH:mm" />
                 </children>
             </VBox>
             <HBox alignment="CENTER" prefHeight="60.0" prefWidth="600.0" spacing="15.0">
