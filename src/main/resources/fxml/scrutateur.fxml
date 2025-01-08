@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root prefHeight="496.0" prefWidth="766.0" type="BorderPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" >
+<fx:root prefHeight="496.0" prefWidth="766.0" type="BorderPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
     <top>
         <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
             <Label fx:id="labelClient" />
@@ -53,6 +53,9 @@
                     <Button fx:id="buttonCGU" mnemonicParsing="false" text="CGU" />
                     <Button fx:id="buttonML" mnemonicParsing="false" text="Mentions Légales" />
                 </children>
+            <padding>
+               <Insets right="10.0" />
+            </padding>
             </HBox>
              <BorderPane.margin>
                 <Insets />

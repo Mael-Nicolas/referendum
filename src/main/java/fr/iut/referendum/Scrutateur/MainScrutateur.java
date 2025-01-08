@@ -56,6 +56,7 @@ public class MainScrutateur extends Application {
         Scene sceneVueScrutateur = new Scene(vueScrutateur);
         primaryStage.setScene(sceneVueScrutateur);
         primaryStage.setTitle("Choix Referendums");
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 
