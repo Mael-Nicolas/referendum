@@ -12,16 +12,13 @@ public class ConnexionBD {
 
     private static volatile ConnexionBD instance;
 
-    private String mdp = "07042004";
-    private String url = "jdbc:oracle:thin:@162.38.222.149:1521:iut";
-    private String login = "nicolasm";
-
     private Connection cn;
     private ResultSet rs;
+    private EnvLoader instanceEnv = EnvLoader.getInstance();
 
     private ConnexionBD() {
         try {
-            cn = DriverManager.getConnection(url, login, mdp);
+            cn = DriverManager.getConnection(instanceEnv.getEnv("dburl"),instanceEnv.getEnv("dblogin"),instanceEnv.getEnv("dbpassword"));
         } catch (Exception e) {
             throw new RuntimeException("Pas de connexion");
         }

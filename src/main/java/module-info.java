@@ -5,4 +5,5 @@ open module referendum {
     requires javafx.fxml;
     requires java.sql;
     requires jbcrypt;
+    requires java.dotenv;
 }
