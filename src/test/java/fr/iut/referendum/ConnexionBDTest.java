@@ -19,7 +19,7 @@ public class ConnexionBDTest {
 
     @BeforeEach
     public void initialize() {
-        maConnexionBD = new ConnexionBD();
+        maConnexionBD = ConnexionBD.getInstance();
     }
 
     @Test
@@ -105,7 +105,7 @@ public class ConnexionBDTest {
 
     @Test
     public void testEstAdmin() {
-        boolean vrai = maConnexionBD.estAdmin("rivasr");
+        boolean vrai = maConnexionBD.estAdmin("ben01");
         assertTrue(vrai);
     }
 
@@ -120,6 +120,13 @@ public class ConnexionBDTest {
         System.out.println(maConnexionBD.estOuvert(15));
         maConnexionBD.changerEtat(15, 1);
         System.out.println(maConnexionBD.estOuvert(15));
+    }
+
+    @Test
+    public void testNbVotants() {
+        //maConnexionBD.voter("rivasr", 62);
+        System.out.println(maConnexionBD.nbVotants(62));
+        System.out.println(maConnexionBD.nbVotants(60));
     }
 
 

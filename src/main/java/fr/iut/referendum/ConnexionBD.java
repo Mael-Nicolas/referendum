@@ -413,6 +413,20 @@ public class ConnexionBD {
         }
     }
 
+    public int nbVotants(int idReferendum) {
+        String query = "SELECT COUNT(*) FROM Voter WHERE idReferendum = ?";
+        try (PreparedStatement ps = cn.prepareStatement(query)) {
+            ps.setInt(1, idReferendum);
+            ResultSet res = ps.executeQuery();
+            if (res.next()) {
+                return res.getInt(1);
+            }
+        } catch (Exception e) {
+            System.out.println("Problème dans la requête");
+        }
+        return 0;
+    }
+
     // scrutateurs
 
     /*
