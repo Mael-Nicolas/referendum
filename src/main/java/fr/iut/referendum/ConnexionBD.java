@@ -525,4 +525,10 @@ public class ConnexionBD {
         }
     }
 
+    public int getNbVotantsReferendum(int id) {
+        return -1;
+    }
+
+    public void ajouterVotantReferendum(int id) {
+    }
 }
