@@ -1,7 +1,7 @@
 package fr.iut.referendum;
 
+import fr.iut.referendum.Crypto.Crypto;
 import org.junit.jupiter.api.Test;
-import fr.iut.referendum.Crypto;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;

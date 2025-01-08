@@ -1,7 +1,7 @@
 package fr.iut.referendum.Serveur;
 
-import fr.iut.referendum.ConnexionBD;
-import fr.iut.referendum.Crypto;
+import fr.iut.referendum.Crypto.Crypto;
+import fr.iut.referendum.libs.ConnexionBD;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;

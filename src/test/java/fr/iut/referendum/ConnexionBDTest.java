@@ -1,14 +1,9 @@
 package fr.iut.referendum;
 
-import oracle.sql.DATE;
+import fr.iut.referendum.libs.ConnexionBD;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import java.util.Date;
-
-import java.io.*;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -32,8 +32,9 @@ public class MainClient extends Application {
     }
 
     public void connexionClient() {
+        configurationSocket();
         if (avecVueConnexion) {
-            vueConnexion = new VueConnexion();
+            vueConnexion = new VueConnexion(writer, reader);
             vueConnexion.loginProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null) {
                     loginClient = newValue;
@@ -51,7 +52,6 @@ public class MainClient extends Application {
         if (loginClient == null) {
             return;
         }
-        configurationSocket();
         vueChoixReferendums = new VueChoixReferendums(loginClient, writer, reader);
         Scene sceneVueChoixReferendums = new Scene(vueChoixReferendums);
         primaryStage.setScene(sceneVueChoixReferendums);

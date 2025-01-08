@@ -1,7 +1,7 @@
 package fr.iut.referendum.vues;
 
-import fr.iut.referendum.*;
-import fr.iut.referendum.Crypto;
+import fr.iut.referendum.Crypto.Crypto;
+import fr.iut.referendum.libs.ConnexionBD;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

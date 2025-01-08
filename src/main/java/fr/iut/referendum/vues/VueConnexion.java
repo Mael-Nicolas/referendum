@@ -1,6 +1,6 @@
 package fr.iut.referendum.vues;
 
-import fr.iut.referendum.ConnexionBD;
+import fr.iut.referendum.libs.ConnexionBD;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
@@ -12,7 +12,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class VueConnexion extends Stage {
 
@@ -27,9 +29,10 @@ public class VueConnexion extends Stage {
     @FXML
     private Button buttonCreer, buttonConnecter;
 
-    private ConnexionBD connexionBD;
+    private PrintWriter writer;
+    private BufferedReader reader;
 
-    public VueConnexion() {
+    public VueConnexion(PrintWriter writer, BufferedReader reader) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/connexionClient.fxml"));
             loader.setController(this);
@@ -43,7 +46,8 @@ public class VueConnexion extends Stage {
         buttonConnecter.setOnAction(event -> handleLogin());
         buttonCreer.setOnAction(event -> handleCreateAccount());
 
-        connexionBD = ConnexionBD.getInstance();
+        this.reader = reader;
+        this.writer = writer;
     }
 
     public void setLogin(String client) {
@@ -61,13 +65,19 @@ public class VueConnexion extends Stage {
         if (username.isEmpty() || password.isEmpty()) {
             loginStatusLabel.setText("Veuillez remplir tous les champs.");
         } else {
-            // Logic to authenticate the user
-            if (!connexionBD.employeConnexion(username, password)) {
-                loginStatusLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
-            }
-            else {
-                setLogin(username);
-                this.close();
+            try {
+                writer.println("CONNEXION_CLIENT");
+                writer.println(username);
+                writer.println(password);
+                if (!reader.readLine().equals("Connexion réussie")) {
+                    loginStatusLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
+                }
+                else {
+                    setLogin(username);
+                    this.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -79,20 +89,21 @@ public class VueConnexion extends Stage {
         if (username.isEmpty() || password.isEmpty()) {
             loginStatusLabel.setText("Veuillez remplir tous les champs.");
         } else {
-            if (!connexionBD.creerEmploye(username, password)) {
-                loginStatusLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
-            }
-            else {
-                usernameField.clear();
-                passwordField.clear();
-                loginStatusLabel.setText("Compte créé avec succès.");
+            try {
+                writer.println("CREATION_CLIENT");
+                writer.println(username);
+                writer.println(password);
+                if (!reader.readLine().equals("Client créé")) {
+                    loginStatusLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
+                }
+                else {
+                    usernameField.clear();
+                    passwordField.clear();
+                    loginStatusLabel.setText("Compte créé avec succès.");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public void close() {
-        connexionBD.deconnexion();
-        super.close();
     }
 }

@@ -1,7 +1,6 @@
-package fr.iut.referendum;
+package fr.iut.referendum.libs;
 
 import fr.iut.referendum.Serveur.Referendum;
-import fr.iut.referendum.libs.MotDePasse;
 
 import java.math.BigInteger;
 import java.sql.*;

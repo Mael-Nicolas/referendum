@@ -1,6 +1,6 @@
 package fr.iut.referendum.Serveur;
 
-import fr.iut.referendum.ConnexionBD;
+import fr.iut.referendum.libs.ConnexionBD;
 
 import java.io.*;
 import java.math.BigInteger;
@@ -55,6 +55,12 @@ public class ServerThread extends Thread {
 
     private void Command(String command, BufferedReader reader, PrintWriter writer) throws IOException {
         switch (command) {
+            case "CREATION_CLIENT":
+                creationClient(writer, reader);
+                break;
+            case "CONNEXION_CLIENT":
+                connexionClient(writer, reader);
+                break;
             case "GET_SERVER_INFO":
                 getServerInfo(writer);
                 break;
@@ -110,6 +116,26 @@ public class ServerThread extends Thread {
             writer.println(scrutateur);
         }
         writer.println("fin");
+    }
+
+    private void creationClient(PrintWriter writer, BufferedReader reader) throws IOException {
+        String login = reader.readLine();
+        String password = reader.readLine();
+        if (connexionBD.creerEmploye(login, password)) {
+            writer.println("Client créé");
+        } else {
+            writer.println("Erreur");
+        }
+    }
+
+    private void connexionClient(PrintWriter writer, BufferedReader reader) throws IOException {
+        String login = reader.readLine();
+        String password = reader.readLine();
+        if (connexionBD.employeConnexion(login, password)) {
+            writer.println("Connexion réussie");
+        } else {
+            writer.println("Erreur");
+        }
     }
 
     private void supr_referendum(PrintWriter writer, BufferedReader reader) throws IOException {
