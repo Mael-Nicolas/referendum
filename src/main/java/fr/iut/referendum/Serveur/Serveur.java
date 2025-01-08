@@ -1,5 +1,7 @@
 package fr.iut.referendum.Serveur;
 
+import fr.iut.referendum.libs.EnvLoader;
+
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLServerSocket;
@@ -11,11 +13,13 @@ import java.net.*;
 
 public class Serveur {
 
+    private static EnvLoader instanceEnv = EnvLoader.getInstance();
+
     public static void main(String[] args) {
         try {
             // Certificat SSL
             System.setProperty("javax.net.ssl.keyStore", "keystore.jks");
-            System.setProperty("javax.net.ssl.keyStorePassword", "Admin!123");
+            System.setProperty("javax.net.ssl.keyStorePassword", instanceEnv.getEnv("socketmdp"));
 
             // Initialisation de SSLContext
             SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -23,12 +27,12 @@ public class Serveur {
             KeyStore keyStore = KeyStore.getInstance("JKS");
 
             try (FileInputStream keyStoreFile = new FileInputStream("keystore.jks")) {
-                keyStore.load(keyStoreFile, "Admin!123".toCharArray());
+                keyStore.load(keyStoreFile, instanceEnv.getEnv("socketmdp").toCharArray());
             } catch (CertificateException e) {
                 throw new RuntimeException(e);
             }
 
-            keyManagerFactory.init(keyStore, "Admin!123".toCharArray());
+            keyManagerFactory.init(keyStore, instanceEnv.getEnv("socketmdp").toCharArray());
             sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
 
             // Utilisation d'un SSLServerSocket
