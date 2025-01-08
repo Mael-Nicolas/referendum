@@ -1,6 +1,5 @@
 package fr.iut.referendum.vues;
 
-import fr.iut.referendum.libs.ConnexionBD;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;

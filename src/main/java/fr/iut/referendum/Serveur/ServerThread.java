@@ -271,6 +271,7 @@ public class ServerThread extends Thread {
     private void voter_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {
         int idReferendum = Integer.parseInt(reader.readLine());
         Referendum referendum = connexionBD.getReferendum(idReferendum);
+        String login = reader.readLine();
 
         // vérif si le referendum existe et si il est fini
         if (referendum == null || !referendum.isOpen()) {
@@ -285,6 +286,11 @@ public class ServerThread extends Thread {
             return;
         }
 
+        if (connexionBD.aVote(login, idReferendum)) {
+            writer.println("Déjà voté");
+            return;
+        }
+
         writer.println(clePublique[0]);
         writer.println(clePublique[1]);
         writer.println(clePublique[2]);
@@ -292,9 +298,12 @@ public class ServerThread extends Thread {
         BigInteger c1 = new BigInteger(reader.readLine());
         BigInteger c2 = new BigInteger(reader.readLine());
         BigInteger[] c = new BigInteger[]{c1, c2}; // choix crypté
-        String login = reader.readLine();
-        clientAVote(referendum, c, login);
-        writer.println("Vote enregistré");
+        if (connexionBD.voter(login, idReferendum)) {
+            clientAVote(referendum, c, login);
+            writer.println("Vote enregistré");
+        } else {
+            writer.println("Erreur");
+        }
     }
 
     public void clientAVote(Referendum referendum, BigInteger[] c, String login) {

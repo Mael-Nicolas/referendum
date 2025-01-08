@@ -1,6 +1,5 @@
 package fr.iut.referendum.vues;
 
-import fr.iut.referendum.libs.ConnexionBD;
 import fr.iut.referendum.Crypto.Crypto;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -34,13 +33,10 @@ public class VueChoixReferendums extends BorderPane {
     private BufferedReader reader;
     private PrintWriter writer;
 
-    private ConnexionBD connexionBD;
-
     public VueChoixReferendums(String login, PrintWriter writer, BufferedReader reader) {
         this.login = login;
         this.reader = reader;
         this.writer = writer;
-        connexionBD = ConnexionBD.getInstance();
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/choixReferendums.fxml"));
@@ -160,51 +156,46 @@ public class VueChoixReferendums extends BorderPane {
         int idReferendum = Integer.parseInt(selectedReferendum.split(" - ")[0]);
         boolean choix = radioOui.isSelected();
 
+        voterReferendum(idReferendum, choix);
+    }
+
+    public void voterReferendum(int idReferendum, boolean choix) {
         try {
-            if (connexionBD.aVote(login, idReferendum)) {
-                statue.setText("Vous avez déjà voté pour ce référendum");
-            } else if (!voterReferendum(writer, reader, idReferendum, choix)) {
+            writer.println("VOTER_REFERENDUM");
+            writer.println(idReferendum);
+            writer.println(login);
+
+            String response = reader.readLine();
+            if (response.equals("Erreur")) {
                 statue.setText("Vote impossible");
+            } else if (response.equals("Déjà voté")) {
+                statue.setText("Vous avez déjà voté pour ce référendum");
             } else {
-                connexionBD.voter(login, idReferendum);
-                statue.setText("Vote enregistré");
+                // réception clé publique
+                BigInteger p = new BigInteger(response);
+                BigInteger g = new BigInteger(reader.readLine());
+                BigInteger h = new BigInteger(reader.readLine());
+                BigInteger[] pk = new BigInteger[]{p, g, h};
+
+                // choix vote
+                BigInteger choixint = choix ? BigInteger.ONE : BigInteger.ZERO;
+                // cryptage
+                BigInteger[] choixCrypter = Crypto.encrypt(choixint, pk);
+
+                writer.println(choixCrypter[0]);
+                writer.println(choixCrypter[1]);
+
+                if (reader.readLine().equals("Vote enregistré")) {
+                    statue.setText("Vote enregistré");
+                } else {
+                    statue.setText("Vote impossible");
+                }
             }
         } catch (Exception e) {
             statue.setText("Erreur de liaison avec le serveur");
         } finally {
             listViewReferendums.getItems().clear();
             loadReferendums();
-        }
-    }
-
-    public boolean voterReferendum(PrintWriter writer, BufferedReader reader, int idReferendum, boolean choix) {
-        try {
-            writer.println("VOTER_REFERENDUM");
-            writer.println(idReferendum);
-
-            String response = reader.readLine();
-            if ("Erreur".equals(response)) {
-                return false;
-            }
-
-            // réception clé publique
-            BigInteger p = new BigInteger(response);
-            BigInteger g = new BigInteger(reader.readLine());
-            BigInteger h = new BigInteger(reader.readLine());
-            BigInteger[] pk = new BigInteger[]{p, g, h};
-
-            // choix vote
-            BigInteger choixint = choix ? BigInteger.ONE : BigInteger.ZERO;
-            // cryptage
-            BigInteger[] choixCrypter = Crypto.encrypt(choixint, pk);
-
-            writer.println(choixCrypter[0]);
-            writer.println(choixCrypter[1]);
-            writer.println(login);
-
-            return reader.readLine().equals("Vote enregistré");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 
