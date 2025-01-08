@@ -5,6 +5,7 @@ import fr.iut.referendum.vues.VueChoixReferendums;
 import fr.iut.referendum.vues.VueConnexionClient;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -33,6 +34,13 @@ public class MainClient extends Application {
 
     public void connexionClient() {
         configurationSocket();
+        if (writer == null || reader == null) {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Erreur");
+            confirmationAlert.setHeaderText("Erreur lors de la connexion au serveur.");
+            confirmationAlert.showAndWait();
+            return;
+        }
         if (avecVueConnexion) {
             vueConnexionClient = new VueConnexionClient(writer, reader);
             vueConnexionClient.loginProperty().addListener((observable, oldValue, newValue) -> {
@@ -77,13 +85,13 @@ public class MainClient extends Application {
             this.writer = writer;
             this.reader = reader;
         } catch (Exception ex) {
-            throw new RuntimeException("Erreur de connexion au serveur.", ex);
+            System.out.println("Erreur lors de la connexion au serveur.");
         } finally {
             if (socket != null && socket.isClosed()) {
                 try {
                     socket.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("Erreur lors de la fermeture de la socket.");
                 }
             }
         }
