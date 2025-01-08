@@ -80,7 +80,7 @@ public class ConnexionBD {
                 return false;
             }
         } catch (Exception e) {
-            System.out.println("Problème dans la requête");
+            System.out.println("Problème dans la requête 1");
             return false;
         }
         return true;
@@ -102,7 +102,7 @@ public class ConnexionBD {
                 return false;
             }
         } catch (Exception e) {
-            System.out.println("Problème dans la requête");
+            System.out.println("Problème dans la requête 2");
             return false;
         }
         return true;
@@ -157,7 +157,7 @@ public class ConnexionBD {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            System.out.println("Problème dans la requête");
+            System.out.println("Problème dans la requête 3");
             return employes;
         }
         return employes;
@@ -193,7 +193,7 @@ public class ConnexionBD {
             res = ps.executeUpdate();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            System.out.println("Problème dans la requête");
+            System.out.println("Problème dans la requête 4");
             return false;
         }
         return res > 0;
@@ -248,7 +248,7 @@ public class ConnexionBD {
             }
             return mapResultSetToReferendum(rs);
         } catch (Exception e) {
-            System.out.println("Problème dans la requête");
+            System.out.println("Problème dans la requête 5");
             return null;
         }
     }
@@ -264,7 +264,7 @@ public class ConnexionBD {
             }
             return mapResultSetToReferendum(rs);
         } catch (Exception e) {
-            System.out.println("Problème dans la requête");
+            System.out.println("Problème dans la requête 6");
             return null;
         }
     }
@@ -283,7 +283,7 @@ public class ConnexionBD {
             }
             return rs.getInt("referendumOuvert") == 1;
         } catch (Exception e) {
-            System.out.println("Problème dans la requête");
+            System.out.println("Problème dans la requête 7");
             return false;
         }
     }
@@ -297,11 +297,9 @@ public class ConnexionBD {
             ps.setInt(1, etat);
             ps.setInt(2, idReferendum);
             ps.executeUpdate();
-            if (!rs.next()) {
-                System.out.println("Il n'y a pas de referendum");
-            }
         } catch (Exception e) {
-            System.out.println("Problème dans la requête");
+            System.out.println(e.getMessage());
+            System.out.println("Problème dans la requête 8");
         }
     }
 
@@ -315,7 +313,7 @@ public class ConnexionBD {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            System.out.println("Problème dans la requête");
+            System.out.println("Problème dans la requête 9");
             return referendums;
         }
         return referendums;
@@ -380,14 +378,14 @@ public class ConnexionBD {
             ps.setInt(3, idReferendum);
             res = ps.executeUpdate();
         } catch (Exception e) {
-            System.out.println("Problème dans la requête");
+            System.out.println("Problème dans la requête 10");
             return false;
         }
         return res > 0;
     }
 
     public void changerClePubliqueReferendum(int idReferendum, BigInteger[] pk) {
-        String query = "UPDATE Referendums SET P = ?, G = ?, H = ? WHERE loginReferendum = ?";
+        String query = "UPDATE Referendums SET P = ?, G = ?, H = ? WHERE idReferendum = ?";
         int res = 0;
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setString(1, pk[0].toString());
@@ -397,7 +395,8 @@ public class ConnexionBD {
             res = ps.executeUpdate();
             changerEtat(idReferendum, 1);    // ouvrir le référendum quand il reçoit une clé
         } catch (Exception e) {
-            System.out.println("Problème dans la requête");
+            System.out.println(e.getMessage());
+            System.out.println("Problème dans la requête 11");
         }
     }
 
@@ -409,7 +408,7 @@ public class ConnexionBD {
             ps.setString(2, resultat);
             res = ps.executeUpdate();
         } catch (Exception e) {
-            System.out.println("Problème dans la requête");
+            System.out.println("Problème dans la requête 12");
         }
     }
 
@@ -428,7 +427,7 @@ public class ConnexionBD {
                 referendums.add(mapResultSetToReferendum(rs));
             }
         } catch (SQLException e) {
-            System.out.println("Problème dans la requête");
+            System.out.println("Problème dans la requête 13");
             System.out.println(e.getMessage());
             return referendums;
         }
@@ -491,7 +490,7 @@ public class ConnexionBD {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            System.out.println("Problème dans la requête");
+            System.out.println("Problème dans la requête 14");
             return scrutateurs;
         }
         return scrutateurs;

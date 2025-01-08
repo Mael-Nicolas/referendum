@@ -41,7 +41,7 @@ public class Referendum {
     }
 
     public boolean isOpen() {
-        return !fini() && pk != null;
+        return !fini() && pk[0].compareTo(BigInteger.ZERO) != 0;
     }
 
     public void setResultat(String resultat) {

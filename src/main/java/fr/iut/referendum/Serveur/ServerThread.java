@@ -8,6 +8,7 @@ import java.net.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class ServerThread extends Thread {
     private Socket socket;
@@ -145,14 +146,18 @@ public class ServerThread extends Thread {
     private void cle_publique_referendum(PrintWriter writer, BufferedReader reader) throws IOException {
         String idReferendum = reader.readLine();
         Referendum referendum = connexionBD.getReferendum(Integer.parseInt(idReferendum));
-        if (referendum.getClePublique() != null || referendum.fini()) {
+        BigInteger[] pk = referendum.getClePublique();
+        if (!Objects.equals(pk[0], BigInteger.ZERO) ||
+                !Objects.equals(pk[1], BigInteger.ZERO) ||
+                !Objects.equals(pk[2], BigInteger.ZERO) ||
+                referendum.fini()) {
             writer.println("Erreur");
             return;
         }
-        BigInteger p = new BigInteger(reader.readLine());
-        BigInteger q = new BigInteger(reader.readLine());
-        BigInteger h = new BigInteger(reader.readLine());
-        BigInteger[] pk = {p, q, h};
+        writer.println("Ok");
+        pk[0] = new BigInteger(reader.readLine());
+        pk[1] = new BigInteger(reader.readLine());
+        pk[2] = new BigInteger(reader.readLine());
         referendum.setPk(pk);
         writer.println("Clé publique enregistrée");
     }

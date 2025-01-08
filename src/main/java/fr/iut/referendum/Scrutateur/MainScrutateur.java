@@ -16,7 +16,7 @@ public class MainScrutateur extends Application {
     private VueScrutateur vueScrutateur;
     private Stage primaryStage;
 
-    private final boolean avecVueConnexion = false;
+    private final boolean avecVueConnexion = true;
     private final String hostname = "localhost";
     private final int port = 3390;
 

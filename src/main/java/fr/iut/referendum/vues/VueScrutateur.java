@@ -113,8 +113,6 @@ public class VueScrutateur extends BorderPane {
         stage.setScene(scene);
         stage.setTitle("CGU");
         stage.show();
-        Stage currentStage = (Stage) buttonCGU.getScene().getWindow();
-        currentStage.close();
     }
 
     private void vueML() {
@@ -133,8 +131,6 @@ public class VueScrutateur extends BorderPane {
         stage.setScene(scene);
         stage.setTitle("Mentions légales");
         stage.show();
-        Stage currentStage = (Stage) buttonML.getScene().getWindow();
-        currentStage.close();
     }
 
     private void loadFile() {
@@ -250,7 +246,6 @@ public class VueScrutateur extends BorderPane {
         }
         if (pk == null || sk == null) {
             statue.setText("Clé non enregistrée");
-            return;
         } else {
             statue.setText("Envoie de la clé publique");
             writer.println("CLE_PUBLIQUE_REFERENDUM");
