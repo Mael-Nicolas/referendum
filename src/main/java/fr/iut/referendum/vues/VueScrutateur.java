@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -131,16 +132,21 @@ public class VueScrutateur extends BorderPane {
 
     private void loadFile() {
         statue.setText("Chargement du fichier de sécurisation");
+
         try {
-            if (nomfichier.getText().isEmpty()) {
-                statue.setText("Nom de fichier vide");
-                return;
-            }
+            // Utilisation d'un FileChooser pour sélectionner le fichier
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Sélectionner un fichier de sécurisation");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Fichiers texte", "*.txt"),
+                    new FileChooser.ExtensionFilter("Tous les fichiers", "*.*")
+            );
 
-            File file = new File(nomfichier.getText());
+            // Ouvre la boîte de dialogue pour sélectionner un fichier
+            File file = fileChooser.showOpenDialog(this.getScene().getWindow());
 
-            if (!file.exists()) {
-                statue.setText("Fichier inexistant");
+            if (file == null) {
+                statue.setText("Aucun fichier sélectionné");
                 return;
             }
 
@@ -164,7 +170,7 @@ public class VueScrutateur extends BorderPane {
             String decryptedData = decryptData(encryptedData, password);
 
             String[] values = decryptedData.split("\n");
-            if (values.length != 5 || !values[4].equals("Fin") ) {
+            if (values.length != 5 || !values[4].equals("Fin")) {
                 statue.setText("Mot de passe incorrect.");
                 return;
             }
@@ -176,13 +182,14 @@ public class VueScrutateur extends BorderPane {
             sk = new BigInteger(values[3]);
 
             statue.setText("Chargement du fichier réussi.");
-            labelfichier.setText("Fichier sélétionner : " + nomfichier.getText());
+            labelfichier.setText("Fichier sélectionné : " + file.getName());
         } catch (IOException e) {
-            statue.setText("Erreur lors du chargement du fichier");
+            statue.setText("Erreur lors du chargement du fichier.");
         } catch (Exception e) {
             statue.setText("Erreur lors du déchiffrement des données.");
         }
     }
+
 
     public void newFileReferendum() {
         statue.setText("Création du fichier de sécurisation");
@@ -192,7 +199,12 @@ public class VueScrutateur extends BorderPane {
                 return;
             }
 
-            File file = new File(nomfichier.getText());
+            String fileName = nomfichier.getText();
+            if (!fileName.endsWith(".txt")) {
+                fileName += ".txt";
+            }
+
+            File file = new File(fileName);
 
             if (file.exists()) {
                 statue.setText("Fichier existant");
@@ -225,7 +237,7 @@ public class VueScrutateur extends BorderPane {
                 myWriter.write(encryptedData);
             }
             statue.setText("Écriture dans le fichier réussie.");
-            labelfichier.setText("Fichier sélétionner : " + nomfichier.getText());
+            labelfichier.setText("Fichier sélectionné : " + file.getName());
         } catch (IOException e) {
             statue.setText("Erreur lors de la création du fichier.");
             e.printStackTrace();
@@ -234,6 +246,7 @@ public class VueScrutateur extends BorderPane {
             e.printStackTrace();
         }
     }
+
 
     private void envoyerCle() throws IOException {
         if (listViewReferendums.getSelectionModel().getSelectedItem() == null) {
