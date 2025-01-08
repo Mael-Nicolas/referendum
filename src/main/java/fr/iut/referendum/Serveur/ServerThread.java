@@ -224,9 +224,8 @@ public class ServerThread extends Thread {
             return;
         }
         writer.println("Ok");
-
         // Test si le resultat est déjà calculé ou null
-        if (referendum.getResultat() != null) {
+        if (!referendum.getResultat().equals("Pas de résultat")) {
             writer.println("Error01");
             writer.println(referendum.getResultat());
             return;
@@ -247,6 +246,7 @@ public class ServerThread extends Thread {
         writer.println(VotesAgreget[0]);
         writer.println(VotesAgreget[1]);
         writer.println(nbVotants);
+
         // reception du resultat (oui ou non)
         String resultatReferendum = reader.readLine();
         if (resultatReferendum.equals("Erreur")) {
@@ -325,15 +325,10 @@ public class ServerThread extends Thread {
         BigInteger c2 = new BigInteger(reader.readLine());
         BigInteger[] c = new BigInteger[]{c1, c2}; // choix crypté
         if (connexionBD.voter(login, idReferendum)) {
-            clientAVote(referendum, c, login);
+            referendum.agregeVote(c);
             writer.println("Vote enregistré");
         } else {
             writer.println("Erreur");
         }
-    }
-
-    public void clientAVote(Referendum referendum, BigInteger[] c, String login) {
-        referendum.ajouterVotant(login);
-        referendum.agregeVote(c);
     }
 }

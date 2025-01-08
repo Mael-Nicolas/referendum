@@ -256,6 +256,7 @@ public class VueScrutateur extends BorderPane {
             writer.println(pk[2]);  // h
             statue.setText(reader.readLine());
         }
+        loadReferendumsScrutateur();
     }
 
     private void loadReferendumsScrutateur() {
@@ -294,15 +295,18 @@ public class VueScrutateur extends BorderPane {
         }
         if (reader.readLine().equals("Error01")){
             statue.setText("Resultat déjà calculé : " + reader.readLine());
+            return;
         }
         if (reader.readLine().equals("Error02")){
             statue.setText("Resultat : Egalité (Nombre de votants égal à 0)");
+            return;
         }
         else {
             BigInteger c1 = new BigInteger(reader.readLine());
             BigInteger c2 = new BigInteger(reader.readLine());
             BigInteger[] resultatAgrege = {c1, c2};
             int nbVotants = Integer.parseInt(reader.readLine());
+
             String decrypted = dechiffrer(resultatAgrege, nbVotants);
             writer.println(decrypted);
             if (decrypted.equals("Erreur")) {

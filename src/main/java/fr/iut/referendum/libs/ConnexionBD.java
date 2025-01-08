@@ -95,7 +95,7 @@ public class ConnexionBD {
             ps.setString(1, loginEmploye);
             rs = ps.executeQuery();
             if (!rs.next()) {
-                System.out.println("Il n'y a pas d'utilisateur de login " + loginEmploye);
+                // System.out.println("Il n'y a pas d'utilisateur de login " + loginEmploye);
                 return false;
             }
             if (rs.getInt("estAdmin") == 0) {
@@ -209,7 +209,8 @@ public class ConnexionBD {
             ps.setInt(2, idReferendum);
             ps.executeUpdate();
         } catch (SQLIntegrityConstraintViolationException e) {
-            System.out.println("Clés non existantes dans les tables d'origines ou couple déjà existant : " + e.getMessage());
+            System.out.println(e.getMessage());
+            // System.out.println("Clés non existantes dans les tables d'origines ou couple déjà existant : ");
             return false;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -403,7 +404,7 @@ public class ConnexionBD {
     }
 
     public void changerResultatReferendum(int id, String resultat) {
-        String query = "UPDATE Referendums SET Resultat = ? WHERE loginReferendum = ?";
+        String query = "UPDATE Referendums SET Resultat = ? WHERE idReferendum = ?";
         int res = 0;
         try (PreparedStatement ps = cn.prepareStatement(query)) {
             ps.setInt(1, id);
