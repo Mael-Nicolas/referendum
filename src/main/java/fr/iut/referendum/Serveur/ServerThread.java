@@ -325,15 +325,10 @@ public class ServerThread extends Thread {
         BigInteger c2 = new BigInteger(reader.readLine());
         BigInteger[] c = new BigInteger[]{c1, c2}; // choix crypté
         if (connexionBD.voter(login, idReferendum)) {
-            clientAVote(referendum, c, login);
+            referendum.agregeVote(c);
             writer.println("Vote enregistré");
         } else {
             writer.println("Erreur");
         }
-    }
-
-    public void clientAVote(Referendum referendum, BigInteger[] c, String login) {
-        referendum.ajouterVotant(login);
-        referendum.agregeVote(c);
     }
 }

@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 public class Referendum {
     private int id;
     private String nom;
-    private int nbVotants;
     private LocalDateTime dateFin;
     private BigInteger[] votesAgrege;
     private BigInteger[] pk;
@@ -23,7 +22,6 @@ public class Referendum {
         this.dateFin = dateFin;
         this.votesAgrege = votesAgrege;
         connexionBD = ConnexionBD.getInstance();
-        this.nbVotants = connexionBD.nbVotants(id);
         this.resultat = resultat;
         this.pk = pk;
     }
@@ -111,15 +109,6 @@ public class Referendum {
         return id + " - " + nom + " - " + dateFinAffichage() + " - " + (isOpen()? "Ouvert" : "Fermé") + " - " + tempRestant();
     }
 
-    public int getNbVotes() {
-        return nbVotants;
-    }
-
-    public void ajouterVotant(String login) {
-        nbVotants++;
-        connexionBD.voter(login, id);
-    }
-
     public BigInteger[] getClePublique() {
         return pk;
     }
@@ -143,7 +132,7 @@ public class Referendum {
     }
 
     public int getNbVotants() {
-        return nbVotants;
+        return connexionBD.nbVotants(id);
     }
 
     public String getResultat() {
