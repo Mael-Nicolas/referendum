@@ -82,29 +82,63 @@ public class VueCrudScrutateur extends BorderPane {
     }
 
     private void supprimerScrutateur() {
-        if (listViewScrutateur.getSelectionModel().getSelectedItem() == null) {
+        String loginScrutateur = listViewScrutateur.getSelectionModel().getSelectedItem();
+
+        if (loginScrutateur == null) {
             statue.setText("Veuillez sélectionner un scrutateur");
             return;
         }
-        String loginScrutateur = listViewScrutateur.getSelectionModel().getSelectedItem();
-        if(!connexionBD.supprimerScrutateur(loginScrutateur))
-            statue.setText("Erreur de suppression du scrutateur");
-        loadScrutateur();
-        statue.setText("Scrutateur supprimé");
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmationAlert.setTitle("Confirmation de suppression");
+        confirmationAlert.setHeaderText("Suppression du scrutateur");
+        confirmationAlert.setContentText("Êtes-vous sûr de vouloir supprimer ce scrutateur ? "
+                + "Cette action supprimera également tous les référendums associés.");
+
+        ButtonType buttonOui = new ButtonType("Oui", ButtonBar.ButtonData.OK_DONE);
+        ButtonType buttonNon = new ButtonType("Non", ButtonBar.ButtonData.CANCEL_CLOSE);
+        confirmationAlert.getButtonTypes().setAll(buttonOui, buttonNon);
+
+        confirmationAlert.showAndWait().ifPresent(response -> {
+            if (response == buttonOui) {
+                if (!connexionBD.supprimerScrutateur(loginScrutateur)) {
+                    statue.setText("Erreur de suppression du scrutateur");
+                } else {
+                    loadScrutateur();
+                    statue.setText("Scrutateur supprimé");
+                }
+            } else {
+                statue.setText("Suppression annulée");
+            }
+        });
     }
 
+
     private void creerScrutateur() {
-        if (usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
+        String username = usernameField.getText();
+        String password = passwordField.getText();
+        if (username.isEmpty() || password.isEmpty()) {
             statue.setText("Veuillez remplir tous les champs");
             return;
         }
-        if(!connexionBD.creerScrutateur(usernameField.getText(), passwordField.getText()))
+        if (!mdpValide(password)) {
+            statue.setText("Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.");
+            return;
+        }
+        if (!connexionBD.creerScrutateur(username, password)) {
             statue.setText("Erreur de création du scrutateur");
+            return;
+        }
         loadScrutateur();
         usernameField.clear();
         passwordField.clear();
         statue.setText("Scrutateur créé");
     }
+
+    private boolean mdpValide(String password) {
+        String pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        return password.matches(pattern);
+    }
+
 
     private void loadScrutateur() {
         listViewScrutateur.getItems().clear();

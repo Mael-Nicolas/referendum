@@ -85,8 +85,11 @@ public class VueConnexionClient extends Stage {
     private void handleCreateAccount() {
         String username = usernameField.getText();
         String password = passwordField.getText();
+
         if (username.isEmpty() || password.isEmpty()) {
             loginStatusLabel.setText("Veuillez remplir tous les champs.");
+        } else if (!mdpValide(password)) {
+            loginStatusLabel.setText("Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.");
         } else {
             try {
                 writer.println("CREATION_CLIENT");
@@ -94,8 +97,7 @@ public class VueConnexionClient extends Stage {
                 writer.println(password);
                 if (!reader.readLine().equals("Client créé")) {
                     loginStatusLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
-                }
-                else {
+                } else {
                     usernameField.clear();
                     passwordField.clear();
                     loginStatusLabel.setText("Compte créé avec succès.");
@@ -105,4 +107,10 @@ public class VueConnexionClient extends Stage {
             }
         }
     }
+
+    private boolean mdpValide(String password) {
+        String pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        return password.matches(pattern);
+    }
+
 }
