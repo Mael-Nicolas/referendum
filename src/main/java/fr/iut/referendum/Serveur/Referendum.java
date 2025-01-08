@@ -23,7 +23,7 @@ public class Referendum {
         this.dateFin = dateFin;
         this.votesAgrege = votesAgrege;
         connexionBD = ConnexionBD.getInstance();
-        this.nbVotants = connexionBD.getNbVotantsReferendum(id);
+        this.nbVotants = connexionBD.nbVotants(id);
         this.resultat = resultat;
         this.pk = pk;
     }
