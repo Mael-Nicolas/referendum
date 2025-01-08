@@ -130,26 +130,23 @@ public class VueScrutateur extends BorderPane {
         stage.show();
     }
 
-    private void loadFile() {
+    public void loadFile() {
         statue.setText("Chargement du fichier de sécurisation");
-
         try {
-            // Utilisation d'un FileChooser pour sélectionner le fichier
+            // Configuration du FileChooser
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Sélectionner un fichier de sécurisation");
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Fichiers texte", "*.txt"),
-                    new FileChooser.ExtensionFilter("Tous les fichiers", "*.*")
-            );
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers texte", "*.txt"));
 
-            // Ouvre la boîte de dialogue pour sélectionner un fichier
-            File file = fileChooser.showOpenDialog(this.getScene().getWindow());
+            // Afficher la boîte de dialogue pour sélectionner un fichier
+            File file = fileChooser.showOpenDialog(new Stage());
 
             if (file == null) {
-                statue.setText("Aucun fichier sélectionné");
+                statue.setText("Aucun fichier sélectionné.");
                 return;
             }
 
+            // Vérification du mot de passe
             if (mdpfichier.getText().isEmpty()) {
                 statue.setText("Mot de passe vide");
                 return;
@@ -162,6 +159,7 @@ public class VueScrutateur extends BorderPane {
                 return;
             }
 
+            // Lecture et décryptage du fichier
             String encryptedData;
             try (Scanner myReader = new Scanner(file)) {
                 encryptedData = myReader.nextLine();
@@ -169,24 +167,34 @@ public class VueScrutateur extends BorderPane {
 
             String decryptedData = decryptData(encryptedData, password);
 
-            String[] values = decryptedData.split("\n");
-            if (values.length != 5 || !values[4].equals("Fin")) {
-                statue.setText("Mot de passe incorrect.");
+            // Vérification des données décryptées
+            if (decryptedData == null) {
+                statue.setText("Erreur lors du déchiffrement des données.");
                 return;
             }
 
+            String[] values = decryptedData.split("\n");
+            if (values.length != 5 || !values[4].equals("Fin")) {
+                statue.setText("Mot de passe incorrect ou fichier corrompu.");
+                return;
+            }
+
+            // Extraction des clés
             pk = new BigInteger[3];
             pk[0] = new BigInteger(values[0]);
             pk[1] = new BigInteger(values[1]);
             pk[2] = new BigInteger(values[2]);
             sk = new BigInteger(values[3]);
 
+            // Mise à jour de l'interface
             statue.setText("Chargement du fichier réussi.");
             labelfichier.setText("Fichier sélectionné : " + file.getName());
         } catch (IOException e) {
             statue.setText("Erreur lors du chargement du fichier.");
+            e.printStackTrace();
         } catch (Exception e) {
             statue.setText("Erreur lors du déchiffrement des données.");
+            e.printStackTrace();
         }
     }
 
@@ -194,23 +202,19 @@ public class VueScrutateur extends BorderPane {
     public void newFileReferendum() {
         statue.setText("Création du fichier de sécurisation");
         try {
-            if (nomfichier.getText().isEmpty()) {
-                statue.setText("Nom de fichier vide");
+            // Configuration du FileChooser
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Enregistrer le fichier");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichiers texte", "*.txt"));
+
+            File file = fileChooser.showSaveDialog(new Stage());
+
+            if (file == null) {
+                statue.setText("Opération annulée par l'utilisateur.");
                 return;
             }
 
-            String fileName = nomfichier.getText();
-            if (!fileName.endsWith(".txt")) {
-                fileName += ".txt";
-            }
-
-            File file = new File(fileName);
-
-            if (file.exists()) {
-                statue.setText("Fichier existant");
-                return;
-            }
-
+            // Vérification du mot de passe
             if (mdpfichier.getText().isEmpty()) {
                 statue.setText("Mot de passe vide");
                 return;
@@ -222,13 +226,10 @@ public class VueScrutateur extends BorderPane {
                 statue.setText("Le mot de passe doit avoir exactement 16 caractères.");
                 return;
             }
+
             BigInteger[] tab = Crypto.genkey();
             pk = new BigInteger[]{tab[0], tab[1], tab[2]};
             sk = tab[3];
-
-            if (file.createNewFile()) {
-                statue.setText("Fichier créé : " + file.getName());
-            }
 
             String dataToEncrypt = pk[0] + "\n" + pk[1] + "\n" + pk[2] + "\n" + sk + "\n" + "Fin";
             String encryptedData = encryptData(dataToEncrypt, password);
@@ -236,7 +237,8 @@ public class VueScrutateur extends BorderPane {
             try (FileWriter myWriter = new FileWriter(file)) {
                 myWriter.write(encryptedData);
             }
-            statue.setText("Écriture dans le fichier réussie.");
+
+            statue.setText("Fichier créé avec succès à l'emplacement : " + file.getAbsolutePath());
             labelfichier.setText("Fichier sélectionné : " + file.getName());
         } catch (IOException e) {
             statue.setText("Erreur lors de la création du fichier.");
@@ -246,6 +248,8 @@ public class VueScrutateur extends BorderPane {
             e.printStackTrace();
         }
     }
+
+
 
 
     private void envoyerCle() throws IOException {
