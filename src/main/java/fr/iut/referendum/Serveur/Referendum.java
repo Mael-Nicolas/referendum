@@ -39,7 +39,14 @@ public class Referendum {
     }
 
     public boolean isOpen() {
-        return !fini() && pk[0].compareTo(BigInteger.ZERO) != 0;
+        if(fini() && connexionBD.estOuvert(id)) {
+            fermer();
+        }
+        return connexionBD.estOuvert(id);
+    }
+
+    public void fermer() {
+        connexionBD.changerEtat(id, 0);
     }
 
     public void setResultat(String resultat) {
