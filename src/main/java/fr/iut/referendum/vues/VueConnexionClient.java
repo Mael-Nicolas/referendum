@@ -15,7 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class VueConnexion extends Stage {
+public class VueConnexionClient extends Stage {
 
     private final ObjectProperty<String> loginProperty = new SimpleObjectProperty<>();
 
@@ -31,7 +31,7 @@ public class VueConnexion extends Stage {
     private PrintWriter writer;
     private BufferedReader reader;
 
-    public VueConnexion(PrintWriter writer, BufferedReader reader) {
+    public VueConnexionClient(PrintWriter writer, BufferedReader reader) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/connexionClient.fxml"));
             loader.setController(this);

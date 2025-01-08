@@ -32,8 +32,9 @@ public class MainScrutateur extends Application {
     }
 
     private void connexionScrutateur() {
+        configurationSocket();
         if (avecVueConnexion) {
-            vueConnexionScrutateur = new VueConnexionScrutateur();
+            vueConnexionScrutateur = new VueConnexionScrutateur(writer, reader);
             vueConnexionScrutateur.loginProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null) {
                     loginScrutateur = newValue;
@@ -51,7 +52,6 @@ public class MainScrutateur extends Application {
         if (loginScrutateur == null) {
             return;
         }
-        configurationSocket();
         vueScrutateur = new VueScrutateur(loginScrutateur, writer, reader);
         Scene sceneVueScrutateur = new Scene(vueScrutateur);
         primaryStage.setScene(sceneVueScrutateur);

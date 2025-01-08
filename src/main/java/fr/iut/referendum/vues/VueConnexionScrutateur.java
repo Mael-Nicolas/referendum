@@ -1,6 +1,5 @@
 package fr.iut.referendum.vues;
 
-import fr.iut.referendum.libs.ConnexionBD;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
@@ -12,7 +11,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class VueConnexionScrutateur extends Stage {
 
@@ -27,9 +28,11 @@ public class VueConnexionScrutateur extends Stage {
     @FXML
     private Button buttonConnecter;
 
-    private ConnexionBD connexionBD;
+    private PrintWriter writer;
+    private BufferedReader reader;
 
-    public VueConnexionScrutateur() {
+
+    public VueConnexionScrutateur(PrintWriter writer, BufferedReader reader) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/connexionScrutateur.fxml"));
             loader.setController(this);
@@ -42,7 +45,8 @@ public class VueConnexionScrutateur extends Stage {
 
         buttonConnecter.setOnAction(event -> handleLogin());
 
-        connexionBD = ConnexionBD.getInstance();
+        this.reader = reader;
+        this.writer = writer;
     }
 
     public void setLogin(String scrutateur) {
@@ -60,20 +64,20 @@ public class VueConnexionScrutateur extends Stage {
         if (username.isEmpty() || password.isEmpty()) {
             loginStatusLabel.setText("Veuillez remplir tous les champs.");
         } else {
-            // Logic to authenticate the user
-            if (!connexionBD.scrutateurConnexion(username, password)) {
-                loginStatusLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
-            }
-            else {
-                setLogin(username);
-                this.close();
+            try {
+                writer.println("CONNEXION_SCRUTATEUR");
+                writer.println(username);
+                writer.println(password);
+                if (!reader.readLine().equals("Connexion réussie")) {
+                    loginStatusLabel.setText("Nom d'utilisateur ou mot de passe incorrect.");
+                }
+                else {
+                    setLogin(username);
+                    this.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public void close() {
-        connexionBD.deconnexion();
-        super.close();
     }
 }

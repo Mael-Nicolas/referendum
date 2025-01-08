@@ -1,7 +1,6 @@
 package fr.iut.referendum.vues;
 
 import fr.iut.referendum.Crypto.Crypto;
-import fr.iut.referendum.libs.ConnexionBD;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -33,8 +32,6 @@ public class VueScrutateur extends BorderPane {
     private BufferedReader reader;
     private PrintWriter writer;
 
-    private ConnexionBD connexionBD;
-
     private BigInteger[] pk;
     private BigInteger sk;
 
@@ -42,7 +39,6 @@ public class VueScrutateur extends BorderPane {
         this.login = login;
         this.reader = reader;
         this.writer = writer;
-        connexionBD = ConnexionBD.getInstance();
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/scrutateur.fxml"));

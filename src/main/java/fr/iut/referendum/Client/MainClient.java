@@ -1,7 +1,7 @@
 package fr.iut.referendum.Client;
 
 import fr.iut.referendum.vues.VueChoixReferendums;
-import fr.iut.referendum.vues.VueConnexion;
+import fr.iut.referendum.vues.VueConnexionClient;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -12,7 +12,7 @@ import javax.net.ssl.SSLSocketFactory;
 
 public class MainClient extends Application {
 
-    private VueConnexion vueConnexion;
+    private VueConnexionClient vueConnexionClient;
     private VueChoixReferendums vueChoixReferendums;
     private Stage primaryStage;
 
@@ -34,14 +34,14 @@ public class MainClient extends Application {
     public void connexionClient() {
         configurationSocket();
         if (avecVueConnexion) {
-            vueConnexion = new VueConnexion(writer, reader);
-            vueConnexion.loginProperty().addListener((observable, oldValue, newValue) -> {
+            vueConnexionClient = new VueConnexionClient(writer, reader);
+            vueConnexionClient.loginProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue != null) {
                     loginClient = newValue;
                     demarrerChoixReferendums();
                 }
             });
-            vueConnexion.show();
+            vueConnexionClient.show();
         } else {
             loginClient = "bonsc";
             demarrerChoixReferendums();

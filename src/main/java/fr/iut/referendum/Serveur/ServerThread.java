@@ -55,6 +55,12 @@ public class ServerThread extends Thread {
 
     private void Command(String command, BufferedReader reader, PrintWriter writer) throws IOException {
         switch (command) {
+            case "CONNEXION_SCRUTATEUR":
+                connexionScrutateur(writer, reader);
+                break;
+            case "CREATION_SCRUTATEUR":
+                creationScrutateur(writer, reader);
+                break;
             case "CREATION_CLIENT":
                 creationClient(writer, reader);
                 break;
@@ -116,6 +122,26 @@ public class ServerThread extends Thread {
             writer.println(scrutateur);
         }
         writer.println("fin");
+    }
+
+    private void connexionScrutateur(PrintWriter writer, BufferedReader reader) throws IOException {
+        String login = reader.readLine();
+        String password = reader.readLine();
+        if (connexionBD.scrutateurConnexion(login, password)) {
+            writer.println("Connexion réussie");
+        } else {
+            writer.println("Erreur");
+        }
+    }
+
+    private void creationScrutateur(PrintWriter writer, BufferedReader reader) throws IOException {
+        String login = reader.readLine();
+        String password = reader.readLine();
+        if (connexionBD.creerScrutateur(login, password)) {
+            writer.println("Scrutateur créé");
+        } else {
+            writer.println("Erreur");
+        }
     }
 
     private void creationClient(PrintWriter writer, BufferedReader reader) throws IOException {
