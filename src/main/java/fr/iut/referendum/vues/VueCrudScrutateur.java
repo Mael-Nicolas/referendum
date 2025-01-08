@@ -91,8 +91,7 @@ public class VueCrudScrutateur extends BorderPane {
         Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmationAlert.setTitle("Confirmation de suppression");
         confirmationAlert.setHeaderText("Suppression du scrutateur");
-        confirmationAlert.setContentText("Êtes-vous sûr de vouloir supprimer ce scrutateur ? "
-                + "Cette action supprimera également tous les référendums associés.");
+        confirmationAlert.setContentText("Êtes-vous sûr de vouloir supprimer ce scrutateur ?");
 
         ButtonType buttonOui = new ButtonType("Oui", ButtonBar.ButtonData.OK_DONE);
         ButtonType buttonNon = new ButtonType("Non", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -101,7 +100,7 @@ public class VueCrudScrutateur extends BorderPane {
         confirmationAlert.showAndWait().ifPresent(response -> {
             if (response == buttonOui) {
                 if (!connexionBD.supprimerScrutateur(loginScrutateur)) {
-                    statue.setText("Erreur de suppression du scrutateur");
+                    statue.setText("Le scrutateur est relié à un référendum en cours");
                 } else {
                     loadScrutateur();
                     statue.setText("Scrutateur supprimé");
