@@ -5,6 +5,7 @@ import fr.iut.referendum.vues.VueConnexionScrutateur;
 import fr.iut.referendum.vues.VueScrutateur;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -33,6 +34,13 @@ public class MainScrutateur extends Application {
 
     private void connexionScrutateur() {
         configurationSocket();
+        if (writer == null || reader == null) {
+            Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationAlert.setTitle("Erreur");
+            confirmationAlert.setHeaderText("Erreur lors de la connexion au serveur.");
+            confirmationAlert.showAndWait();
+            return;
+        }
         if (avecVueConnexion) {
             vueConnexionScrutateur = new VueConnexionScrutateur(writer, reader);
             vueConnexionScrutateur.loginProperty().addListener((observable, oldValue, newValue) -> {
@@ -77,7 +85,7 @@ public class MainScrutateur extends Application {
             this.writer = writer;
             this.reader = reader;
         } catch (Exception ex) {
-            throw new RuntimeException("Erreur de connexion au serveur.", ex);
+            System.out.println("Erreur lors de la connexion au serveur.");
         } finally {
             if (socket != null && socket.isClosed()) {
                 try {
