@@ -55,6 +55,10 @@ public class ServerThread extends Thread {
 
     private void Command(String command, BufferedReader reader, PrintWriter writer) throws IOException {
         switch (command) {
+            case "CLIENT_EST_ADMIN":
+                String login = reader.readLine();
+                writer.println(connexionBD.estAdmin(login));
+                break;
             case "CONNEXION_SCRUTATEUR":
                 connexionScrutateur(writer, reader);
                 break;

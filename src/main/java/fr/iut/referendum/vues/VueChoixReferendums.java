@@ -63,19 +63,25 @@ public class VueChoixReferendums extends BorderPane {
     }
 
     private void estAdmin() {
-        if (connexionBD.estAdmin(login)) {
-            buttonAdmin = new Button("Section administratreur");
-            hboxBas.getChildren().add(buttonAdmin);
-            buttonAdmin.setOnMouseClicked(mouseEvent -> {
-                Scene scene = new Scene(new VueAdmin(login, writer, reader));
-                Stage stage = new Stage();
-                stage.setScene(scene);
-                stage.setTitle("Section Administrateur");
-                stage.setMaximized(true);
-                stage.show();
-                Stage currentStage = (Stage) buttonAdmin.getScene().getWindow();
-                currentStage.close();
-            });
+        try {
+            writer.println("CLIENT_EST_ADMIN");
+            writer.println(login);
+            if (reader.readLine().equals("true")) {
+                buttonAdmin = new Button("Section administratreur");
+                hboxBas.getChildren().add(buttonAdmin);
+                buttonAdmin.setOnMouseClicked(mouseEvent -> {
+                    Scene scene = new Scene(new VueAdmin(login, writer, reader));
+                    Stage stage = new Stage();
+                    stage.setScene(scene);
+                    stage.setTitle("Section Administrateur");
+                    stage.setMaximized(true);
+                    stage.show();
+                    Stage currentStage = (Stage) buttonAdmin.getScene().getWindow();
+                    currentStage.close();
+                });
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

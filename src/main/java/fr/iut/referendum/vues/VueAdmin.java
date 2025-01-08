@@ -1,6 +1,5 @@
 package fr.iut.referendum.vues;
 
-import fr.iut.referendum.libs.ConnexionBD;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -28,13 +27,10 @@ public class VueAdmin extends BorderPane {
     private BufferedReader reader;
     private PrintWriter writer;
 
-    private ConnexionBD connexionBD;
-
     public VueAdmin(String login, PrintWriter writer, BufferedReader reader) {
         this.login = login;
         this.reader = reader;
         this.writer = writer;
-        connexionBD = ConnexionBD.getInstance();
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/admin.fxml"));
