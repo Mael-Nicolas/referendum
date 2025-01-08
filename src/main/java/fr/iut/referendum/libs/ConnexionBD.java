@@ -407,10 +407,11 @@ public class ConnexionBD {
         String query = "UPDATE Referendums SET Resultat = ? WHERE idReferendum = ?";
         int res = 0;
         try (PreparedStatement ps = cn.prepareStatement(query)) {
-            ps.setInt(1, id);
-            ps.setString(2, resultat);
+            ps.setInt(2, id);
+            ps.setString(1, resultat);
             res = ps.executeUpdate();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             System.out.println("Problème dans la requête 12");
         }
     }
