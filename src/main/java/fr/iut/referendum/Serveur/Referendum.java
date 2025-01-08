@@ -21,9 +21,9 @@ public class Referendum {
         this.id = id;
         this.nom = nom;
         this.dateFin = dateFin;
-        this.nbVotants = 0;
         this.votesAgrege = votesAgrege;
         connexionBD = ConnexionBD.getInstance();
+        this.nbVotants = connexionBD.getNbVotantsReferendum(id);
         this.resultat = resultat;
         this.pk = pk;
     }
@@ -117,6 +117,7 @@ public class Referendum {
 
     public void ajouterVotant() {
         nbVotants++;
+        connexionBD.ajouterVotantReferendum(id);
     }
 
     public BigInteger[] getClePublique() {

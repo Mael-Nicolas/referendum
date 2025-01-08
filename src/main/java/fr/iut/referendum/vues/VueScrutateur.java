@@ -244,12 +244,22 @@ public class VueScrutateur extends BorderPane {
     }
 
     private void envoyerCle() throws IOException {
+        if (listViewReferendums.getSelectionModel().getSelectedItem() == null) {
+            statue.setText("Veuillez sélectionner un référendum");
+            return;
+        }
         if (pk == null || sk == null) {
             statue.setText("Clé non enregistrée");
             return;
         } else {
             statue.setText("Envoie de la clé publique");
             writer.println("CLE_PUBLIQUE_REFERENDUM");
+            String idReferendum = listViewReferendums.getSelectionModel().getSelectedItem().split(" - ")[0];
+            writer.println(idReferendum);
+            if (reader.readLine().equals("Erreur")) {
+                statue.setText("Clé publique déjà enregistrée ou référendum terminé");
+                return;
+            }
             writer.println(pk[0]);  // p
             writer.println(pk[1]);  // q
             writer.println(pk[2]);  // h
@@ -292,7 +302,10 @@ public class VueScrutateur extends BorderPane {
             return;
         }
         if (reader.readLine().equals("Error01")){
-            statue.setText(reader.readLine() + " : " + reader.readLine());
+            statue.setText("Resultat déjà calculé : " + reader.readLine());
+        }
+        if (reader.readLine().equals("Error02")){
+            statue.setText("Resultat : Egalité (Nombre de votants égal à 0)");
         }
         else {
             BigInteger c1 = new BigInteger(reader.readLine());
@@ -305,7 +318,7 @@ public class VueScrutateur extends BorderPane {
                 statue.setText("Erreur lors du déchiffrement");
                 return;
             }
-            statue.setText(reader.readLine() + " : " + decrypted);
+            statue.setText("Resultat du referendum : " + decrypted);
         }
     }
 

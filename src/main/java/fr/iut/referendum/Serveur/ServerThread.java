@@ -143,15 +143,17 @@ public class ServerThread extends Thread {
     }
 
     private void cle_publique_referendum(PrintWriter writer, BufferedReader reader) throws IOException {
+        String idReferendum = reader.readLine();
+        Referendum referendum = connexionBD.getReferendum(Integer.parseInt(idReferendum));
+        if (referendum.getClePublique() != null || referendum.fini()) {
+            writer.println("Erreur");
+            return;
+        }
         BigInteger p = new BigInteger(reader.readLine());
         BigInteger q = new BigInteger(reader.readLine());
         BigInteger h = new BigInteger(reader.readLine());
         BigInteger[] pk = {p, q, h};
-        // A changer pour avoir la clé publique du referendum sur la base de donnée
-        List<Referendum> referendums = connexionBD.getReferendums();
-        for (Referendum referendum : referendums) {
-            referendum.setPk(pk);
-        }
+        referendum.setPk(pk);
         writer.println("Clé publique enregistrée");
     }
 
@@ -164,31 +166,30 @@ public class ServerThread extends Thread {
             writer.println("Erreur");
             return;
         }
-        writer.println("Ok"); // Pas erreur
+        writer.println("Ok");
 
         // Test si le resultat est déjà calculé ou null
         if (referendum.getResultat() != null) {
             writer.println("Error01");
-            writer.println("Resultat déjà calculé");
             writer.println(referendum.getResultat());
             return;
         }
+        writer.println("Ok");
 
-        if (referendum.getNbVotants() == 0) {
-            writer.println("Error01");
+        int nbVotants = referendum.getNbVotants();
+
+        if (nbVotants == 0) {
+            writer.println("Error02");
             referendum.setResultat("Egalité");
-            writer.println("Nombre de votants égal à 0");
-            writer.println("Résultat : " + referendum.getResultat());
             return;
         }
-
-        writer.println("Ok"); // Pas erreur
+        writer.println("Ok");
 
         // envoie du resultat agregé
         BigInteger[] VotesAgreget = referendum.getVotesAgrege();
         writer.println(VotesAgreget[0]);
         writer.println(VotesAgreget[1]);
-        writer.println(referendum.getNbVotants());
+        writer.println(nbVotants);
         // reception du resultat (oui ou non)
         String resultatReferendum = reader.readLine();
         if (resultatReferendum.equals("Erreur")) {
@@ -196,7 +197,6 @@ public class ServerThread extends Thread {
         }
         referendum.setResultat(resultatReferendum);
         System.out.println("Resultat du referendum " + referendum.getId() + " : " + resultatReferendum);
-        writer.println("Resultat du referendum");
     }
 
     private void getServerInfo(PrintWriter writer) {
