@@ -3,8 +3,10 @@ package fr.iut.referendum.vues;
 import fr.iut.referendum.ConnexionBD;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,9 +16,9 @@ public class VueCrudClient extends BorderPane {
     @FXML
     private ListView<String> listViewClient;
     @FXML
-    private Label labelClient, statue;
+    private Label label, statue;
     @FXML
-    private Button buttonReload, buttonCreerClient, buttonSuprClient, buttonPassAdmin;
+    private Button buttonReload, buttonCreerClient, buttonSuprClient, buttonPassAdmin, buttonRetour;
     @FXML
     private TextField usernameField;
     @FXML
@@ -45,7 +47,7 @@ public class VueCrudClient extends BorderPane {
             e.printStackTrace();
         }
 
-        labelClient.setText("Admin : " + login);
+        label.setText("Admin : " + login);
 
         creerBindings();
     }
@@ -68,7 +70,21 @@ public class VueCrudClient extends BorderPane {
             passerAdmin();
         });
 
+        buttonRetour.setOnMouseClicked(mouseEvent -> {
+            vueAdmin();
+        });
+
         loadClient();
+    }
+
+    private void vueAdmin() {
+        Scene scene = new Scene(new VueAdmin(login, writer, reader));
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("Section Administrateur");
+        stage.show();
+        Stage currentStage = (Stage) buttonRetour.getScene().getWindow();
+        currentStage.close();
     }
 
     private void passerAdmin() {

@@ -86,16 +86,16 @@ public class VueChoixReferendums extends BorderPane {
         });
         buttonResultat.setOnMouseClicked(mouseEvent -> actionResultat(new ActionEvent()));
         buttonCGU.setOnMouseClicked(mouseEvent -> {
-            loadCGU();
+            vueCGU();
         });
         buttonML.setOnMouseClicked(mouseEvent -> {
-            loadML();
+            vueML();
         });
 
         loadReferendums();
     }
 
-    private static void loadCGU() {
+    private void vueCGU() {
         StringBuilder text = new StringBuilder();
         File file = new File("src/main/Légal/CGU.txt");
         try (Scanner scanner = new Scanner(file)) {
@@ -113,7 +113,7 @@ public class VueChoixReferendums extends BorderPane {
         stage.show();
     }
 
-    private static void loadML() {
+    private void vueML() {
         StringBuilder text = new StringBuilder();
         File file = new File("src/main/Légal/ML.txt");
         try (Scanner scanner = new Scanner(file)) {

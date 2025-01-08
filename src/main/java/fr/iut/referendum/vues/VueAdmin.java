@@ -16,9 +16,9 @@ public class VueAdmin extends BorderPane {
     @FXML
     private ListView<String> listViewReferendums, listViewScrutateur;
     @FXML
-    private Label labelClient, statue;
+    private Label label, statue;
     @FXML
-    private Button buttonCreerReferendum, buttonSuprReferendum, buttonReload, buttonGererScrutateur, buttonGererClient;
+    private Button buttonCreerReferendum, buttonSuprReferendum, buttonReload, buttonGererScrutateur, buttonGererClient, buttonRetour;
     @FXML
     private TextField nomReferendum, heureFin;
     @FXML
@@ -45,7 +45,7 @@ public class VueAdmin extends BorderPane {
             e.printStackTrace();
         }
 
-        labelClient.setText("Admin : " + login);
+        label.setText("Admin : " + login);
 
         creerBindings();
     }
@@ -81,8 +81,22 @@ public class VueAdmin extends BorderPane {
             vueCrudClient();
         });
 
+        buttonRetour.setOnMouseClicked(mouseEvent -> {
+            vueChoixReferendum();
+        });
+
         loadReferendums();
         loadScrutateur();
+    }
+
+    private void vueChoixReferendum() {
+        Scene scene = new Scene(new VueChoixReferendums(login, writer, reader));
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.setTitle("Choix des référendums");
+        stage.show();
+        Stage currentStage = (Stage) buttonRetour.getScene().getWindow();
+        currentStage.close();
     }
 
     private void vueCrudClient() {
