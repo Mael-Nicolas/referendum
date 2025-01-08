@@ -37,7 +37,7 @@ public class Serveur {
 
             // Utilisation d'un SSLServerSocket
             SSLServerSocketFactory serverSocketFactory = sslContext.getServerSocketFactory();
-            try (SSLServerSocket serverSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(3390)) {
+            try (SSLServerSocket serverSocket = (SSLServerSocket) serverSocketFactory.createServerSocket(Integer.parseInt(instanceEnv.getEnv("port")))) {
 
                 // Affichage Info serveur
                 System.out.println("Serveur sécurisé ouvert sur le port " + serverSocket.getLocalPort());

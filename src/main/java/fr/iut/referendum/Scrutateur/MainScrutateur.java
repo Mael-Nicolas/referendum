@@ -16,11 +16,9 @@ public class MainScrutateur extends Application {
     private VueConnexionScrutateur vueConnexionScrutateur;
     private VueScrutateur vueScrutateur;
     private Stage primaryStage;
-
-    private final boolean avecVueConnexion = true;
-    private final String hostname = "localhost";
-    private final int port = 3390;
     private static EnvLoader instanceEnv = EnvLoader.getInstance();
+    private final boolean avecVueConnexion = true;
+
 
     private String loginScrutateur;
 
@@ -71,7 +69,7 @@ public class MainScrutateur extends Application {
         try {
             // Création d'une socket sécurisée
             SSLSocketFactory socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-            socket = (SSLSocket) socketFactory.createSocket(hostname, port);
+            socket = (SSLSocket) socketFactory.createSocket(instanceEnv.getEnv("adresse"), Integer.parseInt(instanceEnv.getEnv("port")));
             OutputStream output = socket.getOutputStream();
             PrintWriter writer = new PrintWriter(output, true);
             InputStream input = socket.getInputStream();
