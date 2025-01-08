@@ -56,6 +56,7 @@ public class MainClient extends Application {
         Scene sceneVueChoixReferendums = new Scene(vueChoixReferendums);
         primaryStage.setScene(sceneVueChoixReferendums);
         primaryStage.setTitle("Choix Referendums");
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 

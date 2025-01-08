@@ -39,6 +39,7 @@ public class VueConnexionScrutateur extends Stage {
             Scene scene = new Scene(loader.load());
             this.setScene(scene);
             this.setTitle("Connexion Scrutateur");
+            this.setMaximized(true);
         } catch (IOException e) {
             e.printStackTrace();
         }

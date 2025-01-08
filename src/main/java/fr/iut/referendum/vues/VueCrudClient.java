@@ -82,6 +82,7 @@ public class VueCrudClient extends BorderPane {
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.setTitle("Section Administrateur");
+        stage.setMaximized(true);
         stage.show();
         Stage currentStage = (Stage) buttonRetour.getScene().getWindow();
         currentStage.close();

@@ -4,8 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root prefHeight="500.0" prefWidth="600.0" type="BorderPane" xmlns="http://javafx.com/javafx/17.0.2-ea"
-         xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="500.0" prefWidth="600.0" type="BorderPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
     <top>
         <VBox BorderPane.alignment="CENTER">
             <Button fx:id="buttonRetour" mnemonicParsing="false" text="Retour">

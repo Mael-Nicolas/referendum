@@ -94,6 +94,7 @@ public class VueAdmin extends BorderPane {
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.setTitle("Choix des référendums");
+        stage.setMaximized(true);
         stage.show();
         Stage currentStage = (Stage) buttonRetour.getScene().getWindow();
         currentStage.close();
@@ -104,6 +105,7 @@ public class VueAdmin extends BorderPane {
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.setTitle("Gestion des clients");
+        stage.setMaximized(true);
         stage.show();
         Stage currentStage = (Stage) buttonGererScrutateur.getScene().getWindow();
         currentStage.close();
@@ -114,6 +116,7 @@ public class VueAdmin extends BorderPane {
         Stage stage = new Stage();
         stage.setScene(scene);
         stage.setTitle("Gestion des scrutateurs");
+        stage.setMaximized(true);
         stage.show();
         Stage currentStage = (Stage) buttonGererClient.getScene().getWindow();
         currentStage.close();
