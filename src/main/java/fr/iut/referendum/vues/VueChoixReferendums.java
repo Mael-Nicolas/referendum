@@ -200,6 +200,7 @@ public class VueChoixReferendums extends BorderPane {
 
             writer.println(choixCrypter[0]);
             writer.println(choixCrypter[1]);
+            writer.println(login);
 
             return reader.readLine().equals("Vote enregistré");
         } catch (Exception e) {

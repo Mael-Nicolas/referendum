@@ -261,12 +261,13 @@ public class ServerThread extends Thread {
         BigInteger c1 = new BigInteger(reader.readLine());
         BigInteger c2 = new BigInteger(reader.readLine());
         BigInteger[] c = new BigInteger[]{c1, c2}; // choix crypté
-        clientAVote(referendum, c);
+        String login = reader.readLine();
+        clientAVote(referendum, c, login);
         writer.println("Vote enregistré");
     }
 
-    public void clientAVote(Referendum referendum, BigInteger[] c) {
-        referendum.ajouterVotant();
+    public void clientAVote(Referendum referendum, BigInteger[] c, String login) {
+        referendum.ajouterVotant(login);
         referendum.agregeVote(c);
     }
 }

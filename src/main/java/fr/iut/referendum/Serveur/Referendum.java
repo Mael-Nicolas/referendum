@@ -115,9 +115,9 @@ public class Referendum {
         return nbVotants;
     }
 
-    public void ajouterVotant() {
+    public void ajouterVotant(String login) {
         nbVotants++;
-        connexionBD.ajouterVotantReferendum(id);
+        connexionBD.voter(login, id);
     }
 
     public BigInteger[] getClePublique() {
