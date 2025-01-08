@@ -111,7 +111,11 @@ public class ServerThread extends Thread {
     private void list_client(PrintWriter writer, BufferedReader reader) {
         List<String> clients = connexionBD.getEmployes();
         for (String client : clients) {
-            writer.println(client);
+            String res = client;
+            if (connexionBD.estAdmin(res)) {
+                res += " - admin";
+            }
+            writer.println(res);
         }
         writer.println("fin");
     }
@@ -174,7 +178,7 @@ public class ServerThread extends Thread {
         if (connexionBD.supprimerReferendum(idReferendum)) {
             writer.println("Referendum supprimé");
         } else {
-            writer.println("Erreur");
+            writer.println("Erreur lors de la suppression du referendum");
         }
     }
 

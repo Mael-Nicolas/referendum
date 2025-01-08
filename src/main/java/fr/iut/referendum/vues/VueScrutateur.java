@@ -189,9 +189,6 @@ public class VueScrutateur extends BorderPane {
             statue.setText("Chargement du fichier réussi.");
             labelfichier.setText("Fichier sélectionné : " + file.getName());
 
-            // Afficher le contenu du fichier décrypté dans une nouvelle fenêtre
-            showDecryptedFileContent(decryptedData);
-
         } catch (IOException e) {
             statue.setText("Erreur lors du chargement du fichier.");
             e.printStackTrace();
@@ -201,20 +198,6 @@ public class VueScrutateur extends BorderPane {
         }
     }
 
-    private void showDecryptedFileContent(String decryptedData) {
-        // Créer une nouvelle fenêtre pour afficher le contenu décrypté
-        Stage stage = new Stage();
-        stage.setTitle("Contenu du fichier décrypté");
-
-        TextArea textArea = new TextArea(decryptedData);
-        textArea.setEditable(false);
-
-        VBox vbox = new VBox(textArea);
-        Scene scene = new Scene(vbox, 600, 400);
-
-        stage.setScene(scene);
-        stage.show();
-    }
 
 
     public void newFileReferendum() {

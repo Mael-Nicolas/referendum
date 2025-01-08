@@ -1,5 +1,6 @@
 package fr.iut.referendum.Client;
 
+import fr.iut.referendum.libs.EnvLoader;
 import fr.iut.referendum.vues.VueChoixReferendums;
 import fr.iut.referendum.vues.VueConnexionClient;
 import javafx.application.Application;
@@ -16,9 +17,8 @@ public class MainClient extends Application {
     private VueChoixReferendums vueChoixReferendums;
     private Stage primaryStage;
 
+    private static EnvLoader instanceEnv = EnvLoader.getInstance();
     private final boolean avecVueConnexion = true;
-    private final String hostname = "localhost";
-    private final int port = 3390;
 
     private String loginClient;
 
@@ -63,13 +63,13 @@ public class MainClient extends Application {
     public void configurationSocket() {
         // Configuration SSL
         System.setProperty("javax.net.ssl.trustStore", "keystore.jks");
-        System.setProperty("javax.net.ssl.trustStorePassword", "Admin!123");
+        System.setProperty("javax.net.ssl.trustStorePassword", instanceEnv.getEnv("socketmdp"));
 
         SSLSocket socket = null;
         try {
             // Création d'une socket sécurisée
             SSLSocketFactory socketFactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-            socket = (SSLSocket) socketFactory.createSocket(hostname, port);
+            socket = (SSLSocket) socketFactory.createSocket(instanceEnv.getEnv("adresse"), Integer.parseInt(instanceEnv.getEnv("port")));
             OutputStream output = socket.getOutputStream();
             PrintWriter writer = new PrintWriter(output, true);
             InputStream input = socket.getInputStream();
