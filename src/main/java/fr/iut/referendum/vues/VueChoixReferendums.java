@@ -1,7 +1,6 @@
 package fr.iut.referendum.vues;
 
 import fr.iut.referendum.Crypto.Crypto;
-import fr.iut.referendum.libs.ConnexionBD;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,8 +33,6 @@ public class VueChoixReferendums extends BorderPane {
     private BufferedReader reader;
     private PrintWriter writer;
 
-    private ConnexionBD connexionBD;
-
     public VueChoixReferendums(String login, PrintWriter writer, BufferedReader reader) {
         this.login = login;
         this.reader = reader;
@@ -56,7 +53,6 @@ public class VueChoixReferendums extends BorderPane {
 
         labelClient.setText("Client : " + login);
 
-        connexionBD = ConnexionBD.getInstance();
         estAdmin();
 
         creerBindings();

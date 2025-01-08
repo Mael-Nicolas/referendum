@@ -1,6 +1,5 @@
 package fr.iut.referendum.vues;
 
-import fr.iut.referendum.libs.ConnexionBD;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -28,13 +27,10 @@ public class VueCrudScrutateur extends BorderPane {
     private BufferedReader reader;
     private PrintWriter writer;
 
-    private ConnexionBD connexionBD;
-
     public VueCrudScrutateur(String login, PrintWriter writer, BufferedReader reader) {
         this.login = login;
         this.reader = reader;
         this.writer = writer;
-        connexionBD = ConnexionBD.getInstance();
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/crudScrutateur.fxml"));
@@ -100,11 +96,17 @@ public class VueCrudScrutateur extends BorderPane {
 
         confirmationAlert.showAndWait().ifPresent(response -> {
             if (response == buttonOui) {
-                if (!connexionBD.supprimerScrutateur(loginScrutateur)) {
-                    statue.setText("Le scrutateur est relié à un référendum en cours");
-                } else {
-                    loadScrutateur();
-                    statue.setText("Scrutateur supprimé");
+                writer.println("SUPPRIMER_SCRUTATEUR");
+                writer.println(loginScrutateur);
+                try {
+                    if (!reader.readLine().equals("Scrutateur supprimé")) {
+                        statue.setText("Le scrutateur est relié à un référendum en cours");
+                    } else {
+                        loadScrutateur();
+                        statue.setText("Scrutateur supprimé");
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             } else {
                 statue.setText("Suppression annulée");
@@ -124,9 +126,16 @@ public class VueCrudScrutateur extends BorderPane {
             statue.setText("Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un caractère spécial.");
             return;
         }
-        if (!connexionBD.creerScrutateur(username, password)) {
-            statue.setText("Erreur de création du scrutateur");
-            return;
+        writer.println("CREATION_SCRUTATEUR");
+        writer.println(username);
+        writer.println(password);
+        try {
+            if (!reader.readLine().equals("Scrutateur créé")) {
+                statue.setText("Erreur de création du scrutateur");
+                return;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         loadScrutateur();
         usernameField.clear();

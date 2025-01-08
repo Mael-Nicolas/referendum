@@ -55,6 +55,9 @@ public class ServerThread extends Thread {
 
     private void Command(String command, BufferedReader reader, PrintWriter writer) throws IOException {
         switch (command) {
+            case "SUPPRIMER_SCRUTATEUR":
+                suppressionScrutateur(writer, reader);
+                break;
             case "CLIENT_EST_ADMIN":
                 String login = reader.readLine();
                 writer.println(connexionBD.estAdmin(login));
@@ -147,6 +150,15 @@ public class ServerThread extends Thread {
         String password = reader.readLine();
         if (connexionBD.creerScrutateur(login, password)) {
             writer.println("Scrutateur créé");
+        } else {
+            writer.println("Erreur");
+        }
+    }
+
+    private void suppressionScrutateur(PrintWriter writer, BufferedReader reader) throws IOException {
+        String login = reader.readLine();
+        if (connexionBD.supprimerScrutateur(login)) {
+            writer.println("Scrutateur supprimé");
         } else {
             writer.println("Erreur");
         }
