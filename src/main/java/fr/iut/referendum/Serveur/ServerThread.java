@@ -113,12 +113,11 @@ public class ServerThread extends Thread {
 
     private void supr_referendum(PrintWriter writer, BufferedReader reader) throws IOException {
         int idReferendum = Integer.parseInt(reader.readLine());
-        /*
         Referendum referendum = connexionBD.getReferendum(idReferendum);
         if (!referendum.fini()) {
             writer.println("Erreur");
             return;
-        }*/
+        }
         if (connexionBD.supprimerReferendum(idReferendum)) {
             writer.println("Referendum supprimé");
         } else {
@@ -128,12 +127,11 @@ public class ServerThread extends Thread {
 
     private void resultat_client_referendum(PrintWriter writer, BufferedReader reader) throws IOException {
         int idReferendum = Integer.parseInt(reader.readLine());
-        Referendum referendum = getReferendum(idReferendum);
+        Referendum referendum = connexionBD.getReferendum(idReferendum);
 
-        while (referendum == null) {
+        if (referendum == null) {
             writer.println("Erreur");
-            idReferendum = Integer.parseInt(reader.readLine());
-            referendum = getReferendum(idReferendum);
+            return;
         }
         writer.println("Ok");
         String resultat = referendum.getResultat();
@@ -160,7 +158,7 @@ public class ServerThread extends Thread {
     private void resultat_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {
 
         int idReferendum = Integer.parseInt(reader.readLine());
-        Referendum referendum = getReferendum(idReferendum);
+        Referendum referendum = connexionBD.getReferendum(idReferendum);
 
         if (referendum == null || referendum.isOpen()) {
             writer.println("Erreur");
@@ -241,7 +239,7 @@ public class ServerThread extends Thread {
 
     private void voter_Referendum(PrintWriter writer, BufferedReader reader) throws IOException {
         int idReferendum = Integer.parseInt(reader.readLine());
-        Referendum referendum = getReferendum(idReferendum);
+        Referendum referendum = connexionBD.getReferendum(idReferendum);
 
         // vérif si le referendum existe et si il est fini
         if (referendum == null || !referendum.isOpen()) {
@@ -270,15 +268,5 @@ public class ServerThread extends Thread {
     public void clientAVote(Referendum referendum, BigInteger[] c) {
         referendum.ajouterVotant();
         referendum.agregeVote(c);
-    }
-
-    public Referendum getReferendum(int id) {
-        List<Referendum> referendums = connexionBD.getReferendums();
-        for (Referendum referendum : referendums) {
-            if (referendum.getId() == id) {
-                return referendum;
-            }
-        }
-        return null;
     }
 }

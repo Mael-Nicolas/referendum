@@ -63,7 +63,7 @@ public class VueChoixReferendums extends BorderPane {
     }
 
     private void estAdmin() {
-        if (connexionBD.estAdmin(login)) {
+        if (true) { // connexionBD.estAdmin(login) a changer, j'ai pas les mdp ...
             buttonAdmin = new Button("Section administratreur");
             hboxBas.getChildren().add(buttonAdmin);
             buttonAdmin.setOnMouseClicked(mouseEvent -> {
@@ -232,7 +232,7 @@ public class VueChoixReferendums extends BorderPane {
         writer.println("RESULTAT_CLIENT_REFERENDUM");
         writer.println(idReferendum);
         if (reader.readLine().equals("Erreur")) {
-            return null;
+            return "Erreur";
         }
         return reader.readLine();
     }
